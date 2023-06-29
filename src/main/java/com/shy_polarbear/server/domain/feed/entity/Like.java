@@ -12,10 +12,11 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "likes")
 public class Like extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "like_id")
     private Long id;
     @ManyToOne
@@ -24,7 +25,7 @@ public class Like extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 }
