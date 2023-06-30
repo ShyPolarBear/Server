@@ -28,4 +28,10 @@ public class Feed {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
+
+    //연관관게 편의 메서드
+    public void addLike(Like like) {
+        this.feedLikes.add(like);
+        like.assignFeed(this);
+    }
 }

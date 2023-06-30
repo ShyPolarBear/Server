@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.user.entity;
 
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import com.shy_polarbear.server.domain.quiz.entity.Quiz;
 import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
 import lombok.AccessLevel;
@@ -29,7 +30,12 @@ public class User {
     private UserStatus userStatus;
     private boolean isBlackListUser;
     @OneToMany(mappedBy = "user")
-    private List<UserQuiz> userQuizs = new ArrayList<>();
+    private List<UserQuiz> userQuiz = new ArrayList<>();
+
     private String accessToken;
     private String refreshToken;
+
+    public void addUserQuiz(UserQuiz userQuiz) {
+        this.userQuiz.add(userQuiz);
+    }
 }

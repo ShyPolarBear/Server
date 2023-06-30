@@ -16,12 +16,22 @@ public class UserQuiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_quiz_id")
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
     private boolean isCorrect;
     private String userAnswer;
+
+    //연관관계 편의 메서드
+    public void assignUser(User user) {
+        this.user = user;
+        user.addUserQuiz(this);
+    }
+
+    public void assignQuiz(Quiz quiz) {
+        this.quiz = quiz;
+    }
 }

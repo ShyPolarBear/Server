@@ -19,13 +19,21 @@ public class Like extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "like_id")
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
     private Feed feed;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void assignFeed(Feed feed) {
+        this.feed = feed;
+    }
+
+    public void assignComment(Comment comment) {
+        this.comment = comment;
+    }
 }
