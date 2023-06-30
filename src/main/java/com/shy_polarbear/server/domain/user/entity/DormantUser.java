@@ -21,7 +21,9 @@ public class DormantUser extends BaseEntity {
     private String email;
     private String profileImage;
     private String phoneNumber;
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
+    @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
     private boolean isBlackListUser;
 
