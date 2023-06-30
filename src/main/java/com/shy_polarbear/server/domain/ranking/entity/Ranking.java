@@ -17,9 +17,5 @@ public class Ranking {
     @Column(name = "ranking_id")
     private Long id;
 
-    private int ranking;
-
-    @OneToOne
-    @JoinColumn(name = "score_id")
-    private Score score;
+    private int value;
 }

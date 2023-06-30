@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.point.entity;
 
+import com.shy_polarbear.server.domain.ranking.entity.Ranking;
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,4 +23,18 @@ public class Score {
     private User user;
 
     private int totalPoint;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ranking_id")
+    private Ranking ranking;
+
+    public void updateScore(Point point) {
+        this.totalPoint += point.getValue();
+        updateRanking();
+    }
+
+    private void updateRanking() {
+        //TODO 랭킨 업데이트 로직 추가
+    }
+
 }
