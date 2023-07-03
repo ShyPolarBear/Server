@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.quiz.entity;
 
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +32,20 @@ public class UserQuiz {
         user.addUserQuiz(this);
     }
 
-    public void assignQuiz(Quiz quiz) {
+    @Builder
+    private UserQuiz(User user, Quiz quiz, String userAnswer) {
+        this.user = user;
         this.quiz = quiz;
+        this.userAnswer = userAnswer;
+    }
+
+    public static UserQuiz createUserQuiz(User user, Quiz quiz, String userAnswer) {
+        UserQuiz userQuiz = UserQuiz.builder()
+                .user(user)
+                .quiz(quiz)
+                .userAnswer(userAnswer)
+                .build();
+        user.addUserQuiz(userQuiz);
+        return userQuiz;
     }
 }

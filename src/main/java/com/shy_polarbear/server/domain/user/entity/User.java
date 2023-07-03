@@ -1,9 +1,11 @@
 package com.shy_polarbear.server.domain.user.entity;
 
-import com.shy_polarbear.server.domain.feed.entity.Feed;
-import com.shy_polarbear.server.domain.quiz.entity.Quiz;
+
 import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
+import com.shy_polarbear.server.domain.point.entity.Point;
+import com.shy_polarbear.server.domain.ranking.entity.Ranking;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,10 +34,40 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserQuiz> userQuiz = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Point> points = new ArrayList<>();
+
+    //TODO: 유저가 차단한 유저 리스트
+
     private String accessToken;
     private String refreshToken;
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
+    }
+
+    public void addPoint(Point point) {
+        this.points.add(point);
+    }
+
+    @Builder
+    private User(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
+        this.nickName = nickName;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.phoneNumber = phoneNumber;
+        this.userRole = userRole;
+    }
+
+    public static User createUser(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
+        User user = User.builder()
+                .nickName(nickName)
+                .email(email)
+                .profileImage(profileImage)
+                .phoneNumber(phoneNumber)
+                .userRole(userRole)
+                .build();
+        Ranking.createRanking(user);
+        return user;
     }
 }

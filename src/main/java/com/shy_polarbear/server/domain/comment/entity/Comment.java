@@ -1,9 +1,9 @@
 package com.shy_polarbear.server.domain.comment.entity;
 
 import com.shy_polarbear.server.domain.feed.entity.Feed;
-import com.shy_polarbear.server.domain.feed.entity.Like;
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +25,7 @@ public class Comment {
     private User author;
     private String content;
     @OneToMany(mappedBy = "comment")
-    private List<Like> commentLikes = new ArrayList<>();
+    private List<CommentLike> commentLikes = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
@@ -37,11 +37,16 @@ public class Comment {
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
+    @Builder
+    public Comment(User author, String content, Feed feed) {
+        this.author = author;
+        this.content = content;
+        this.feed = feed;
+    }
 
-    //연관관계 편의 메서드
-    public void addLike(Like like) {
-        this.commentLikes.add(like);
-        like.assignComment(this);
+
+    public void addLike(CommentLike commentLike) {
+        this.commentLikes.add(commentLike);
     }
 
     public void addChildComment(Comment comment) {
