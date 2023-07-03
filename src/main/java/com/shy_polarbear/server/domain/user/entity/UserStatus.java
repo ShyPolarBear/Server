@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.user.entity;
 
 public enum UserStatus {
-    // 정상, 정지됨
-    NORMAL, STOPPED
+    // 활성, 휴면, 탈퇴, 정지
+    ACTIVE, DORMANT, WITHDRAWN, SUSPENDED
 }
