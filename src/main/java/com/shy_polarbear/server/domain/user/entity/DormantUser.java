@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -27,6 +26,5 @@ public class DormantUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
     private boolean isBlackListUser;
-    private LocalDateTime lastLoginDate;
 
 }
