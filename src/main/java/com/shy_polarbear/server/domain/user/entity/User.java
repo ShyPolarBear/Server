@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +39,12 @@ public class User {
     private List<Point> points = new ArrayList<>();
 
     //TODO: 유저가 차단한 유저 리스트
+    @OneToMany(mappedBy = "blockedUser")
+    List<BlockedUser> blockedUsers = new ArrayList<>();
 
     private String accessToken;
     private String refreshToken;
+    private LocalDateTime lastLoginDate;
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
@@ -57,6 +61,7 @@ public class User {
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
+        this.userStatus = UserStatus.ACTIVE;
     }
 
     public static User createUser(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
@@ -69,5 +74,16 @@ public class User {
                 .build();
         Ranking.createRanking(user);
         return user;
+    }
+
+    //파라미터로 받은 유저를 내가 차단한다.
+    public void blockUser(User userToBeBlocked) {
+        BlockedUser blockedUser = BlockedUser.createBlockedUser(this, userToBeBlocked);
+        blockedUsers.add(blockedUser);
+    }
+
+    public void unblockUser(User userToBeUnblocked) {
+        //TODO : 차단 해제 로직 (수정 필요)
+        blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
 }
