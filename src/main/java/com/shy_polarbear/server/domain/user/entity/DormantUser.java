@@ -2,8 +2,10 @@ package com.shy_polarbear.server.domain.user.entity;
 
 import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -24,7 +26,33 @@ public class DormantUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    @ColumnDefault("UserStatus.DORMANT")
+    private UserStatus userStatus = UserStatus.DORMANT;
     private boolean isBlackListUser;
 
+    @Builder
+    private DormantUser(Long userId, String nickName, String email, String profileImage, String phoneNumber, UserRole userRole, boolean isBlackListUser) {
+        this.userId = userId;
+        this.nickName = nickName;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.phoneNumber = phoneNumber;
+        this.userRole = userRole;
+        this.isBlackListUser = isBlackListUser;
+        this.userStatus = UserStatus.DORMANT;
+    }
+
+    public static DormantUser createDormantUser(Long userId, String nickName, String email,
+                                                String profileImage, String phoneNumber,
+                                                UserRole userRole, boolean isBlackListUser) {
+        return DormantUser.builder()
+                .userId(userId)
+                .nickName(nickName)
+                .email(email)
+                .profileImage(profileImage)
+                .phoneNumber(phoneNumber)
+                .userRole(userRole)
+                .isBlackListUser(isBlackListUser)
+                .build();
+    }
 }

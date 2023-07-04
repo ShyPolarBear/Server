@@ -38,10 +38,28 @@ public class Comment {
     private Feed feed;
 
     @Builder
-    public Comment(User author, String content, Feed feed) {
+    private Comment(User author, String content, Feed feed) {
         this.author = author;
         this.content = content;
         this.feed = feed;
+    }
+
+    public static Comment createComment(User author, String content, Feed feed) {
+        return Comment.builder()
+                .author(author)
+                .feed(feed)
+                .content(content)
+                .build();
+    }
+
+    public static Comment createChildComment(User author, String content, Feed feed, Comment parent) {
+        Comment childComment = Comment.builder()
+                .author(author)
+                .feed(feed)
+                .content(content)
+                .build();
+        parent.addChildComment(childComment);
+        return childComment;
     }
 
 
