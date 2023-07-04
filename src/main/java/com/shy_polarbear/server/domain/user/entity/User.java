@@ -4,10 +4,8 @@ package com.shy_polarbear.server.domain.user.entity;
 import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
 import com.shy_polarbear.server.domain.point.entity.Point;
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +15,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class User {
 
     @Id
@@ -31,14 +30,15 @@ public class User {
     private UserRole userRole;
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-    private boolean isBlackListUser;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isBlackListUser = false;
     @OneToMany(mappedBy = "user")
     private List<UserQuiz> userQuiz = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Point> points = new ArrayList<>();
 
-    //TODO: 유저가 차단한 유저 리스트
+    // this 유저가 차단한 유저 리스트
     @OneToMany(mappedBy = "blockedUser")
     List<BlockedUser> blockedUsers = new ArrayList<>();
 
@@ -55,13 +55,14 @@ public class User {
     }
 
     @Builder
-    private User(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
+    private User(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole, boolean isBlackListUser) {
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
         this.userStatus = UserStatus.ACTIVE;
+        this.isBlackListUser = isBlackListUser;
     }
 
     public static User createUser(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
