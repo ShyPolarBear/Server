@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.prize.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,18 @@ public class Prize {
     private Long id;
     private String name;
     private String prizeImage;
-    private PrizeStatus prizeStatus;
+    private PrizeStatus prizeStatus = PrizeStatus.NOT_GIVEN;
 
+    @Builder
+    private Prize(String name, String prizeImage) {
+        this.name = name;
+        this.prizeImage = prizeImage;
+    }
+
+    public static Prize createPrize(String name, String prizeImage) {
+        return Prize.builder()
+                .name(name)
+                .prizeImage(prizeImage)
+                .build();
+    }
 }
