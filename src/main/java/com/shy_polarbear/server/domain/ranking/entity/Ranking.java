@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.ranking.entity;
 
-import com.shy_polarbear.server.domain.point.entity.Point;
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

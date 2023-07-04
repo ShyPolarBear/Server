@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.feed.entity;
 
-import com.shy_polarbear.server.domain.comment.entity.Comment;
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
