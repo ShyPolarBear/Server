@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.point.entity;
 
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
 import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Point {
+public class Point extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

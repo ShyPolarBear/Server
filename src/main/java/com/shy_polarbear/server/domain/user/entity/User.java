@@ -4,6 +4,7 @@ package com.shy_polarbear.server.domain.user.entity;
 import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
 import com.shy_polarbear.server.domain.point.entity.Point;
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
+import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

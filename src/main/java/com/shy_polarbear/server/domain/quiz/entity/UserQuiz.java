@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.quiz.entity;
 
 import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserQuiz {
+public class UserQuiz extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

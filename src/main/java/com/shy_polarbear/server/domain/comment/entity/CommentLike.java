@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.comment.entity;
 
 import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentLike {
+public class CommentLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
