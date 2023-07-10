@@ -1,6 +1,5 @@
-package com.shy_polarbear.server.domain.quiz.entity;
+package com.shy_polarbear.server.domain.quiz.model;
 
-import com.shy_polarbear.server.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 

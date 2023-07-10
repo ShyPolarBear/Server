@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.point.entity;
+package com.shy_polarbear.server.domain.point.model;
 
 import lombok.Getter;
 

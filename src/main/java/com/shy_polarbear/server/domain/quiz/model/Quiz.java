@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.quiz.entity;
+package com.shy_polarbear.server.domain.quiz.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;

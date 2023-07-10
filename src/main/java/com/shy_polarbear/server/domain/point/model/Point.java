@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.domain.point.entity;
+package com.shy_polarbear.server.domain.point.model;
 
-import com.shy_polarbear.server.domain.ranking.entity.Ranking;
-import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.ranking.model.Ranking;
+import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

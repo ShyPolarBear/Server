@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.entity;
+package com.shy_polarbear.server.domain.user.model;
 
 import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;

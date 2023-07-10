@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.prize.entity;
+package com.shy_polarbear.server.domain.prize.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;

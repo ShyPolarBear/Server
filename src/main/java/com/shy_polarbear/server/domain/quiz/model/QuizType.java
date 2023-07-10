@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.quiz.entity;
+package com.shy_polarbear.server.domain.quiz.model;
 
 
 public enum QuizType {

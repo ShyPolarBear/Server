@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.domain.point.entity;
+package com.shy_polarbear.server.domain.point.model;
 
-import com.shy_polarbear.server.domain.user.entity.User;
-import com.shy_polarbear.server.domain.user.entity.UserRole;
+import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.model.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

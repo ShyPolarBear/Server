@@ -1,6 +1,6 @@
-package com.shy_polarbear.server.domain.ranking.entity;
+package com.shy_polarbear.server.domain.ranking.model;
 
-import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class Ranking {
     private User user;
 
     private int winningPercent;
-    private int rank;
+    private int rankValue;
 
     @Builder
     private Ranking(User user) {
