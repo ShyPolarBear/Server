@@ -1,6 +1,8 @@
-package com.shy_polarbear.server.domain.feed.entity;
+package com.shy_polarbear.server.domain.feed.model;
 
-import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Feed {
+public class Feed extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,9 @@ public class Feed {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
+
+    @OneToMany(mappedBy = "feed")
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     private Feed(String title, String content, List<String> feedImages, User author) {
