@@ -1,9 +1,9 @@
-package com.shy_polarbear.server.domain.user.entity;
+package com.shy_polarbear.server.domain.user.model;
 
 
-import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
-import com.shy_polarbear.server.domain.point.entity.Point;
-import com.shy_polarbear.server.domain.ranking.entity.Ranking;
+import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
+import com.shy_polarbear.server.domain.point.model.Point;
+import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -41,10 +42,12 @@ public class User {
     // this 유저가 차단한 유저 리스트
     @OneToMany(mappedBy = "blockedUser")
     List<BlockedUser> blockedUsers = new ArrayList<>();
+    private LocalDateTime lastLoginDate;
 
     private String accessToken;
     private String refreshToken;
-    private LocalDateTime lastLoginDate;
+    private String oAuthType;
+    private String oAuthId;
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
@@ -55,17 +58,25 @@ public class User {
     }
 
     @Builder
-    private User(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole, boolean isBlackListUser) {
+    public User(String nickName, String email, String profileImage,
+                String phoneNumber, UserRole userRole, Boolean isBlackListUser,
+                String accessToken, String refreshToken, String oAuthType, String oAuthId) {
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
-        this.userStatus = UserStatus.ACTIVE;
         this.isBlackListUser = isBlackListUser;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.oAuthType = oAuthType;
+        this.oAuthId = oAuthId;
+        this.userStatus = UserStatus.ACTIVE;
     }
 
-    public static User createUser(String nickName, String email, String profileImage, String phoneNumber, UserRole userRole) {
+
+    public static User createUser(String nickName, String email, String profileImage,
+                                  String phoneNumber, UserRole userRole) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
@@ -86,5 +97,17 @@ public class User {
     public void unblockUser(User userToBeUnblocked) {
         //TODO : 차단 해제 로직 (수정 필요)
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
+    }
+
+
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public boolean isSameAccessToken(String accessToken) {
+        return Objects.equals(this.accessToken, accessToken);
     }
 }
