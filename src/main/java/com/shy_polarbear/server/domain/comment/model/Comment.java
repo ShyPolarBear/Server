@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.domain.comment.model;
+package com.shy_polarbear.server.domain.comment.entity;
 
 import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +42,6 @@ public class Comment {
         this.author = author;
         this.content = content;
         this.feed = feed;
-        feed.getComments().add(this);
     }
 
     public static Comment createComment(User author, String content, Feed feed) {

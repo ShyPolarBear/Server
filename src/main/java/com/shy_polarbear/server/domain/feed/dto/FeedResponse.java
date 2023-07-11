@@ -38,18 +38,6 @@ public class FeedResponse {
     }
 
     public static FeedResponse from(Feed feed, Boolean isLike, Boolean isAuthor) {
-        return FeedResponse.builder()
-                .feedId(feed.getId())
-                .title(feed.getTitle())
-                .content(feed.getContent())
-                .author(feed.getAuthor().getNickName())
-                .authorProfileImage(feed.getAuthor().getProfileImage())
-                .feedImage(feed.getFeedImages())
-                .createdDate(feed.getCreatedAt())
-                .commentCount(feed.getComments().stream().count())
-                .likeCount(feed.getFeedLikes().stream().count())
-                .isLike(isLike)
-                .isAuthor(isAuthor)
-                .build();
+        return null;
     }
 }
