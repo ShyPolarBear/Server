@@ -1,11 +1,8 @@
 package com.shy_polarbear.server.domain.comment.model;
 
-<<<<<<< HEAD:src/main/java/com/shy_polarbear/server/domain/comment/model/CommentLike.java
+
 import com.shy_polarbear.server.domain.user.model.User;
-=======
-import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.global.common.BaseEntity;
->>>>>>> eb05871b6fd8e3daa86135174cfecc35d7ef4c2c:src/main/java/com/shy_polarbear/server/domain/comment/entity/CommentLike.java
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

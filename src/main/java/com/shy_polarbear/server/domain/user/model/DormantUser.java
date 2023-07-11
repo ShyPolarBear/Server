@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -25,6 +24,7 @@ public class DormantUser extends BaseEntity {
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+    @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
     private boolean isBlackListUser;
 

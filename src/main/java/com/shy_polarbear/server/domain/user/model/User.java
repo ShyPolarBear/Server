@@ -1,16 +1,11 @@
 package com.shy_polarbear.server.domain.user.model;
 
 
-<<<<<<< HEAD:src/main/java/com/shy_polarbear/server/domain/user/model/User.java
+
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
-=======
-import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
-import com.shy_polarbear.server.domain.point.entity.Point;
-import com.shy_polarbear.server.domain.ranking.entity.Ranking;
 import com.shy_polarbear.server.global.common.BaseEntity;
->>>>>>> eb05871b6fd8e3daa86135174cfecc35d7ef4c2c:src/main/java/com/shy_polarbear/server/domain/user/entity/User.java
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
