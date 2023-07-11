@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.config.jwt;
 
-import com.shy_polarbear.server.domain.user.dto.TokenResponse;
+
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
@@ -8,7 +8,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -95,7 +94,8 @@ public class JwtProvider {
         }
     }
 
-    public TokenResponse issue(User user) {
+    // accessToken, refreshToken 최초 발행
+    public JwtDto issue(User user) {
         String accessToken = createAccessToken(user);
         String refreshToken = createRefreshToken(user);
         Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUser(user);
@@ -104,7 +104,23 @@ public class JwtProvider {
         } else {
             refreshTokenRepository.save(new RefreshToken(user, refreshToken));
         }
-        return TokenResponse.from(accessToken, refreshToken);
+        return JwtDto.from(accessToken, refreshToken);
 
     }
+
+    // accessToken, refreshToken 재발행
+    public JwtDto reissue(String refreshToken) {
+        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_TOKEN));
+        User user = findRefreshToken.getUser();
+
+        //TODO: 유저 상태 확인
+        String newAccessToken = createAccessToken(user);
+        String newRefreshToken = createRefreshToken(user);
+
+        user.updateAccessToken(newAccessToken);
+        findRefreshToken.replace(newRefreshToken);
+        return JwtDto.from(newAccessToken, newAccessToken);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.config.jwt.JwtDto;
 import com.shy_polarbear.server.domain.config.jwt.RefreshToken;
 import com.shy_polarbear.server.domain.config.jwt.RefreshTokenRepository;
 import com.shy_polarbear.server.domain.user.dto.*;
@@ -25,26 +26,25 @@ public class AuthService {
 
 
     //일반 유저 회원가입
-    public TokenResponse join(JoinRequest joinRequest) {
+    public JwtDto join(JoinRequest joinRequest) {
 
         //sign token 유효성 검증
         String signToken = joinRequest.getSignToken();
         jwtProvider.validateToken(signToken);
 
-
         //닉네임 중복 검증
         checkDuplicationNickName(joinRequest.getNickName());
 
-
+        //이미 가입된 유저인지 확인
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(), joinRequest.getProfileImage(), joinRequest.getPhoneNumber(), UserRole.USR);
         userRepository.save(joinUser);
 
         //토큰 발급
-        TokenResponse tokenResponse = authLogin(LoginRequest.from(joinUser));
-//        joinUser.updateRefreshToken();
-        return null;
+        JwtDto jwtResponse = authLogin(LoginRequest.from(joinUser));
+
+        return jwtResponse;
     }
 
     public void checkDuplicationNickName(String nickName) {
@@ -53,7 +53,7 @@ public class AuthService {
         }
     }
 
-    public TokenResponse authLogin(LoginRequest loginRequest) {
+    public JwtDto authLogin(LoginRequest loginRequest) {
         return null;
     }
 
@@ -66,22 +66,16 @@ public class AuthService {
         return user;
     }
 
-    // Access Token 만료 되었을 경우, refresh Token 으로 재발급
-    public TokenResponse getAccessTokenByRefreshToken(String refreshToken) {
-        jwtProvider.validateToken(refreshToken);
-
-        RefreshToken newRefresh = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_TOKEN));
-
-
-        String accessToken = jwtProvider.createAccessToken(newRefresh.getUser());
-        newRefresh.getUser().updateAccessToken(accessToken);
-        return TokenResponse.from(accessToken, refreshToken);
-    }
-
     public LogoutResponse logOut(TokenRequest tokenRequest) {
         User findUser = findUserByAccessToken(tokenRequest.getAccessToken());
-        //refresh token 찾아서 삭제하기
-        return null;
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(findUser)
+                .orElseThrow(() -> new AuthException(ExceptionStatus.NOT_FOUND_REFRESH_TOKEN));
+        refreshTokenRepository.delete(refreshToken);
+        refreshTokenRepository.flush();
+        return new LogoutResponse();
+    }
+
+    public JwtDto reissue(String refreshToken) {
+        return jwtProvider.reissue(refreshToken);
     }
 }
