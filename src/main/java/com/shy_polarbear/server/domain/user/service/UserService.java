@@ -17,7 +17,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public void checkDuplicationNickName(String nickName) {
-        if (userRepository.existsByNickname(nickName)) {
+        if (userRepository.existsByNickName(nickName)) {
             throw new UserException(ExceptionStatus.NICKNAME_DUPLICATION);
         }
 

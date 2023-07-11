@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.model;
+package com.shy_polarbear.server.domain.user.auth.model;
 
 public class KaKaoOAuthProvider extends OAuthProvider{
 
