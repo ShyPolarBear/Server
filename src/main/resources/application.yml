@@ -5,7 +5,7 @@ spring:
         registration:
           kakao:
             client-id: 0504a2896254716bf5dea81cf3559a2a
-            redirect-uri: http://3.37.80.247:8080/auth/callback
+            redirect-uri: http://localhost:8080/oauth2/authorization/kakao
             client-authentication-method: POST
             client-secret: AekwI3w5H8M8T4RzuhN70LfuN5rpWYBJ
             authorization-grant-type: authorization_code
@@ -22,8 +22,7 @@ spring:
 
 jwt:
   header: Authorization
-  token:
-    secret-key: AekwI3w5H8M8T4RzuhN70LfuN5rpWYBJ
+  secret: AekwI3w5H8M8T4RzuhN70LfuN5rpWYBJ
   access-token:
     expire-length: 1800000
   refresh-token:
