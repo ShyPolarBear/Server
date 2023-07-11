@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.comment.entity;
 
-import com.shy_polarbear.server.domain.feed.entity.Feed;
+import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
