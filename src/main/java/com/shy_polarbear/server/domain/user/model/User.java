@@ -45,7 +45,6 @@ public class User {
     private LocalDateTime lastLoginDate;
 
     private String accessToken;
-    private String refreshToken;
     private String oAuthType;
     private String oAuthId;
 
@@ -68,10 +67,9 @@ public class User {
         this.userRole = userRole;
         this.isBlackListUser = isBlackListUser;
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
         this.oAuthType = oAuthType;
         this.oAuthId = oAuthId;
-        this.userStatus = UserStatus.ACTIVE;
+        this.userStatus = UserStatus.ENGAGED;
     }
 
 
@@ -103,9 +101,7 @@ public class User {
     public void updateAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
+
 
     public boolean isSameAccessToken(String accessToken) {
         return Objects.equals(this.accessToken, accessToken);
