@@ -1,7 +1,13 @@
 package com.shy_polarbear.server.domain.point.model;
 
+<<<<<<< HEAD:src/main/java/com/shy_polarbear/server/domain/point/model/Point.java
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.domain.user.model.User;
+=======
+import com.shy_polarbear.server.domain.ranking.entity.Ranking;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.global.common.BaseEntity;
+>>>>>>> eb05871b6fd8e3daa86135174cfecc35d7ef4c2c:src/main/java/com/shy_polarbear/server/domain/point/entity/Point.java
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Point {
+public class Point extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
