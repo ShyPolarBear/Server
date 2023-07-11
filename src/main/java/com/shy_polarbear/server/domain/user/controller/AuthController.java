@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.user.controller;
 
+import com.shy_polarbear.server.domain.config.jwt.JwtDto;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -14,22 +15,22 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/join")
-    public ResponseEntity<TokenResponse> join(JoinRequest joinRequest) {
+    public ResponseEntity<JwtDto> join(JoinRequest joinRequest) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(authService.join(joinRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> loginOAuth(LoginRequest loginRequest) {
+    public ResponseEntity<JwtDto> loginOAuth(LoginRequest loginRequest) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(authService.authLogin(loginRequest));
     }
 
     //access token 재발급
     @PostMapping("/reissue")
-    public ResponseEntity<TokenResponse> reissueToken(ReissueRequest reissueRequest) {
+    public ResponseEntity<JwtDto> reissueToken(ReissueRequest reissueRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.getAccessTokenByRefreshToken(reissueRequest.getRefreshToken()));
+                .body(authService.reissue(reissueRequest.getRefreshToken()));
     }
 
     @GetMapping("/logout")
