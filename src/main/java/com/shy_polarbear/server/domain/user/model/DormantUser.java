@@ -25,9 +25,7 @@ public class DormantUser extends BaseEntity {
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("UserStatus.DORMANT")
-    private UserStatus userStatus = UserStatus.DORMANT;
+    private UserStatus userStatus;
     private boolean isBlackListUser;
 
     @Builder
