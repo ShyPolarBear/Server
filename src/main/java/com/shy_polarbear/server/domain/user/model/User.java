@@ -1,7 +1,6 @@
 package com.shy_polarbear.server.domain.user.model;
 
 
-
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
@@ -61,7 +60,7 @@ public class User extends BaseEntity {
     @Builder
     public User(String nickName, String email, String profileImage,
                 String phoneNumber, UserRole userRole, Boolean isBlackListUser,
-                String accessToken, String refreshToken, String oAuthType, String oAuthId) {
+                String accessToken, String oAuthType, String oAuthId) {
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;

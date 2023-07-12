@@ -4,11 +4,13 @@ package com.shy_polarbear.server.domain.config.jwt;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +25,16 @@ import java.util.Optional;
 public class JwtProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserDetailsService userDetailsService;
     private final Key privateKey;
 
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
-                       RefreshTokenRepository refreshTokenRepository) {
+                       RefreshTokenRepository refreshTokenRepository,
+                       UserDetailsService userDetailsService) {
         this.privateKey = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.refreshTokenRepository = refreshTokenRepository;
+        this.userDetailsService = userDetailsService;
     }
     @Value("${jwt.access-token.expire-length}")
     private long accessTokenValidTime;
@@ -47,6 +52,9 @@ public class JwtProvider {
 
 
     // Sign Token 생성
+    public String createSignToken() {
+        return null;
+    }
 
     // access token 생성
     public String createAccessToken(User user) {
@@ -72,20 +80,27 @@ public class JwtProvider {
                 .compact();
     }
 
-    // 토큰 유효성 검증
-    public boolean isValidateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(privateKey).parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
+    //토큰에서 Authentication 객체 (인증용 객체) 가져오기
+    public Authentication getAuthentication(String accessToken) {
+        String userName = getAccessTokenPayload(accessToken);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getAccessTokenPayload(String accessToken) {
         return Jwts.parser()
                 .setSigningKey(privateKey).parseClaimsJws(accessToken)
                 .getBody().getSubject();
+    }
+
+    // 토큰 유효성 검증, 만료 일자 확인
+    public boolean isValidateToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public void validateToken(String token) {
