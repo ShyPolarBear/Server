@@ -17,7 +17,7 @@ class UserTest {
     private final String email = "chi6465618@naver.com";
     private final String profileImage = "";
     private final String phoneNumber = "01093926465";
-    private final UserRole userRole = UserRole.USR;
+    private final UserRole userRole = UserRole.ROLE_USR;
 
     @BeforeEach
     void setUp() {
@@ -30,7 +30,7 @@ class UserTest {
     void createUser() {
         assertThat(user1).isNotNull();
         assertThat(user1.getNickName()).isEqualTo(nickName);
-        assertThat(user1.getUserStatus()).isEqualTo(UserStatus.ACTIVE);
+        assertThat(user1.getUserStatus()).isEqualTo(UserStatus.ENGAGED);
         assertThat(user1.getIsBlackListUser()).isEqualTo(false);
     }
 
