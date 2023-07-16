@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.config.jwt;
 
 
+import com.shy_polarbear.server.domain.config.security.PrincipalOauth2UserService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
@@ -9,8 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,16 +25,15 @@ import java.util.Optional;
 public class JwtProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserDetailsService userDetailsService;
+    private final PrincipalOauth2UserService principalOauth2UserService;
     private final Key privateKey;
-
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
                        RefreshTokenRepository refreshTokenRepository,
-                       UserDetailsService userDetailsService) {
+                       PrincipalOauth2UserService principalOauth2UserService) {
         this.privateKey = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.refreshTokenRepository = refreshTokenRepository;
-        this.userDetailsService = userDetailsService;
+        this.principalOauth2UserService = principalOauth2UserService;
     }
     @Value("${jwt.access-token.expire-length}")
     private long accessTokenValidTime;
@@ -48,6 +47,12 @@ public class JwtProvider {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public String resolveSignToken(String rawToken) {
+        if (rawToken != null && rawToken.startsWith("Bearer "))
+            return rawToken.replace("Bearer ", "");
+        else throw new AuthException(ExceptionStatus.SIGNUP_TOKEN_ERROR);
     }
 
 
@@ -80,13 +85,6 @@ public class JwtProvider {
                 .compact();
     }
 
-    //토큰에서 Authentication 객체 (인증용 객체) 가져오기
-    public Authentication getAuthentication(String accessToken) {
-        String userName = getAccessTokenPayload(accessToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
     public String getAccessTokenPayload(String accessToken) {
         return Jwts.parser()
                 .setSigningKey(privateKey).parseClaimsJws(accessToken)
@@ -103,12 +101,6 @@ public class JwtProvider {
         }
     }
 
-    public void validateToken(String token) {
-        if(!isValidateToken(token)){
-            throw new AuthException(ExceptionStatus.INVALID_TOKEN);
-        }
-    }
-
     // accessToken, refreshToken 최초 발행
     public JwtDto issue(User user) {
         String accessToken = createAccessToken(user);
@@ -120,7 +112,6 @@ public class JwtProvider {
             refreshTokenRepository.save(new RefreshToken(user, refreshToken));
         }
         return JwtDto.from(accessToken, refreshToken);
-
     }
 
     // accessToken, refreshToken 재발행
@@ -138,4 +129,13 @@ public class JwtProvider {
         return JwtDto.from(newAccessToken, newAccessToken);
     }
 
+    public Authentication getAuthentication(String accessToken) {
+        Claims body = Jwts.parserBuilder()
+                .setSigningKey(privateKey)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+        String userId = body.getSubject();
+        return null;
+    }
 }
