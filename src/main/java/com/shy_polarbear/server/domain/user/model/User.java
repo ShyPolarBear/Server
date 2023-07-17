@@ -1,7 +1,6 @@
 package com.shy_polarbear.server.domain.user.model;
 
 
-
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
@@ -18,6 +17,7 @@ import java.util.Objects;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @DynamicInsert
 public class User extends BaseEntity {
 
@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     private String profileImage;
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole role;
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
     @Column(columnDefinition = "boolean default false")
@@ -47,8 +47,7 @@ public class User extends BaseEntity {
     private LocalDateTime lastLoginDate;
 
     private String accessToken;
-    private String oAuthType;
-    private String oAuthId;
+    private String userName;
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
@@ -60,29 +59,28 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String nickName, String email, String profileImage,
-                String phoneNumber, UserRole userRole, Boolean isBlackListUser,
-                String accessToken, String refreshToken, String oAuthType, String oAuthId) {
+                String phoneNumber, UserRole role, Boolean isBlackListUser,
+                String accessToken, String userName) {
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
-        this.userRole = userRole;
+        this.role = role;
         this.isBlackListUser = isBlackListUser;
         this.accessToken = accessToken;
-        this.oAuthType = oAuthType;
-        this.oAuthId = oAuthId;
+        this.userName = getUserName();
         this.userStatus = UserStatus.ENGAGED;
     }
 
 
     public static User createUser(String nickName, String email, String profileImage,
-                                  String phoneNumber, UserRole userRole) {
+                                  String phoneNumber, UserRole role) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
                 .profileImage(profileImage)
                 .phoneNumber(phoneNumber)
-                .userRole(userRole)
+                .role(role)
                 .build();
         Ranking.createRanking(user);
         return user;
@@ -98,7 +96,6 @@ public class User extends BaseEntity {
         //TODO : 차단 해제 로직 (수정 필요)
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
-
 
     public void updateAccessToken(String accessToken) {
         this.accessToken = accessToken;
