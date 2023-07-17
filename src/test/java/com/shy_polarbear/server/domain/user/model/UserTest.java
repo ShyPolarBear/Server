@@ -21,8 +21,8 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.createUser(nickName, email, profileImage, phoneNumber, userRole);
-        user2 = User.createUser(nickName, email, profileImage, phoneNumber, userRole);
+        user1 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null);
+        user2 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null);
     }
 
     @DisplayName("User 객체가 빌더 패턴으로 생성된다.")

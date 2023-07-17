@@ -1,12 +1,11 @@
 package com.shy_polarbear.server.domain.user.model;
 
-import com.shy_polarbear.server.global.common.BaseEntity;
+import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity

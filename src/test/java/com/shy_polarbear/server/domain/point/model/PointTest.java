@@ -20,7 +20,7 @@ class PointTest {
 
     @BeforeEach
     void setUp() {
-        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole);
+        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null);
     }
 
     @DisplayName("Point 객체가 생성되면 User의 point 값이 변경된다.")

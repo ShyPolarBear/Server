@@ -2,7 +2,7 @@ package com.shy_polarbear.server.domain.notification.model;
 
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.global.common.BaseEntity;
+import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

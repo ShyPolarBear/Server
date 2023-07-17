@@ -1,16 +1,14 @@
 package com.shy_polarbear.server.domain.config.jwt;
 
 
-import com.shy_polarbear.server.domain.config.security.PrincipalOauth2UserService;
+import com.shy_polarbear.server.domain.config.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +23,15 @@ import java.util.Optional;
 public class JwtProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final PrincipalOauth2UserService principalOauth2UserService;
+    private final PrincipalDetailService principalDetailService;
     private final Key privateKey;
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
                        RefreshTokenRepository refreshTokenRepository,
-                       PrincipalOauth2UserService principalOauth2UserService) {
+                       PrincipalDetailService principalDetailService) {
         this.privateKey = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.refreshTokenRepository = refreshTokenRepository;
-        this.principalOauth2UserService = principalOauth2UserService;
+        this.principalDetailService = principalDetailService;
     }
     @Value("${jwt.access-token.expire-length}")
     private long accessTokenValidTime;
@@ -57,7 +55,7 @@ public class JwtProvider {
 
 
     // Sign Token 생성
-    public String createSignToken() {
+    public String createSignToken(String providerId) {
         return null;
     }
 
@@ -92,9 +90,9 @@ public class JwtProvider {
     }
 
     // 토큰 유효성 검증, 만료 일자 확인
-    public boolean isValidateToken(String token) {
+    public boolean isValidateToken(String accessToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(accessToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
