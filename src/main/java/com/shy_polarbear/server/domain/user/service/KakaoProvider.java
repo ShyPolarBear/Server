@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.HttpHeaders;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class KakaoProvider {
     @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
@@ -42,19 +45,16 @@ public class KakaoProvider {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode userInfoNode = objectMapper.readTree(userInfoJson);
                 id = userInfoNode.get("id").asText();
-//                email = userInfoNode.get("kakao_account").get("email").asText();
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return new KakaoUserInfo(id, email);
+        return new KakaoUserInfo(id);
     }
 
     @RequiredArgsConstructor
     @Getter
     public static class KakaoUserInfo {
         private final String id;
-        private final String email;
-
     }
 }

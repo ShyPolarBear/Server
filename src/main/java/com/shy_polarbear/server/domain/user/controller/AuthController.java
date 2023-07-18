@@ -2,17 +2,15 @@ package com.shy_polarbear.server.domain.user.controller;
 
 import com.shy_polarbear.server.domain.config.jwt.JwtDto;
 import com.shy_polarbear.server.domain.config.jwt.JwtProvider;
-import com.shy_polarbear.server.domain.config.security.PrincipalDetails;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
-import com.shy_polarbear.server.domain.user.dto.LoginRequest;
+import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.service.AuthService;
 import com.shy_polarbear.server.domain.user.service.KakaoProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,21 +23,19 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/test")
-    public ResponseEntity<String> test(@RequestBody LoginRequest loginRequest) {
-        String accessToken = loginRequest.getOauthAccessToken();
+    public ResponseEntity<String> test(@RequestBody SocialLoginRequest loginRequest) {
+        String accessToken = loginRequest.getSocialAccessToken();
         System.out.println(jwtProvider.isValidateToken(accessToken));
         KakaoProvider.KakaoUserInfo userInfoByAccessToken = kakaoProvider.getUserInfoByAccessToken(accessToken);
 
-
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userInfoByAccessToken.getEmail()+" " + userInfoByAccessToken.getId());
+                .body(userInfoByAccessToken.getId());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDto> loginOAuth(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtDto> loginOAuth(@RequestBody SocialLoginRequest socialLoginRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.authLogin(loginRequest));
+                .body(authService.authLogin(socialLoginRequest));
     }
 
     @PostMapping("/join")

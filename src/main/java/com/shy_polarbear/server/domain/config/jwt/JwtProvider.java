@@ -8,7 +8,9 @@ import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -133,7 +135,8 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
-        String userId = body.getSubject();
-        return null;
+        String providerId = body.getSubject();
+        UserDetails userDetails = principalDetailService.loadUserByUsername(providerId);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

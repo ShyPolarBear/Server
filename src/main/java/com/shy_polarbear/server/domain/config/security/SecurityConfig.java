@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -34,11 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 사용 안함
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/api/auth/join/**", "/api/auth/login/**", "/api/auth/reissue/**", "/api/auth/test/**",
-                        "/api/user/duplicate-nickname",
-                        "/api/prize/**",
-                        "/api/quiz", "/api/quiz",
-                        "/api/auth/test").permitAll()
+                    .antMatchers("/api/auth/join/**", "/api/auth/login/**", "/api/auth/reissue/**",
+                            "/api/auth/test/**",
+                            "/api/user/duplicate-nickname",
+                            "/api/prize/**",
+                            "/api/quiz", "/api/quiz",
+                            "/api/auth/test").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),

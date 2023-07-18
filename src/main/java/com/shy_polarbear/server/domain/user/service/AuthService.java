@@ -3,10 +3,11 @@ package com.shy_polarbear.server.domain.user.service;
 import com.shy_polarbear.server.domain.config.jwt.JwtDto;
 import com.shy_polarbear.server.domain.config.jwt.RefreshToken;
 import com.shy_polarbear.server.domain.config.jwt.RefreshTokenRepository;
+import com.shy_polarbear.server.domain.config.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.config.security.PrincipalDetails;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
-import com.shy_polarbear.server.domain.user.dto.LoginRequest;
+import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.config.jwt.JwtProvider;
 import com.shy_polarbear.server.domain.user.exception.UserException;
@@ -14,14 +15,15 @@ import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import javax.transaction.Transactional;
@@ -36,14 +38,18 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final KakaoProvider kakaoProvider;
-    private UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+
 
     //받은 카카오 access token으로 회원가입한 회원인지 판단
-    public JwtDto authLogin(@RequestBody LoginRequest loginRequest) {
-        KakaoProvider.KakaoUserInfo userInfoByAccessToken = kakaoProvider.getUserInfoByAccessToken(loginRequest.getOauthAccessToken());
+    public JwtDto authLogin(@RequestBody SocialLoginRequest socialLoginRequest) {
+        KakaoProvider.KakaoUserInfo userInfoByAccessToken = kakaoProvider.getUserInfoByAccessToken(socialLoginRequest.getSocialAccessToken());
 
         //DB에 유저가 있다면 로그인 처리, 없다면 회원가입을 위한 sign token 발급
         String providerId = userInfoByAccessToken.getId();
+        System.out.println("providerId = " + providerId);
         Optional<User> byProviderId = userRepository.findByProviderId(providerId);
 
         JwtDto issue;
@@ -51,25 +57,23 @@ public class AuthService {
             User existUser = byProviderId.get();
 
             // 인증 객체 생성
-            Authentication  authentication = new UsernamePasswordAuthenticationToken(providerId, existUser.getPassword());
+            UsernamePasswordAuthenticationToken authenticationToken =  new UsernamePasswordAuthenticationToken(providerId, existUser.getPassword());
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             User loginUser = principal.getUser();
             issue = jwtProvider.issue(loginUser);
         } else {
-            String signToken = jwtProvider.createSignToken(providerId);
-            throw new AuthException(ExceptionStatus.NEED_TO_JOIN, signToken);
+            throw new AuthException(ExceptionStatus.NEED_TO_JOIN);
         }
         return issue;
     }
 
     //일반 유저 회원가입 - 로그인 시 발급 받은 signToken 필요
     public JwtDto join(JoinRequest joinRequest) {
-
-        //sign token 유효성 검증
-        String signToken = joinRequest.getSignToken();
-        if (!jwtProvider.isValidateToken(signToken)) {
-            throw new AuthException(ExceptionStatus.SIGNUP_TOKEN_ERROR);
-        }
+        //카카오 provider id 가져오기
+        String socialAccessToken = joinRequest.getSocialAccessToken();
+        KakaoProvider.KakaoUserInfo userInfoByAccessToken = kakaoProvider.getUserInfoByAccessToken(socialAccessToken);
+        String providerId = userInfoByAccessToken.getId();
 
         //닉네임 중복 검증
         checkDuplicationNickName(joinRequest.getNickName());
@@ -77,14 +81,16 @@ public class AuthService {
         //이미 가입된 유저인지 확인
 
         //유저 저장
-        //User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(), joinRequest.getProfileImage(), joinRequest.getPhoneNumber(), UserRole.ROLE_USR);
-        //userRepository.save(joinUser);
+        User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
+                joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
+                UserRole.ROLE_USR, providerId, ProviderType.KAKAO.getValue(), passwordEncoder);
+        userRepository.save(joinUser);
 
-        //토큰 발급
+        //시큐리티 인증...
 
-
-        return null;
-
+        //로그인 -> 토큰 발급
+//        JwtDto jwtDto = authLogin(SocialLoginRequest.from(ProviderType.KAKAO.getValue(), socialAccessToken));
+        return new JwtDto("Good", "");
     }
 
     public void checkDuplicationNickName(String nickName) {
@@ -97,6 +103,7 @@ public class AuthService {
         if (!jwtProvider.isValidateToken(accessToken)) {
             throw new AuthException(ExceptionStatus.INVALID_TOKEN);
         }
+        //id가 아니라 provider id임
         String userId = jwtProvider.getAccessTokenPayload(accessToken);
 
         User user = userRepository.findById(Long.parseLong(userId))

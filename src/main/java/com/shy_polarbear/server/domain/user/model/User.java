@@ -7,6 +7,7 @@ import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -61,7 +62,7 @@ public class User extends BaseEntity {
     @Builder
     public User(Long id, String nickName, String email, String profileImage,
                 String phoneNumber, UserRole role, Boolean isBlackListUser,
-                String accessToken, String providerId, String provider) {
+                String accessToken, String providerId, String provider, String password) {
         this.id = id;
         this.nickName = nickName;
         this.email = email;
@@ -72,12 +73,13 @@ public class User extends BaseEntity {
         this.accessToken = accessToken;
         this.providerId = providerId;
         this.provider = provider;
+        this.password = password;
         this.userStatus = UserStatus.ENGAGED;
     }
 
 
     public static User createUser(String nickName, String email, String profileImage,
-                                  String phoneNumber, UserRole role, String providerId, String provider) {
+                                  String phoneNumber, UserRole role, String providerId, String provider, PasswordEncoder passwordEncoder) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
@@ -86,6 +88,7 @@ public class User extends BaseEntity {
                 .role(role)
                 .provider(provider)
                 .providerId(providerId)
+                .password(passwordEncoder.encode(providerId + "@password"))
                 .build();
         Ranking.createRanking(user);
         return user;
