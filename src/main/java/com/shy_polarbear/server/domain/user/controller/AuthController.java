@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.user.controller;
 
+import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import com.shy_polarbear.server.global.config.jwt.JwtDto;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
@@ -19,28 +20,23 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDto> loginOAuth(@RequestBody SocialLoginRequest socialLoginRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.authLogin(socialLoginRequest));
+    public ApiResponse<JwtDto> loginOAuth(@RequestBody SocialLoginRequest socialLoginRequest) {
+        return ApiResponse.success(authService.authLogin(socialLoginRequest));
     }
 
     @PostMapping("/join")
-    public ResponseEntity<JwtDto> join(@RequestBody JoinRequest joinRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.join(joinRequest));
+    public ApiResponse<JwtDto> join(@RequestBody JoinRequest joinRequest) {
+        return ApiResponse.success(authService.join(joinRequest));
     }
 
 
     @PostMapping("/reissue")
-    public ResponseEntity<JwtDto> reissueToken(@RequestBody ReissueRequest reissueRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.reissue(reissueRequest.getRefreshToken()));
+    public ApiResponse<JwtDto> reissueToken(@RequestBody ReissueRequest reissueRequest) {
+        return ApiResponse.success(authService.reissue(reissueRequest.getRefreshToken()));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(authService.logOut());
+    public ApiResponse<LogoutResponse> logout() {
+        return ApiResponse.success(authService.logOut());
     }
-
 }
