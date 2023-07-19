@@ -131,7 +131,7 @@ public class JwtProvider {
             throw new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN);
         }
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthException(ExceptionStatus.NOT_FOUND_REFRESH_TOKEN));
+                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
         User user = findRefreshToken.getUser();
 
         //TODO: 유저 상태 확인

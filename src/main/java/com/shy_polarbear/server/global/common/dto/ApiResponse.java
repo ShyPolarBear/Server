@@ -10,17 +10,17 @@ import java.util.HashMap;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiResponse<T> {
-    private Integer statusCode;
+    private Integer code;
     private T data;
     private String message;
 
     private ApiResponse(T data) {
-        this.statusCode = null;
+        this.code = null;
         this.data = data;
     }
 
-    private ApiResponse(int status, T data, String message) {
-        this.statusCode = status;
+    private ApiResponse(int code, T data, String message) {
+        this.code = code;
         this.data = data;
         this.message = message;
     }
@@ -29,8 +29,8 @@ public class ApiResponse<T> {
         return new ApiResponse<>(data);
     }
 
-    public static ApiResponse error(int errorCode, String message) {
+    public static ApiResponse error(int code, String message) {
         HashMap<String, String> empty = new HashMap<>();
-        return new ApiResponse<>(errorCode, empty, message);
+        return new ApiResponse<>(code, empty, message);
     }
 }

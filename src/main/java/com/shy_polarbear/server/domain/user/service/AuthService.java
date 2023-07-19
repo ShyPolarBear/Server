@@ -56,11 +56,11 @@ public class AuthService {
         KakaoProvider.KakaoUserInfo userInfo = kakaoProvider.getUserInfoByAccessToken(socialAccessToken);
         String providerId = userInfo.getId();
 
-        //닉네임 중복 검증
-        checkDuplicationNickName(joinRequest.getNickName());
-
         //이미 가입된 유저인지 확인
         checkDuplicationUser(providerId);
+
+        //닉네임 중복 검증
+        checkDuplicationNickName(joinRequest.getNickName());
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
