@@ -46,6 +46,6 @@ class JwtProviderTest  {
     void createAccessToken() {
         String accessToken = jwtProvider.createAccessToken(user);
         Assertions.assertThat(jwtProvider.createAccessToken(user)).isNotEmpty();
-        assertThatCode(() -> jwtProvider.isValidateToken(accessToken)).doesNotThrowAnyException();
+        assertThatCode(() -> jwtProvider.isValidateAccessToken(accessToken)).doesNotThrowAnyException();
     }
 }

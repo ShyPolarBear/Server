@@ -3,7 +3,6 @@ package com.shy_polarbear.server.domain.config.security;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

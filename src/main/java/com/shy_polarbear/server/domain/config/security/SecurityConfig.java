@@ -7,12 +7,14 @@ import com.shy_polarbear.server.domain.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtProvider jwtProvider;
+    private final PrincipalDetailService principalDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,16 +38,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 사용 안함
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/api/auth/join/**", "/api/auth/login/**", "/api/auth/reissue/**",
+                        .antMatchers("/api/auth/join/**", "/api/auth/login/**", "/api/auth/reissue/**",
                             "/api/auth/test/**",
                             "/api/user/duplicate-nickname",
                             "/api/prize/**",
                             "/api/quiz", "/api/quiz",
                             "/api/auth/test").permitAll()
-                    .anyRequest().authenticated()
+                        .anyRequest().authenticated()
+                .and()
+                    .logout()
+                    .logoutUrl("/logout") // 로그아웃 엔드포인트 설정
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class); //JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
-
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(principalDetailService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 }

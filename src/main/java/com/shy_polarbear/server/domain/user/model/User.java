@@ -13,7 +13,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Entity
@@ -46,7 +45,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "blockedUser")
     List<BlockedUser> blockedUsers = new ArrayList<>();
     private LocalDateTime lastLoginDate;
-    private String accessToken;
     private String providerId;
     private String provider;
     private String password;
@@ -62,7 +60,7 @@ public class User extends BaseEntity {
     @Builder
     public User(Long id, String nickName, String email, String profileImage,
                 String phoneNumber, UserRole role, Boolean isBlackListUser,
-                String accessToken, String providerId, String provider, String password) {
+                String providerId, String provider, String password) {
         this.id = id;
         this.nickName = nickName;
         this.email = email;
@@ -70,7 +68,6 @@ public class User extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.isBlackListUser = isBlackListUser;
-        this.accessToken = accessToken;
         this.providerId = providerId;
         this.provider = provider;
         this.password = password;
@@ -105,12 +102,4 @@ public class User extends BaseEntity {
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
 
-    public void updateAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-
-    public boolean isSameAccessToken(String accessToken) {
-        return Objects.equals(this.accessToken, accessToken);
-    }
 }

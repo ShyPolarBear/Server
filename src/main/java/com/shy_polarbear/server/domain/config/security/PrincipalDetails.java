@@ -3,20 +3,16 @@ package com.shy_polarbear.server.domain.config.security;
 import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 //spring security 에서 사용하는 인증 객체
-@Service
 @AllArgsConstructor
 @Getter
-@NoArgsConstructor
 public class PrincipalDetails implements UserDetails {
 
     private User user;
