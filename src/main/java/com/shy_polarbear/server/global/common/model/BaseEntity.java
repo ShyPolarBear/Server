@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.common;
+package com.shy_polarbear.server.global.common.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
@@ -17,8 +18,8 @@ import javax.persistence.MappedSuperclass;
 public abstract class BaseEntity {
 
     @CreatedDate
-    protected String createdAt;
+    protected LocalDateTime createdAt;
 
     @LastModifiedDate
-    protected String modifiedAt;
+    protected LocalDateTime modifiedAt;
 }

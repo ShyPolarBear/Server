@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;

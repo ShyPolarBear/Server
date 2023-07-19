@@ -1,16 +1,17 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.config.jwt;
 
 
-import com.shy_polarbear.server.domain.config.security.PrincipalOauth2UserService;
+import com.shy_polarbear.server.global.config.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,18 +23,19 @@ import java.util.Optional;
 
 @Component
 @Transactional
+@Slf4j
 public class JwtProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final PrincipalOauth2UserService principalOauth2UserService;
+    private final PrincipalDetailService principalDetailService;
     private final Key privateKey;
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
                        RefreshTokenRepository refreshTokenRepository,
-                       PrincipalOauth2UserService principalOauth2UserService) {
+                       PrincipalDetailService principalDetailService) {
         this.privateKey = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.refreshTokenRepository = refreshTokenRepository;
-        this.principalOauth2UserService = principalOauth2UserService;
+        this.principalDetailService = principalDetailService;
     }
     @Value("${jwt.access-token.expire-length}")
     private long accessTokenValidTime;
@@ -49,23 +51,11 @@ public class JwtProvider {
         return null;
     }
 
-    public String resolveSignToken(String rawToken) {
-        if (rawToken != null && rawToken.startsWith("Bearer "))
-            return rawToken.replace("Bearer ", "");
-        else throw new AuthException(ExceptionStatus.SIGNUP_TOKEN_ERROR);
-    }
-
-
-    // Sign Token 생성
-    public String createSignToken() {
-        return null;
-    }
-
     // access token 생성
     public String createAccessToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getProviderId().toString())
                 .setIssuedAt(now)
                 .claim("tokenType", "access")
                 .setExpiration(new Date(now.getTime() + accessTokenValidTime))
@@ -77,7 +67,7 @@ public class JwtProvider {
     public String createRefreshToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getProviderId().toString())
                 .setIssuedAt(now)
                 .claim("tokenType", "refresh")
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
@@ -85,20 +75,41 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getAccessTokenPayload(String accessToken) {
-        return Jwts.parser()
-                .setSigningKey(privateKey).parseClaimsJws(accessToken)
-                .getBody().getSubject();
-    }
+
 
     // 토큰 유효성 검증, 만료 일자 확인
-    public boolean isValidateToken(String token) {
+    public boolean isValidateAccessToken(String accessToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(accessToken);
+            if (!claims.getBody().getExpiration().before(new Date()) && claims.getBody().get("tokenType").equals("access"))
+                return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.warn("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.warn("만료된 JWT 입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.warn("지원되지 않는 JWT 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT 잘못 되었습니다.");
         }
+        return false;
+    }
+
+    public boolean isValidateRefreshToken(String refreshToken) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(privateKey).parseClaimsJws(refreshToken);
+            if (!claims.getBody().getExpiration().before(new Date()) && claims.getBody().get("tokenType").equals("refresh"))
+                return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.warn("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.warn("만료된 JWT 입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.warn("지원되지 않는 JWT 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT 잘못 되었습니다.");
+        }
+        return false;
     }
 
     // accessToken, refreshToken 최초 발행
@@ -114,28 +125,32 @@ public class JwtProvider {
         return JwtDto.from(accessToken, refreshToken);
     }
 
-    // accessToken, refreshToken 재발행
+    //access token 재발급할 때 refreah token도 함께 재발급
     public JwtDto reissue(String refreshToken) {
+        if (!isValidateRefreshToken(refreshToken)) {
+            throw new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN);
+        }
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_TOKEN));
+                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
         User user = findRefreshToken.getUser();
 
         //TODO: 유저 상태 확인
+
         String newAccessToken = createAccessToken(user);
         String newRefreshToken = createRefreshToken(user);
-
-        user.updateAccessToken(newAccessToken);
         findRefreshToken.replace(newRefreshToken);
-        return JwtDto.from(newAccessToken, newAccessToken);
+        return JwtDto.from(newAccessToken, newRefreshToken);
     }
 
     public Authentication getAuthentication(String accessToken) {
-        Claims body = Jwts.parserBuilder()
-                .setSigningKey(privateKey)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-        String userId = body.getSubject();
-        return null;
+        String providerId = getTokenPayload(accessToken);
+        UserDetails userDetails = principalDetailService.loadUserByUsername(providerId);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public String getTokenPayload(String token) {
+        return Jwts.parser()
+                .setSigningKey(privateKey).parseClaimsJws(token)
+                .getBody().getSubject();
     }
 }

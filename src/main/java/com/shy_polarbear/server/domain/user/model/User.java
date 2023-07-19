@@ -4,15 +4,15 @@ package com.shy_polarbear.server.domain.user.model;
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
-import com.shy_polarbear.server.global.common.BaseEntity;
+import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Entity
@@ -45,9 +45,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "blockedUser")
     List<BlockedUser> blockedUsers = new ArrayList<>();
     private LocalDateTime lastLoginDate;
-
-    private String accessToken;
-    private String userName;
+    private String providerId;
+    private String provider;
+    private String password;
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
@@ -58,29 +58,34 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(String nickName, String email, String profileImage,
+    public User(Long id, String nickName, String email, String profileImage,
                 String phoneNumber, UserRole role, Boolean isBlackListUser,
-                String accessToken, String userName) {
+                String providerId, String provider, String password) {
+        this.id = id;
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.isBlackListUser = isBlackListUser;
-        this.accessToken = accessToken;
-        this.userName = getUserName();
+        this.providerId = providerId;
+        this.provider = provider;
+        this.password = password;
         this.userStatus = UserStatus.ENGAGED;
     }
 
 
     public static User createUser(String nickName, String email, String profileImage,
-                                  String phoneNumber, UserRole role) {
+                                  String phoneNumber, UserRole role, String providerId, String provider, PasswordEncoder passwordEncoder) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
                 .profileImage(profileImage)
                 .phoneNumber(phoneNumber)
                 .role(role)
+                .provider(provider)
+                .providerId(providerId)
+                .password(passwordEncoder.encode(providerId + "@password"))
                 .build();
         Ranking.createRanking(user);
         return user;
@@ -97,12 +102,4 @@ public class User extends BaseEntity {
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
 
-    public void updateAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-
-    public boolean isSameAccessToken(String accessToken) {
-        return Objects.equals(this.accessToken, accessToken);
-    }
 }

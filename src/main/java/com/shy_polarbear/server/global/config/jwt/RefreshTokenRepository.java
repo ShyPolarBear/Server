@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.config.jwt;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
