@@ -1,14 +1,14 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.config.jwt.JwtDto;
-import com.shy_polarbear.server.domain.config.jwt.RefreshToken;
-import com.shy_polarbear.server.domain.config.jwt.RefreshTokenRepository;
-import com.shy_polarbear.server.domain.config.security.PrincipalDetails;
+import com.shy_polarbear.server.global.config.jwt.JwtDto;
+import com.shy_polarbear.server.global.config.jwt.RefreshToken;
+import com.shy_polarbear.server.global.config.jwt.RefreshTokenRepository;
+import com.shy_polarbear.server.global.config.security.PrincipalDetails;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
 import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
-import com.shy_polarbear.server.domain.config.jwt.JwtProvider;
+import com.shy_polarbear.server.global.config.jwt.JwtProvider;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;

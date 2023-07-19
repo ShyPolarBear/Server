@@ -3,6 +3,7 @@ package com.shy_polarbear.server.domain.config.jwt;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.global.config.jwt.JwtProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

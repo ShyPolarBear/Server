@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.config.jwt;
 
 
-import com.shy_polarbear.server.domain.config.security.PrincipalDetailService;
+import com.shy_polarbear.server.global.config.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
@@ -75,11 +75,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getTokenPayload(String token) {
-        return Jwts.parser()
-                .setSigningKey(privateKey).parseClaimsJws(token)
-                .getBody().getSubject();
-    }
+
 
     // 토큰 유효성 검증, 만료 일자 확인
     public boolean isValidateAccessToken(String accessToken) {
@@ -147,13 +143,14 @@ public class JwtProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        Claims body = Jwts.parserBuilder()
-                .setSigningKey(privateKey)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-        String providerId = body.getSubject();
+        String providerId = getTokenPayload(accessToken);
         UserDetails userDetails = principalDetailService.loadUserByUsername(providerId);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public String getTokenPayload(String token) {
+        return Jwts.parser()
+                .setSigningKey(privateKey).parseClaimsJws(token)
+                .getBody().getSubject();
     }
 }

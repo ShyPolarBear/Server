@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.config.security;
+package com.shy_polarbear.server.global.config.security;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AllArgsConstructor;
