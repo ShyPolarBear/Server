@@ -16,6 +16,7 @@ public class CommentDto {
         private String content;
     }
 
+
     @Data
     @NoArgsConstructor
     public static class Patch{
