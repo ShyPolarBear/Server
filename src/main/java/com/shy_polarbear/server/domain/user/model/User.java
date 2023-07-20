@@ -34,7 +34,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    //기본값 설정하기
+    //TODO: 기본값 설정하기
     private Boolean isBlackListUser;
     @OneToMany(mappedBy = "user")
     private List<UserQuiz> userQuiz = new ArrayList<>();

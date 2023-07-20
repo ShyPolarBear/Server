@@ -3,6 +3,7 @@ package com.shy_polarbear.server.domain.config.jwt;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.config.jwt.JwtProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ class JwtProviderTest  {
     private final String profileImage = "";
     private final String phoneNumber = "01093926465";
     private final UserRole role = UserRole.ROLE_USR;
+    @Autowired private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,7 +40,9 @@ class JwtProviderTest  {
                 .profileImage(profileImage)
                 .phoneNumber(phoneNumber)
                 .role(role)
+                .providerId("1111")
                 .build();
+        userRepository.save(user);
     }
     @Autowired private JwtProvider jwtProvider;
 
@@ -46,7 +50,7 @@ class JwtProviderTest  {
     @Test
     void createAccessToken() {
         String accessToken = jwtProvider.createAccessToken(user);
-        Assertions.assertThat(jwtProvider.createAccessToken(user)).isNotEmpty();
+        Assertions.assertThat(accessToken).isNotEmpty();
         assertThatCode(() -> jwtProvider.isValidateAccessToken(accessToken)).doesNotThrowAnyException();
     }
 }
