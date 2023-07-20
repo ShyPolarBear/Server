@@ -7,12 +7,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ExceptionStatus {
 
+    //공통
+    CLIENT_ERROR(400, 9990, "클라이언트 오류"),
+    SERVER_ERROR(500, 9991, "서버 오류"),
+
+
     //로그인,회원가입
     UNAUTHORIZED_USER(401, 1000, "로그인이 필요합니다."),
     INVALID_ACCESS_TOKEN(401, 1001, "유효하지 않은 access token입니다."),
     INVALID_REFRESH_TOKEN(401, 1002, "유효하지 않은 refresh token입니다."),
     USER_ALREADY_EXISTS(400, 1004, "이미 가입된 유저입니다."),
     NEED_TO_JOIN(400, 1006, "회원가입이 필요합니다."),
+    INVALID_KAKAO_TOKEN(400, 1007, "유효하지 않은 카카오 token입니다."),
 
 
     //회원
