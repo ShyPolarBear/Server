@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.dto;
+package com.shy_polarbear.server.domain.user.dto.auth;
 
 import lombok.Getter;
 

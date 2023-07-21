@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.global.config.jwt;
+package com.shy_polarbear.server.global.auth.jwt;
 
 
-import com.shy_polarbear.server.global.config.security.PrincipalDetailService;
+import com.shy_polarbear.server.global.auth.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
