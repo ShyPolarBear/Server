@@ -72,8 +72,7 @@ public class AuthService {
         JwtDto issuedToken = authorizeUser(providerId);
         return issuedToken;
     }
-
-    public JwtDto authorizeUser(String providerId) {
+    private JwtDto authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");
         Authentication authenticated  = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authenticated);
