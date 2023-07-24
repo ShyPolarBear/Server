@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.user.controller;
 
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
-import com.shy_polarbear.server.global.config.jwt.JwtDto;
+import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
 import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
