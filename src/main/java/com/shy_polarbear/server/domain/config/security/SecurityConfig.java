@@ -38,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/user/duplicate-nickname",
                         "/api/prize/**",
                         "/api/quiz", "/api/quiz",
-                        "/api/auth/test").permitAll()
+                        "/api/auth/test",
+                                "/api/comments", "/api/comments/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),

@@ -1,14 +1,16 @@
 package com.shy_polarbear.server.domain.comment.service;
 
-import com.shy_polarbear.server.domain.comment.dto.CommentDto;
 import com.shy_polarbear.server.domain.comment.mapper.CommentMapper;
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.comment.model.CommentCursorResult;
 import com.shy_polarbear.server.domain.comment.model.CommentStatus;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
+import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
+import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.CustomException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 
 import org.springframework.stereotype.Service;
 
@@ -22,14 +24,28 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper){
+    private final UserRepository userRepository;
+
+    private final FeedRepository feedRepository;
+
+    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper,
+                          UserRepository userRepository, FeedRepository feedRepository){
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
+        this.userRepository = userRepository;
+        this.feedRepository = feedRepository;
     }
 
     // 댓글 등록하기
-    public Comment createComment(Comment comment){
+    public Comment createComment(Comment comment, Long id, Long feedId){
 
+        // 댓글 작성하는 User 셋팅
+        User user = userRepository.findById(id).get();
+
+        // 댓글 작성하는 Feed 셋팅
+        Feed feed = feedRepository.findById(feedId).get();
+
+        // 댓글 Status 설정
         comment.setCommentStatus(CommentStatus.ENGAGED);
 
         return commentRepository.save(comment);
