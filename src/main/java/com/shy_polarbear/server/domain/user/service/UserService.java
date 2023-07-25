@@ -20,7 +20,6 @@ public class UserService {
         if (userRepository.existsByNickName(nickName)) {
             throw new UserException(ExceptionStatus.NICKNAME_DUPLICATION);
         }
-
     }
 
     public void save(User user) {

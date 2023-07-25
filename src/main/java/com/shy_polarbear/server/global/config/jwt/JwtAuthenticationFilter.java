@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -17,11 +17,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     // 사용자가 보낸 요청 헤더에 올바른 token 이 있다면,
-    // 해당 token 으로부터 username 과 authority 가 포함된 Authentication 객체를 생성해 SecurityContext 에 등록
+    // 해당 token 으로부터 포함된 Authentication 객체를 생성해 SecurityContext 에 등록
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtProvider.resolveToken(request);
-        if (StringUtils.hasText(accessToken) && jwtProvider.isValidateToken(accessToken)) {
+        if (StringUtils.hasText(accessToken) && jwtProvider.isValidateAccessToken(accessToken)) {
             Authentication authentication = jwtProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

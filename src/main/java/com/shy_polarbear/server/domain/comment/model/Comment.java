@@ -2,9 +2,12 @@ package com.shy_polarbear.server.domain.comment.model;
 
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserStatus;
-import com.shy_polarbear.server.global.common.BaseEntity;
-import lombok.*;
+
+import com.shy_polarbear.server.global.common.model.BaseEntity;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +16,6 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Comment extends BaseEntity {
 
     @Id

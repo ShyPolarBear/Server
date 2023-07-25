@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.user.model;
 
-import com.shy_polarbear.server.global.common.BaseEntity;
+import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

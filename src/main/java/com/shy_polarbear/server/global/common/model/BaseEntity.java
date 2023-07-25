@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.common;
+package com.shy_polarbear.server.global.common.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;
