@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.user.dto.user.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;

@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.dto.user;
+package com.shy_polarbear.server.domain.user.dto.user.response;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import lombok.Builder;
