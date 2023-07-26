@@ -55,7 +55,7 @@ public class JwtProvider {
     public String createAccessToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getProviderId().toString())
+                .setSubject(user.getProviderId())
                 .setIssuedAt(now)
                 .claim("tokenType", "access")
                 .setExpiration(new Date(now.getTime() + accessTokenValidTime))
@@ -67,7 +67,7 @@ public class JwtProvider {
     public String createRefreshToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getProviderId().toString())
+                .setSubject(user.getProviderId())
                 .setIssuedAt(now)
                 .claim("tokenType", "refresh")
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
