@@ -1,7 +1,7 @@
-package com.shy_polarbear.server.global.config.jwt;
+package com.shy_polarbear.server.global.auth.jwt;
 
 
-import com.shy_polarbear.server.global.config.security.PrincipalDetailService;
+import com.shy_polarbear.server.global.auth.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
@@ -55,7 +55,7 @@ public class JwtProvider {
     public String createAccessToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getProviderId().toString())
+                .setSubject(user.getProviderId())
                 .setIssuedAt(now)
                 .claim("tokenType", "access")
                 .setExpiration(new Date(now.getTime() + accessTokenValidTime))
@@ -67,7 +67,7 @@ public class JwtProvider {
     public String createRefreshToken(User user) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
-                .setSubject(user.getProviderId().toString())
+                .setSubject(user.getProviderId())
                 .setIssuedAt(now)
                 .claim("tokenType", "refresh")
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))

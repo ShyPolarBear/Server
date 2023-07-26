@@ -1,14 +1,14 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.global.config.jwt.JwtDto;
-import com.shy_polarbear.server.global.config.jwt.RefreshToken;
-import com.shy_polarbear.server.global.config.jwt.RefreshTokenRepository;
-import com.shy_polarbear.server.global.config.security.PrincipalDetails;
+import com.shy_polarbear.server.global.auth.jwt.JwtDto;
+import com.shy_polarbear.server.global.auth.jwt.RefreshToken;
+import com.shy_polarbear.server.global.auth.jwt.RefreshTokenRepository;
+import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.domain.user.dto.*;
 import com.shy_polarbear.server.domain.user.dto.JoinRequest;
 import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
-import com.shy_polarbear.server.global.config.jwt.JwtProvider;
+import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
@@ -72,7 +72,6 @@ public class AuthService {
         JwtDto issuedToken = authorizeUser(providerId);
         return issuedToken;
     }
-
     private JwtDto authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");
         Authentication authenticated  = authenticationManager.authenticate(authentication);

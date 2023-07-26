@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.config.jwt;
+package com.shy_polarbear.server.global.auth.jwt;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AccessLevel;
