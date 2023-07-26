@@ -1,15 +1,16 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.user.dto.auth.response.LogoutResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.RefreshToken;
 import com.shy_polarbear.server.global.auth.jwt.RefreshTokenRepository;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
-import com.shy_polarbear.server.domain.user.dto.*;
-import com.shy_polarbear.server.domain.user.dto.JoinRequest;
-import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
+import com.shy_polarbear.server.domain.user.dto.auth.request.JoinRequest;
+import com.shy_polarbear.server.domain.user.dto.auth.request.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
-import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
@@ -36,6 +37,7 @@ public class AuthService {
     private final KakaoProvider kakaoProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     //DB에 유저가 있다면 로그인 처리, 없다면 회원가입 유도
     public JwtDto authLogin(SocialLoginRequest socialLoginRequest) {
@@ -57,39 +59,34 @@ public class AuthService {
         String providerId = userInfo.getId();
 
         //이미 가입된 유저인지 확인
-        checkDuplicationUser(providerId);
+        userService.checkDuplicateUser(providerId);
 
         //닉네임 중복 검증
-        checkDuplicationNickName(joinRequest.getNickName());
+        checkDuplicateNickName(joinRequest.getNickName());
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
                 joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
                 UserRole.ROLE_USR, providerId, ProviderType.KAKAO.getValue(), passwordEncoder);
-        userRepository.save(joinUser);
+        userService.save(joinUser);
 
         //로그인 (유저 인증)
         JwtDto issuedToken = authorizeUser(providerId);
         return issuedToken;
     }
+
+    private void checkDuplicateNickName(String nickName) {
+        if (userRepository.existsByNickName(nickName)) {
+            throw new DuplicateNicknameException(ExceptionStatus.NICKNAME_DUPLICATION, new DuplicateNicknameResponse(false));
+        }
+    }
+
     private JwtDto authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");
         Authentication authenticated  = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authenticated);
         PrincipalDetails principal = (PrincipalDetails) authenticated.getPrincipal();
         return jwtProvider.issue(principal.getUser());
-    }
-
-    public void checkDuplicationNickName(String nickName) {
-        if (userRepository.existsByNickName(nickName)) {
-            throw new UserException(ExceptionStatus.NICKNAME_DUPLICATION);
-        }
-    }
-
-    public void checkDuplicationUser(String providerId) {
-        if (userRepository.existsByProviderId(providerId)) {
-            throw new UserException(ExceptionStatus.USER_ALREADY_EXISTS);
-        }
     }
 
     // refresh token 삭제하는 방식 사용

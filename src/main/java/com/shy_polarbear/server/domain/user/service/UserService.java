@@ -1,8 +1,14 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
+import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.UpdateUserInfoResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
+import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.global.auth.security.SecurityUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +22,44 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public void checkDuplicationNickName(String nickName) {
+    //닉네임 중복 검증
+    public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
         if (userRepository.existsByNickName(nickName)) {
-            throw new UserException(ExceptionStatus.NICKNAME_DUPLICATION);
+            throw new DuplicateNicknameException(ExceptionStatus.NICKNAME_DUPLICATION, new DuplicateNicknameResponse(false));
+        }
+        return new DuplicateNicknameResponse(true);
+    }
+
+    //이미 가입한 회원 검증
+    public void checkDuplicateUser(String providerId) {
+        if (userRepository.existsByProviderId(providerId)) {
+            throw new UserException(ExceptionStatus.USER_ALREADY_EXISTS);
         }
     }
 
-    public void save(User user) {
+    public Long save(User user) {
         userRepository.save(user);
+        return user.getId();
+    }
+
+    public UserInfoResponse findUserInfo() {
+        User findUser = getCurruentUser();
+        return UserInfoResponse.from(findUser);
+    }
+
+    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest) {
+        User findUser = getCurruentUser();
+        if (!findUser.isSameNickName(userInfoRequest.getNickName())) {
+            checkDuplicateNickName(userInfoRequest.getNickName());
+        }
+        findUser.updateInfo(userInfoRequest.getNickName(), userInfoRequest.getProfileImage(), userInfoRequest.getEmail(), userInfoRequest.getPhoneNumber());
+        return UpdateUserInfoResponse.from(findUser);
+    }
+
+    private User getCurruentUser() {
+        String providerId = SecurityUtils.getLoginUserProviderId();
+        User findUser = userRepository.findByProviderId(providerId)
+                .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
+        return findUser;
     }
 }

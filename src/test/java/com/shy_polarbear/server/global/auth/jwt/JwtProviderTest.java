@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.config.jwt;
+package com.shy_polarbear.server.global.auth.jwt;
 
 
 import com.shy_polarbear.server.domain.user.model.User;

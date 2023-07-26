@@ -1,7 +1,6 @@
 package com.shy_polarbear.server.global.common.dto;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,5 +26,9 @@ public class ApiResponse<T> {
     public static ApiResponse error(int code, String message) {
         HashMap<String, String> empty = new HashMap<>();
         return new ApiResponse<>(code, empty, message);
+    }
+
+    public static <T> ApiResponse<T> error(int code, T data, String message) {
+        return new ApiResponse<>(code, data, message);
     }
 }
