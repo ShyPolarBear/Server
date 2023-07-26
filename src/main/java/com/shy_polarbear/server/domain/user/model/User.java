@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -106,5 +107,9 @@ public class User extends BaseEntity {
         this.profileImage = profileImage;
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isSameNickName(String nickName) {
+        return Objects.equals(this.nickName, nickName);
     }
 }

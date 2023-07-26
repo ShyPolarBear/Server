@@ -49,6 +49,9 @@ public class UserService {
 
     public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest) {
         User findUser = getCurruentUser();
+        if (!findUser.isSameNickName(userInfoRequest.getNickName())) {
+            checkDuplicateNickName(userInfoRequest.getNickName());
+        }
         findUser.updateInfo(userInfoRequest.getNickName(), userInfoRequest.getProfileImage(), userInfoRequest.getEmail(), userInfoRequest.getPhoneNumber());
         return UpdateUserInfoResponse.from(findUser);
     }
