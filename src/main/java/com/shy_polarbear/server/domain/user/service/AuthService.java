@@ -58,10 +58,10 @@ public class AuthService {
         String providerId = userInfo.getId();
 
         //이미 가입된 유저인지 확인
-        userService.checkDuplicationUser(providerId);
+        userService.checkDuplicateUser(providerId);
 
         //닉네임 중복 검증
-        userService.checkDuplicationNickName(joinRequest.getNickName());
+        userService.checkDuplicateNickName(joinRequest.getNickName());
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
@@ -73,6 +73,7 @@ public class AuthService {
         JwtDto issuedToken = authorizeUser(providerId);
         return issuedToken;
     }
+
 
     private JwtDto authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");

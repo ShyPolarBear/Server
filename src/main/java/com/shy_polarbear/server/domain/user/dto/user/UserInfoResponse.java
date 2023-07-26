@@ -2,8 +2,9 @@ package com.shy_polarbear.server.domain.user.dto.user;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import lombok.Builder;
+import lombok.Getter;
 
-
+@Getter
 public class UserInfoResponse {
     private String nickName;
     private String profileImage;

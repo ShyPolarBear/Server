@@ -1,15 +1,14 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.user.dto.user.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.dto.user.UserInfoResponse;
+import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.global.auth.security.SecurityUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,17 +19,17 @@ import javax.transaction.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
 
     //닉네임 중복 검증
-    public void checkDuplicationNickName(String nickName) {
+    public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
         if (userRepository.existsByNickName(nickName)) {
-            throw new UserException(ExceptionStatus.NICKNAME_DUPLICATION);
+            throw new DuplicateNicknameException(ExceptionStatus.NICKNAME_DUPLICATION, new DuplicateNicknameResponse(false));
         }
+        return new DuplicateNicknameResponse(true);
     }
 
     //이미 가입한 회원 검증
-    public void checkDuplicationUser(String providerId) {
+    public void checkDuplicateUser(String providerId) {
         if (userRepository.existsByProviderId(providerId)) {
             throw new UserException(ExceptionStatus.USER_ALREADY_EXISTS);
         }

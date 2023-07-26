@@ -6,7 +6,6 @@ import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DynamicInsert
 public class User extends BaseEntity {
 
     @Id

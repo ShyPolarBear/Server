@@ -33,4 +33,8 @@ public class ApiResponse<T> {
         HashMap<String, String> empty = new HashMap<>();
         return new ApiResponse<>(code, empty, message);
     }
+
+    public static <T> ApiResponse<T> error(int code, T data, String message) {
+        return new ApiResponse<>(code, data, message);
+    }
 }
