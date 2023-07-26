@@ -1,15 +1,16 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.user.dto.auth.LogoutResponse;
+import com.shy_polarbear.server.domain.user.dto.auth.response.LogoutResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.RefreshToken;
 import com.shy_polarbear.server.global.auth.jwt.RefreshTokenRepository;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
-import com.shy_polarbear.server.domain.user.dto.auth.JoinRequest;
-import com.shy_polarbear.server.domain.user.dto.auth.SocialLoginRequest;
+import com.shy_polarbear.server.domain.user.dto.auth.request.JoinRequest;
+import com.shy_polarbear.server.domain.user.dto.auth.request.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.exception.AuthException;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
-import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
@@ -61,7 +62,7 @@ public class AuthService {
         userService.checkDuplicateUser(providerId);
 
         //닉네임 중복 검증
-        userService.checkDuplicateNickName(joinRequest.getNickName());
+        checkDuplicateNickName(joinRequest.getNickName());
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
@@ -74,6 +75,11 @@ public class AuthService {
         return issuedToken;
     }
 
+    private void checkDuplicateNickName(String nickName) {
+        if (userRepository.existsByNickName(nickName)) {
+            throw new DuplicateNicknameException(ExceptionStatus.NICKNAME_DUPLICATION, new DuplicateNicknameResponse(false));
+        }
+    }
 
     private JwtDto authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");

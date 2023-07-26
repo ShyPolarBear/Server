@@ -1,7 +1,9 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.user.dto.user.DuplicateNicknameResponse;
-import com.shy_polarbear.server.domain.user.dto.user.UserInfoResponse;
+import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
+import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.UpdateUserInfoResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
@@ -41,10 +43,20 @@ public class UserService {
     }
 
     public UserInfoResponse findUserInfo() {
+        User findUser = getCurruentUser();
+        return UserInfoResponse.from(findUser);
+    }
+
+    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest) {
+        User findUser = getCurruentUser();
+        findUser.updateInfo(userInfoRequest.getNickName(), userInfoRequest.getProfileImage(), userInfoRequest.getEmail(), userInfoRequest.getPhoneNumber());
+        return UpdateUserInfoResponse.from(findUser);
+    }
+
+    private User getCurruentUser() {
         String providerId = SecurityUtils.getLoginUserProviderId();
         User findUser = userRepository.findByProviderId(providerId)
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
-
-        return UserInfoResponse.from(findUser);
+        return findUser;
     }
 }

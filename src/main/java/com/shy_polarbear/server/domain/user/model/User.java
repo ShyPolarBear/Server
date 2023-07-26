@@ -101,4 +101,10 @@ public class User extends BaseEntity {
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
 
+    public void updateInfo(String nickName, String profileImage, String email, String phoneNumber) {
+        this.nickName = nickName;
+        this.profileImage = profileImage;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 }
