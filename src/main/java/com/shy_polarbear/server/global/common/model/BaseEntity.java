@@ -9,9 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @MappedSuperclass
@@ -20,9 +18,8 @@ import java.time.format.DateTimeFormatter;
 public abstract class BaseEntity {
 
     @CreatedDate
-    protected LocalDateTime createdDate;
+    protected LocalDateTime createdAt;
 
     @LastModifiedDate
-    protected LocalDateTime modifiedDate;
-
+    protected LocalDateTime modifiedAt;
 }

@@ -1,10 +1,8 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.dto.user.response.UpdateUserInfoResponse;
-import com.shy_polarbear.server.domain.user.dto.user.response.UserFeedsResponse;
 import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
@@ -14,7 +12,6 @@ import com.shy_polarbear.server.global.auth.security.SecurityUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.util.annotation.Nullable;
 
 import javax.transaction.Transactional;
 
@@ -24,7 +21,6 @@ import javax.transaction.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final FeedRepository feedRepository;
 
     //닉네임 중복 검증
     public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
@@ -41,7 +37,7 @@ public class UserService {
         }
     }
 
-    public Long saveUser(User user) {
+    public Long save(User user) {
         userRepository.save(user);
         return user.getId();
     }
@@ -65,10 +61,5 @@ public class UserService {
         User findUser = userRepository.findByProviderId(providerId)
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
         return findUser;
-    }
-
-    public UserFeedsResponse findUserFeeds(@Nullable String lastFeedId, @Nullable String limit) {
-
-        return null;
     }
 }
