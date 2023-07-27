@@ -6,19 +6,18 @@ import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DynamicInsert
 public class User extends BaseEntity {
 
     @Id
@@ -103,4 +102,14 @@ public class User extends BaseEntity {
         blockedUsers.removeIf(blockedUser -> blockedUser.getBlockedUser().equals(userToBeUnblocked));
     }
 
+    public void updateInfo(String nickName, String profileImage, String email, String phoneNumber) {
+        this.nickName = nickName;
+        this.profileImage = profileImage;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isSameNickName(String nickName) {
+        return Objects.equals(this.nickName, nickName);
+    }
 }

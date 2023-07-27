@@ -32,8 +32,15 @@ public class Comment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CommentStatus commentStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feed_id")
+    private Feed feed;
+
     @OneToMany(mappedBy = "comment")
     private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentReport> commentReports = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -43,21 +50,26 @@ public class Comment extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Comment> childComments = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
 
     @Builder
-    private Comment(User author, String content, Feed feed) {
+    public Comment(Long commentId, User author, String content,
+                   CommentStatus commentStatus, List<CommentLike> commentLikes, List<CommentReport> commentReports,
+                   Comment parent, List<Comment> childComments, Feed feed) {
+        this.commentId = commentId;
         this.author = author;
         this.content = content;
+        this.commentStatus = commentStatus;
+        this.commentLikes = commentLikes;
+        this.commentReports = commentReports;
+        this.parent = parent;
+        this.childComments = childComments;
         this.feed = feed;
     }
 
-    public static Comment createComment(User author, String content, Feed feed) {
+    public static Comment createComment(User author, String content, Feed feedId) {
         return Comment.builder()
                 .author(author)
-                .feed(feed)
+                .feed(feedId)
                 .content(content)
                 .build();
     }
@@ -72,6 +84,13 @@ public class Comment extends BaseEntity {
         return childComment;
     }
 
+    public void updateContent(String content){
+        this.content = content;
+    }
+
+    public void addReport(CommentReport commentReport) {
+        this.commentReports.add(commentReport);
+    }
 
     public void addLike(CommentLike commentLike) {
         this.commentLikes.add(commentLike);

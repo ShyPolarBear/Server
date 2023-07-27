@@ -1,19 +1,18 @@
 package com.shy_polarbear.server.domain.user.controller;
 
+import com.shy_polarbear.server.domain.user.dto.auth.response.LogoutResponse;
+import com.shy_polarbear.server.domain.user.dto.auth.request.ReissueRequest;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
-import com.shy_polarbear.server.global.config.jwt.JwtDto;
-import com.shy_polarbear.server.domain.user.dto.*;
-import com.shy_polarbear.server.domain.user.dto.JoinRequest;
-import com.shy_polarbear.server.domain.user.dto.SocialLoginRequest;
+import com.shy_polarbear.server.global.auth.jwt.JwtDto;
+import com.shy_polarbear.server.domain.user.dto.auth.request.JoinRequest;
+import com.shy_polarbear.server.domain.user.dto.auth.request.SocialLoginRequest;
 import com.shy_polarbear.server.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-@Slf4j
 public class AuthController {
     private final AuthService authService;
 
