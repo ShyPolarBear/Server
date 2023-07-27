@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/feeds")
-    public ApiResponse<UserFeedsResponse> findUserFeeds(@RequestParam(required = false) String lastFeedId,
-                                                        @RequestParam(required = false) String limit) {
+    public ApiResponse<UserFeedsResponse> findUserFeeds(@RequestParam(required = false) Long lastFeedId,
+                                                        @RequestParam(required = false) Integer limit) {
         return ApiResponse.success(userService.findUserFeeds(lastFeedId, limit));
     }
 }

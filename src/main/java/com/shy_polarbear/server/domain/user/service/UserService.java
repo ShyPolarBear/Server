@@ -67,8 +67,7 @@ public class UserService {
         return findUser;
     }
 
-    public UserFeedsResponse findUserFeeds(@Nullable String lastFeedId, @Nullable String limit) {
-
+    public UserFeedsResponse findUserFeeds(@Nullable Long lastFeedId, @Nullable Integer limit) {
         return null;
     }
 }
