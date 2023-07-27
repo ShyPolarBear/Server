@@ -62,23 +62,17 @@ public class AuthService {
         userService.checkDuplicateUser(providerId);
 
         //닉네임 중복 검증
-        checkDuplicateNickName(joinRequest.getNickName());
+        userService.checkDuplicateNickName(joinRequest.getNickName());
 
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
                 joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
                 UserRole.ROLE_USR, providerId, ProviderType.KAKAO.getValue(), passwordEncoder);
-        userService.save(joinUser);
+        userService.saveUser(joinUser);
 
         //로그인 (유저 인증)
         JwtDto issuedToken = authorizeUser(providerId);
         return issuedToken;
-    }
-
-    private void checkDuplicateNickName(String nickName) {
-        if (userRepository.existsByNickName(nickName)) {
-            throw new DuplicateNicknameException(ExceptionStatus.NICKNAME_DUPLICATION, new DuplicateNicknameResponse(false));
-        }
     }
 
     private JwtDto authorizeUser(String providerId) {
