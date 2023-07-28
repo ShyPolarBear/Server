@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -39,14 +40,16 @@ public class LoginUserInitializer {
 
     @Transactional
     void createDummyUser() {
-        if (userRepository.count() > 0) {
-            log.info("어드민, 유저가 이미 존재하여 더미를 생성하지 않았습니다.");
-            return;
+        Optional<User> userAble = userRepository.findByProviderId(providerId);
+        if (userAble.isPresent()) {
+            user = userAble.get();
+            log.info("유저가 이미 존재하여 더미를 생성하지 않았습니다.");
+        } else {
+            user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, providerId, provider.getValue(), passwordEncoder);
+            userRepository.save(user);
         }
-        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, providerId, provider.getValue(), passwordEncoder);
-        userRepository.save(user);
         JwtDto issue = jwtProvider.issue(user);
-        log.info("테스트 유저 access token : {}", issue.getAccessToken());
+        log.info("더미 유저 access token : {}", issue.getAccessToken());
     }
 }
 
