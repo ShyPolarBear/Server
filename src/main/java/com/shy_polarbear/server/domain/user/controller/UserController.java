@@ -3,10 +3,7 @@ package com.shy_polarbear.server.domain.user.controller;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
-import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
-import com.shy_polarbear.server.domain.user.dto.user.response.UpdateUserInfoResponse;
-import com.shy_polarbear.server.domain.user.dto.user.response.UserFeedsResponse;
-import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.*;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,22 @@ public class UserController {
     }
 
     @GetMapping("/feeds")
-    public ApiResponse<UserFeedsResponse> findAllUserFeeds(@RequestParam Long lastFeedId, @RequestParam Integer limit) {
-        return ApiResponse.success(userService.findAllUserFeedsByCursorId(lastFeedId, limit));
+    public ApiResponse<UserFeedsResponse> findAllUserFeeds(@RequestParam(required = false) Long lastFeedId,
+                                                           @RequestParam(required = false) Integer limit) {
+        limit = (limit == null) ? 10 : limit;
+        if (lastFeedId == null) {
+            return ApiResponse.success(userService.findUserFeeds(limit));
+        }
+        return ApiResponse.success(userService.findUserFeedsByCursorId(lastFeedId, limit));
+    }
+
+    @GetMapping("/comments/feeds")
+    public ApiResponse<UserCommentFeedsResponse> findAllFeedsByUserComment(@RequestParam(required = false) Long lastCommentId,
+                                                                           @RequestParam(required = false) Integer limit) {
+        limit = (limit == null) ? 10 : limit;
+        if (lastCommentId == null) {
+            return ApiResponse.success(userService.findUserCommentFeeds(limit));
+        }
+        return ApiResponse.success(userService.findUserCommentFeedsByCursorId(lastCommentId, limit));
     }
 }
