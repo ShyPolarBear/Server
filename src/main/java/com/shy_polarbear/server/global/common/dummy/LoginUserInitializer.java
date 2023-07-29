@@ -1,7 +1,5 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Component
@@ -53,7 +50,6 @@ public class LoginUserInitializer {
         }
         JwtDto issue = jwtProvider.issue(user);
         log.info("더미 유저 access token : {}", issue.getAccessToken());
-
     }
 }
 
