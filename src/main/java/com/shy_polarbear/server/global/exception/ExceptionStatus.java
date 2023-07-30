@@ -23,7 +23,13 @@ public enum ExceptionStatus {
 
     //회원
     NICKNAME_DUPLICATION(409, 1101, "중복되는 닉네임입니다."),
-    NOT_FOUND_USER(404, 1100, "존재하지 않는 회원입니다.");
+    NOT_FOUND_USER(404, 1100, "존재하지 않는 회원입니다."),
+
+    //이미지
+    FAIL_UPLOAD_IMAGES(400, 7000, "이미지 업로드 실패했습니다."),
+    INVALID_IMAGE_TYPE(400, 7001, "이미지 타입이 올바르지 않습니다."),
+    INVALID_IMAGE_COUNT(400, 7002, "올바르지 않은 이미지 개수입니다."),
+    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),;
 
     private final int httpCode;
     private final int customErrorCode;
