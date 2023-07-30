@@ -75,5 +75,4 @@ class UserServiceTest {
                 () -> userService.checkDuplicateUser(user1.getProviderId()));
     }
 
-
 }
