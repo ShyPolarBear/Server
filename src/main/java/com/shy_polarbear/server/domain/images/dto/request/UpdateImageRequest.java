@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 public class UpdateImageRequest {
     private String type;
-    private List<MultipartFile> imageFiles;
+    private List<MultipartFile> newImageFiles;
     private List<String> oldImageUrls;
 }
