@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentRequest {
-
-    private Long feedId;
+public class CreateCommentRequest {
 
     private String content;
+
+    private Long parentId;
 }

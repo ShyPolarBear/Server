@@ -2,15 +2,18 @@ package com.shy_polarbear.server.domain.comment.service;
 
 
 
-import com.shy_polarbear.server.domain.comment.dto.request.CommentRequest;
+import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
+import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.UpdateCommentResponse;
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.comment.model.CommentLike;
 import com.shy_polarbear.server.domain.comment.model.CommentReport;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
+import com.shy_polarbear.server.domain.user.exception.CommentException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.service.UserService;
@@ -32,27 +35,38 @@ public class CommentService {
 
     private final FeedService feedService;
 
+    private final FeedRepository feedRepository;
+
     public CommentService(CommentRepository commentRepository, UserRepository userRepository,
-                          UserService  userService, FeedService feedService){
+                          UserService  userService, FeedService feedService, FeedRepository feedRepository){
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.feedService = feedService;
+        this.feedRepository = feedRepository;
     }
-
 
     // 댓글 등록하기
-    public Comment postComment(CommentRequest commentRequest, User author, Feed feedId) {
-
+    public CreateCommentResponse createComment(Long feedId, CreateCommentRequest createCommentRequest) {
         User user = userService.getCurruentUser();
-
-//        Feed feed = feedService.getFeedById(feedId);
-
-        Comment newComment = Comment.createComment(author, commentRequest.getContent(), feedId);
-
-        return commentRepository.save(newComment);
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_USER));
+        Comment comment = Comment.createComment(user, createCommentRequest.getContent(), feed);
+        commentRepository.save(comment);
+        return new CreateCommentResponse(comment.getCommentId(), null);
     }
 
+    // 대댓글 등록하기
+    public CreateCommentResponse createChildComment(Long feedId, CreateCommentRequest createCommentRequest) {
+        User user = userService.getCurruentUser();
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_FEED));
+        Comment parentComment = commentRepository.findById((createCommentRequest.getParentId()))
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+        Comment comment = Comment.createChildComment(user, createCommentRequest.getContent(), feed, parentComment);
+        commentRepository.save(comment);
+        return new CreateCommentResponse(comment.getCommentId(), parentComment.getCommentId());
+    }
 
     // 댓글 조회
     public Comment getComment(Long commentId) {
@@ -68,7 +82,7 @@ public class CommentService {
         Comment findComment = findComment(commentId);
         // 본인이 작성한 댓글인지 확인
         if (!findComment.getAuthor().equals(findUser)){
-            throw new CustomException(ExceptionStatus.NOT_MY_COMMENT);
+            throw new CommentException(ExceptionStatus.NOT_MY_COMMENT);
         }
         // 댓글 내용 업데이트
         findComment.updateContent(updateCommentRequest.getContent());
@@ -78,7 +92,7 @@ public class CommentService {
 
     // 댓글 삭제
     public void deleteComment(Long commentId) {
-
+        // 현재 사용자 정보 가져오기
         User findUser = userService.getCurruentUser();
 
         // 댓글 조회
@@ -90,10 +104,9 @@ public class CommentService {
 
     // 댓글 좋아요
     public void likeComment(Long commentId, Long userId) {
-
         // 좋아요를 누르는 유저
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ExceptionStatus.NOT_FOUND_USER));
+                new CommentException(ExceptionStatus.NOT_FOUND_USER));
         // 댓글 조회
         Comment existingComment = commentRepository.findById(commentId).orElse(null);
         if (existingComment != null) {
@@ -104,42 +117,42 @@ public class CommentService {
                 commentRepository.save(existingComment);
             }
         } else {
-            throw new CustomException(ExceptionStatus.NOT_FOUND_COMMENT);
+            throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
         }
     }
     // 댓글 신고
     public void reportComment(Long commentId, Long userId) {
         // 유저 조회
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ExceptionStatus.NOT_FOUND_USER));
+                new CommentException(ExceptionStatus.NOT_FOUND_USER));
 
         // 댓글 조회
         Comment existingComment = commentRepository.findById(commentId).orElseThrow(() ->
-                new CustomException(ExceptionStatus.NOT_FOUND_COMMENT));
+                new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
 
         if (existingComment != null) {
             // 본인의 댓글 신고할 경우
             if (existingComment.getAuthor().equals(user)){
-                throw new CustomException(ExceptionStatus.NOT_MY_COMMENT_REPORT);
+                throw new CommentException(ExceptionStatus.NOT_MY_COMMENT_REPORT);
             }
             // 이미 신고한 댓글인 경우
             if (existingComment.getCommentReports().stream().anyMatch(report -> report.getUser().equals(user))){
-                throw new CustomException(ExceptionStatus.COMMENT_REPORT_DUPLICATION);
+                throw new CommentException(ExceptionStatus.COMMENT_REPORT_DUPLICATION);
             }
 
             // 댓글에 신고 정보 추가
             existingComment.addReport(new CommentReport(user));
+            existingComment.reportComment();
             commentRepository.save(existingComment);
         } else {
             // 댓글이 존재하지 않는 경우
-            throw new CustomException(ExceptionStatus.NOT_FOUND_COMMENT);
+            throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
         }
     }
 
     private Comment findComment(Long commentId) {
         Optional<Comment> findComment = commentRepository.findById(commentId);
 
-        return findComment.orElseThrow(() -> new CustomException(ExceptionStatus.NOT_FOUND_COMMENT));
+        return findComment.orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
     }
-
 }

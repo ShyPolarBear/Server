@@ -1,20 +1,12 @@
 package com.shy_polarbear.server.domain.comment.controller;
 
-import com.shy_polarbear.server.domain.comment.dto.request.CommentRequest;
+import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.UpdateCommentResponse;
-import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
+import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.GetCommentResponse;
 import com.shy_polarbear.server.domain.comment.service.CommentService;
 
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.service.FeedService;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
-import com.shy_polarbear.server.global.exception.CustomException;
-import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,13 +22,17 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping
-    public ApiResponse<?> createComment(@RequestBody CommentRequest commentRequest, User author, Feed feedId) {
-        return ApiResponse.success(commentService.postComment(commentRequest, author, feedId));
+    public ApiResponse<CreateCommentResponse> createComment(@PathVariable Long feedId, @RequestBody CreateCommentRequest createCommentRequest) {
+        Long parentId = createCommentRequest.getParentId();
+        if (parentId == null) {
+            return ApiResponse.success(commentService.createComment(feedId, createCommentRequest));
+        }
+        return ApiResponse.success(commentService.createChildComment(feedId, createCommentRequest));
     }
 
     // 댓글 조회
     @GetMapping
-    public ApiResponse<?> getComment(@RequestBody CommentResponse commentResponse){
+    public ApiResponse<?> getComment(@RequestBody GetCommentResponse commentResponse){
         return ApiResponse.success(commentResponse);
     }
 

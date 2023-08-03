@@ -74,6 +74,4 @@ class UserServiceTest {
         assertThrows(new UserException(ExceptionStatus.USER_ALREADY_EXISTS).getClass(),
                 () -> userService.checkDuplicateUser(user1.getProviderId()));
     }
-
-
 }

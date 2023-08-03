@@ -53,17 +53,18 @@ public class Comment extends BaseEntity {
 
     @Builder
     public Comment(Long commentId, User author, String content,
-                   CommentStatus commentStatus, List<CommentLike> commentLikes, List<CommentReport> commentReports,
+                   List<CommentLike> commentLikes, List<CommentReport> commentReports,
                    Comment parent, List<Comment> childComments, Feed feed) {
         this.commentId = commentId;
         this.author = author;
         this.content = content;
-        this.commentStatus = commentStatus;
         this.commentLikes = commentLikes;
         this.commentReports = commentReports;
         this.parent = parent;
         this.childComments = childComments;
         this.feed = feed;
+        this.commentStatus = CommentStatus.ENGAGED;
+
     }
 
     public static Comment createComment(User author, String content, Feed feedId) {
@@ -86,6 +87,10 @@ public class Comment extends BaseEntity {
 
     public void updateContent(String content){
         this.content = content;
+    }
+
+    public void reportComment(){
+        this.commentStatus = CommentStatus.REPORTED;
     }
 
     public void addReport(CommentReport commentReport) {
