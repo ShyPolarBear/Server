@@ -26,6 +26,17 @@ public class FakeImageController {
         int size = checkUploadTypeAndCount(uploadImageRequest.getType(), uploadImageRequest.getImageFiles());
         return getResponse("/fake/images/upload" + size + ".json");
     }
+    @PutMapping
+    public Object updateImages(@ModelAttribute UpdateImageRequest updateImageRequest) {
+        int size = checkUploadTypeAndCount(updateImageRequest.getType(), updateImageRequest.getNewImageFiles());
+        checkDeleteImageCount(updateImageRequest.getOldImageUrls());
+        return getResponse("/fake/images/update" + size + ".json");
+    }
+    @DeleteMapping
+    public ApiResponse<DeleteImageResponse> deleteImage(@RequestBody DeleteImageRequest deleteImageRequest) {
+        List<String> imageUrls = checkDeleteImageCount(deleteImageRequest.getImageUrls());
+        return ApiResponse.success(new DeleteImageResponse(imageUrls.size()));
+    }
 
     private static int checkUploadTypeAndCount(String type, List<MultipartFile> files) {
         //type 체크
@@ -38,18 +49,6 @@ public class FakeImageController {
             throw new ImageException(ExceptionStatus.INVALID_IMAGE_COUNT);
         }
         return files.size();
-    }
-
-    @PutMapping
-    public Object updateImages(@ModelAttribute UpdateImageRequest updateImageRequest) {
-        int size = checkUploadTypeAndCount(updateImageRequest.getType(), updateImageRequest.getNewImageFiles());
-        checkDeleteImageCount(updateImageRequest.getOldImageUrls());
-        return getResponse("/fake/images/update" + size + ".json");
-    }
-    @DeleteMapping
-    public ApiResponse<DeleteImageResponse> deleteImage(@RequestBody DeleteImageRequest deleteImageRequest) {
-        List<String> imageUrls = checkDeleteImageCount(deleteImageRequest.getImageUrls());
-        return ApiResponse.success(new DeleteImageResponse(imageUrls.size()));
     }
 
     private static List<String> checkDeleteImageCount(List<String> deleteImages) {
