@@ -16,7 +16,7 @@ public class UpdateCommentResponse {
 
     public static UpdateCommentResponse from(Comment comment){
         return UpdateCommentResponse.builder()
-                .commentId(comment.getCommentId())
+                .commentId(comment.getId())
                 .build();
     }
 }

@@ -5,6 +5,7 @@ package com.shy_polarbear.server.domain.comment.service;
 import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.GetCommentResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.UpdateCommentResponse;
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.comment.model.CommentLike;
@@ -19,9 +20,12 @@ import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.exception.CustomException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,7 +57,7 @@ public class CommentService {
                 .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_USER));
         Comment comment = Comment.createComment(user, createCommentRequest.getContent(), feed);
         commentRepository.save(comment);
-        return new CreateCommentResponse(comment.getCommentId(), null);
+        return new CreateCommentResponse(comment.getId(), null);
     }
 
     // 대댓글 등록하기
@@ -65,13 +69,71 @@ public class CommentService {
                 .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
         Comment comment = Comment.createChildComment(user, createCommentRequest.getContent(), feed, parentComment);
         commentRepository.save(comment);
-        return new CreateCommentResponse(comment.getCommentId(), parentComment.getCommentId());
+        return new CreateCommentResponse(comment.getId(), parentComment.getId());
     }
 
-    // 댓글 조회
-    public Comment getComment(Long commentId) {
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
-        return commentRepository.findById(commentId).orElse(null);
+    // 댓글 조회
+    public List<GetCommentResponse.CommentInfo> getComments(Long feedId, int pageNumber, Integer pageSize) {
+
+        // pageSize가 null이거나 1보다 작으면 기본값으로 설정
+        if (pageSize == null || pageSize < 1) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        // 페이지 번호와 페이지 크기를 기반으로 댓글 목록을 가져오는 메서드를 호출합니다.
+        List<Comment> comments = commentRepository.findCommentsByFeedId(feedId, PageRequest.of(pageNumber, pageSize));
+
+        // comments를 GetCommentResponse.CommentInfo 형태로 변환하여 리턴합니다.
+        return comments.stream()
+                .map(comment -> createCommentInfo(comment))
+                .collect(Collectors.toList());
+    }
+
+
+    // 다음 페이지가 있는지 확인하는 로직을 구현합니다.
+    public boolean hasNextPage(Long feedId, int pageNumber, int pageSize) {
+        List<Comment> nextPageComments = commentRepository.findCommentsByFeedId(feedId, PageRequest.of(pageNumber + 1, pageSize));
+        return !nextPageComments.isEmpty();
+    }
+
+    // 댓글을 GetCommentResponse.CommentInfo 형태로 변환하는 메서드
+    private GetCommentResponse.CommentInfo createCommentInfo(Comment comment) {
+        User currentUser = userService.getCurruentUser();
+
+        List<GetCommentResponse.CommentInfo> childComments = comment.getChildComments().stream()
+                .map(childComment -> createCommentInfo(childComment))
+                .collect(Collectors.toList());
+
+        // 작성자 정보 추출
+        String authorName = comment.getAuthor() != null ? comment.getAuthor().getNickName() : null;
+        String authorProfileImage = comment.getAuthor() != null ? comment.getAuthor().getProfileImage() : null;
+
+        // 좋아요 수 계산
+        long likeCount = comment.getCommentLikes().size();
+
+        // 현재 사용자가 댓글 작성자인지 확인
+        boolean isAuthor = comment.getIsAuthor(currentUser);
+
+        // 현재 사용자가 댓글에 좋아요를 눌렀는지 확인
+        boolean isLike = comment.getCommentLikes().stream()
+                .anyMatch(like -> like.getUser().equals(currentUser));
+
+        // 댓글 작성일자
+        String createdDate = comment.getCreatedDate().toString();
+
+        return new GetCommentResponse.CommentInfo(
+                comment.getId(),
+                authorName,
+                authorProfileImage,
+                comment.getContent(),
+                likeCount,
+                isAuthor,
+                isLike,
+                createdDate,
+                childComments
+        );
     }
 
     // 댓글 수정
@@ -91,7 +153,7 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public void deleteComment(Long commentId) {
+    public boolean deleteComment(Long commentId) {
         // 현재 사용자 정보 가져오기
         User findUser = userService.getCurruentUser();
 
@@ -99,7 +161,8 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(commentId).orElse(null);
         if (existingComment != null) {
             commentRepository.delete(existingComment);
-        }
+            return true;
+        } else return false;
     }
 
     // 댓글 좋아요

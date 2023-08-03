@@ -40,5 +40,4 @@ public class CommentLike extends BaseEntity {
         comment.addLike(commentLike);
         return commentLike;
     }
-
 }

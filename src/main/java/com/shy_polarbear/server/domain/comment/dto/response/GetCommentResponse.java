@@ -1,29 +1,43 @@
 package com.shy_polarbear.server.domain.comment.dto.response;
 
+import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.model.CommentLike;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class GetCommentResponse {
 
-    private Long commentId;
 
-    private String author;
+    private List<CommentInfo> comments;
+    private Long lastCommentId;
 
-    private String authorProfileImage;
+    @Getter
+    @AllArgsConstructor
+    public static class CommentInfo {
 
-    private String content;
+        private Long id;
 
-    private Long likeCount;
+        private String author;
 
-    private Boolean isAuthor;
+        private String authorProfileImage;
 
-    private Boolean isLike;
+        private String content;
 
-    private String createdDate;
+        private Long likeCount;
 
-    private String childComments;
+        private Boolean isAuthor;
+
+        private Boolean isLike;
+
+        private String createdDate;
+
+        private List<CommentInfo> childComments;
+
+    }
+
 }

@@ -1,13 +1,17 @@
 package com.shy_polarbear.server.domain.comment.controller;
 
+import com.shy_polarbear.server.domain.comment.dto.request.CommentPageRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentPageResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.GetCommentResponse;
 import com.shy_polarbear.server.domain.comment.service.CommentService;
 
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -32,8 +36,19 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping
-    public ApiResponse<?> getComment(@RequestBody GetCommentResponse commentResponse){
-        return ApiResponse.success(commentResponse);
+    public ApiResponse<CommentPageResponse> getCommentList(@RequestBody CommentPageRequest request) {
+        List<GetCommentResponse.CommentInfo> comments = commentService.getComments(
+                request.getFeedId(),
+                request.getPageNumber(),
+                request.getPageSize()
+        );
+
+        // 서비스에서 hasNextPage 정보를 계산하여 전달하거나, 필요한 로직을 추가하여 계산합니다.
+        boolean hasNextPage = commentService.hasNextPage(request.getFeedId(), request.getPageNumber(), request.getPageSize());
+
+        CommentPageResponse response = new CommentPageResponse(comments, hasNextPage);
+
+        return ApiResponse.success(response);
     }
 
     // 댓글 수정

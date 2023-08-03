@@ -33,9 +33,15 @@ public enum ExceptionStatus {
     INVALID_REFRESH_TOKEN(401, 1002, "유효하지 않은 refresh token입니다."),
     USER_ALREADY_EXISTS(400, 1004, "이미 가입된 유저입니다."),
     NEED_TO_JOIN(400, 1006, "회원가입이 필요합니다."),
-    INVALID_KAKAO_TOKEN(400, 1007, "유효하지 않은 카카오 token입니다.");
+    INVALID_KAKAO_TOKEN(400, 1007, "유효하지 않은 카카오 token입니다."),
 
 
+
+    //이미지
+    FAIL_UPLOAD_IMAGES(400, 7000, "이미지 업로드 실패했습니다."),
+    INVALID_IMAGE_TYPE(400, 7001, "이미지 타입이 올바르지 않습니다."),
+    INVALID_IMAGE_COUNT(400, 7002, "올바르지 않은 이미지 개수입니다."),
+    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),;
 
     private final int httpCode;
     private final int customErrorCode;

@@ -10,7 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,7 +24,7 @@ public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long commentId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -52,10 +55,10 @@ public class Comment extends BaseEntity {
 
 
     @Builder
-    public Comment(Long commentId, User author, String content,
+    public Comment(Long id, User author, String content,
                    List<CommentLike> commentLikes, List<CommentReport> commentReports,
                    Comment parent, List<Comment> childComments, Feed feed) {
-        this.commentId = commentId;
+        this.id = id;
         this.author = author;
         this.content = content;
         this.commentLikes = commentLikes;
@@ -64,7 +67,6 @@ public class Comment extends BaseEntity {
         this.childComments = childComments;
         this.feed = feed;
         this.commentStatus = CommentStatus.ENGAGED;
-
     }
 
     public static Comment createComment(User author, String content, Feed feedId) {
@@ -106,8 +108,19 @@ public class Comment extends BaseEntity {
         comment.assignParent(this);
     }
 
+    public List<CommentLike> getCommentLikes() {
+        return Collections.unmodifiableList(commentLikes);
+    }
+
+    public Boolean getIsAuthor(User currentUser) {
+        return author != null && author.equals(currentUser);
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return getCreatedAt(); // BaseEntity의 getCreatedAt() 메서드 사용
+    }
+
     private void assignParent(Comment comment) {
         this.parent = comment;
     }
-
 }
