@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
@@ -55,5 +56,16 @@ public class Feed extends BaseEntity {
 
     public void addLike(FeedLike feedLike) {
         this.feedLikes.add(feedLike);
+    }
+
+    public String getCreatedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(this.createdAt);
+    }
+
+    public void update(String title, String content, List<String> feedImage) {
+        this.title = title;
+        this.content = content;
+        this.feedImages = feedImage;
     }
 }
