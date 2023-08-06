@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.infrastructure;
+package com.shy_polarbear.server.domain.user.infra;
 
 import lombok.Getter;
 

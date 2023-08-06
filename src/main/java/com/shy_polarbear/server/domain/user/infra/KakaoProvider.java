@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.infrastructure;
+package com.shy_polarbear.server.domain.user.infra;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

@@ -3,7 +3,7 @@ package com.shy_polarbear.server.global.common.dummy;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.domain.user.infrastructure.ProviderType;
+import com.shy_polarbear.server.domain.user.infra.ProviderType;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
