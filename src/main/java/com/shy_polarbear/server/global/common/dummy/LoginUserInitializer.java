@@ -15,9 +15,10 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-@Component
+@Component("LoginUserInitializer")
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class LoginUserInitializer {
 
     private User user;
@@ -38,8 +39,7 @@ public class LoginUserInitializer {
         createDummyUser();
     }
 
-    @Transactional
-    void createDummyUser() {
+    private void createDummyUser() {
         Optional<User> userAble = userRepository.findByProviderId(providerId);
         if (userAble.isPresent()) {
             user = userAble.get();
