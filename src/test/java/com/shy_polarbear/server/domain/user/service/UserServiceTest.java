@@ -42,8 +42,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.createUser(nickName1, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.getValue(), passwordEncoder);
-        user2 = User.createUser(nickName2, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.getValue(), passwordEncoder);
+        user1 = User.createUser(nickName1, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.value, passwordEncoder);
+        user2 = User.createUser(nickName2, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.value, passwordEncoder);
         userRepository.save(user1);
     }
 

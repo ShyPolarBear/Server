@@ -13,38 +13,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Optional;
+import java.io.InputStream;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class S3Service {
+public class S3FileService {
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    String uploadToS3(MultipartFile uploadFile, String s3UploadFilePath) {
-        String uploadImageUrl = putS3(uploadFile, s3UploadFilePath);
-
-//        removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제
-
-        return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
-    }
-
-    private String putS3(MultipartFile uploadFile, String s3UploadFilePath) {
+    String upload(MultipartFile uploadFile, String s3UploadFilePath) {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(uploadFile.getSize());
         metadata.setContentType(uploadFile.getContentType());
-
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, s3UploadFilePath, uploadFile.getInputStream(), metadata);
             amazonS3Client.putObject(putObjectRequest);
         } catch (IOException e) {
             throw new ImageException(ExceptionStatus.FAIL_UPLOAD_IMAGES);
         }
-        return amazonS3Client.getUrl(bucket, s3UploadFilePath).toString();
+        String s3UploadImageUrl = amazonS3Client.getUrl(bucket, s3UploadFilePath).toString();
+        return s3UploadImageUrl;
     }
 
     void removeNewFile(File targetFile) {

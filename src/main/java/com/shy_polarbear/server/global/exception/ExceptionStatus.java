@@ -1,10 +1,9 @@
 package com.shy_polarbear.server.global.exception;
 
+
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum ExceptionStatus {
 
     //공통
@@ -35,5 +34,9 @@ public enum ExceptionStatus {
     private final int customErrorCode;
     private final String message;
 
-
+    ExceptionStatus(int httpCode, int customErrorCode, String message) {
+        this.httpCode = httpCode;
+        this.customErrorCode = customErrorCode;
+        this.message = message;
+    }
 }

@@ -45,7 +45,7 @@ public class LoginUserInitializer {
             user = userAble.get();
             log.info("유저가 이미 존재하여 더미를 생성하지 않았습니다.");
         } else {
-            user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, providerId, provider.getValue(), passwordEncoder);
+            user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, providerId, provider.value, passwordEncoder);
             userRepository.save(user);
         }
         JwtDto issue = jwtProvider.issue(user);
