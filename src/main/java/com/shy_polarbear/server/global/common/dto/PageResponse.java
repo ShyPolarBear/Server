@@ -13,29 +13,29 @@ import java.util.List;
 @Builder
 @Getter
 public class PageResponse<T> {
-    Long totalElements;
-    boolean last;
+    Long totalCount;
+    boolean isLast;
     List<T> content;
 
     public static <T> PageResponse<T> of(Page<T> page) {
         return PageResponse.<T>builder()
-                .totalElements(page.getTotalElements())
-                .last(page.isLast())
+                .totalCount(page.getTotalElements())
+                .isLast(page.isLast())
                 .content(page.getContent())
                 .build();
     }
 
     public static <T> PageResponse<T> of(Slice<T> slice) {  // 클라이언트에서 totalElements 사용 안 하는 경우, 카운트 쿼리 최적화 가능
         return PageResponse.<T>builder()
-                .last(slice.isLast())
+                .isLast(slice.isLast())
                 .content(slice.getContent())
                 .build();
     }
 
     public static <T> PageResponse<T> of(Slice<T> slice, Long totalElements) {
         return PageResponse.<T>builder()
-                .totalElements(totalElements)
-                .last(slice.isLast())
+                .totalCount(totalElements)
+                .isLast(slice.isLast())
                 .content(slice.getContent())
                 .build();
     }
@@ -59,8 +59,8 @@ public class PageResponse<T> {
 
     public static <T, O> PageResponse<T> of(Page<O> origin, List<T> list) {
         return PageResponse.<T>builder()
-                .totalElements(origin.getTotalElements())
-                .last(origin.isLast())
+                .totalCount(origin.getTotalElements())
+                .isLast(origin.isLast())
                 .content(list)
                 .build();
     }
