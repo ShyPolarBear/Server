@@ -10,7 +10,7 @@ public class UpdateCommentResponse {
     private Long commentId;
 
     @Builder
-    public UpdateCommentResponse(Long commentId) {
+    private UpdateCommentResponse(Long commentId) {
         this.commentId = commentId;
     }
 

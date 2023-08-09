@@ -1,31 +1,34 @@
 package com.shy_polarbear.server.domain.comment.controller;
 
-import com.shy_polarbear.server.domain.comment.dto.request.CommentPageRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentPageResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.GetCommentResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.*;
+import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.model.CursorResult;
 import com.shy_polarbear.server.domain.comment.service.CommentService;
 
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/feeds/{feedId}/comments")
+@RequestMapping("/api/comments")
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService){
-        this.commentService = commentService;
-    }
+    private static final int DEFAULT_SIZE = 10;
 
     // 댓글 작성
-    @PostMapping
+    @PostMapping("/{feedId}")
     public ApiResponse<CreateCommentResponse> createComment(@PathVariable Long feedId, @RequestBody CreateCommentRequest createCommentRequest) {
         Long parentId = createCommentRequest.getParentId();
         if (parentId == null) {
@@ -35,46 +38,59 @@ public class CommentController {
     }
 
     // 댓글 조회
-    @GetMapping
-    public ApiResponse<CommentPageResponse> getCommentList(@RequestBody CommentPageRequest request) {
-        List<GetCommentResponse.CommentInfo> comments = commentService.getComments(
-                request.getFeedId(),
-                request.getPageNumber(),
-                request.getPageSize()
-        );
+    @GetMapping("/{feedId}")
+    public ApiResponse<CursorResult<Comment>> findCommentsByFeedId(@PathVariable Long feedId,
+                                                      @RequestParam(required = false) Long cursorId,
+                                                      @RequestParam(required = false) Integer size){
+        if (size == null) size = DEFAULT_SIZE;
 
-        // 서비스에서 hasNextPage 정보를 계산하여 전달하거나, 필요한 로직을 추가하여 계산합니다.
-        boolean hasNextPage = commentService.hasNextPage(request.getFeedId(), request.getPageNumber(), request.getPageSize());
+        Pageable pageable = PageRequest.of(0, size);
+        CursorResult<Comment> cursorResult = commentService.getCommentsByFeedId(feedId, cursorId, pageable);
 
-        CommentPageResponse response = new CommentPageResponse(comments, hasNextPage);
-
-        return ApiResponse.success(response);
+        return ApiResponse.success(cursorResult);
     }
+//    @GetMapping("/{feedId}")
+//    public ApiResponse<CommentPageResponse> findCommentsByFeedId(@PathVariable Long feedId,
+//                                                            @RequestParam(required = false) Long lastCommentId,
+//                                                            @RequestParam(required = false) Integer limit) {
+//
+//        limit = (limit == null) ? 10 : limit;
+//        if (lastCommentId == null){
+//            return ApiResponse.success(commentService.)
+//        }
+//        return ApiResponse.success(commentService.);
+//    }
 
     // 댓글 수정
     @PutMapping("/{commentId}")
-    public ApiResponse<?> putComment(@RequestBody UpdateCommentRequest updateCommentRequest, Long commentId){
+    public ApiResponse<UpdateCommentResponse> updateComment(@RequestBody UpdateCommentRequest updateCommentRequest,
+                                                            @PathVariable Long commentId){
         return ApiResponse.success(commentService.updateComment(updateCommentRequest, commentId));
     }
 
     // 댓글 삭제
     @DeleteMapping("/{commentId}")
-    public ApiResponse<?> deleteComment(@PathVariable Long commentId){
-            commentService.deleteComment(commentId);
-            return ApiResponse.success(null);
+    public ApiResponse<CommentDeleteResponse> deleteComment(@PathVariable Long commentId) {
+        boolean deleted = commentService.deleteComment(commentId);
+        if (deleted) {
+            CommentDeleteResponse response = new CommentDeleteResponse(commentId);
+            return ApiResponse.success(response);
+        } else {
+            return ApiResponse.error(2100, "삭제할 댓글이 없습니다.");
         }
+    }
 
     // 댓글 좋아요
     @PutMapping("/{commentId}/like")
-    public ApiResponse<?> likeComment(@PathVariable Long commentId, @RequestParam Long userId){
-        commentService.likeComment(commentId, userId);
-        return ApiResponse.success(null);
+    public ApiResponse<CommentLikeResponse> likeComment(@PathVariable Long commentId, @RequestParam Long userId){
+        CommentLikeResponse commentLikeResponse = commentService.likeComment(commentId, userId);
+        return ApiResponse.success(commentLikeResponse);
     }
 
     // 댓글 신고
     @GetMapping("/{commentId}/report")
-    public ApiResponse<?> reportComment(@PathVariable Long commentId, @RequestParam Long userId){
+    public ApiResponse reportComment(@PathVariable Long commentId, @RequestParam Long userId){
         commentService.reportComment(commentId, userId);
-        return ApiResponse.success(null);
+        return ApiResponse.success("");
     }
 }

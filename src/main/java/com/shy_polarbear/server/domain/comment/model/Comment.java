@@ -10,10 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -35,6 +32,9 @@ public class Comment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CommentStatus commentStatus;
 
+    @Enumerated(EnumType.STRING)
+    private CommentInfo commentInfo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
     private Feed feed;
@@ -55,33 +55,32 @@ public class Comment extends BaseEntity {
 
 
     @Builder
-    public Comment(Long id, User author, String content,
-                   List<CommentLike> commentLikes, List<CommentReport> commentReports,
-                   Comment parent, List<Comment> childComments, Feed feed) {
-        this.id = id;
+    private Comment(User author, String content, List<CommentReport> commentReports,
+                   Comment parent, Feed feed, CommentInfo commentInfo) {
         this.author = author;
         this.content = content;
-        this.commentLikes = commentLikes;
         this.commentReports = commentReports;
         this.parent = parent;
-        this.childComments = childComments;
         this.feed = feed;
         this.commentStatus = CommentStatus.ENGAGED;
+        this.commentInfo = commentInfo;
     }
 
-    public static Comment createComment(User author, String content, Feed feedId) {
+    public static Comment createComment(User author, String content, Feed feed, CommentInfo commentInfo) {
         return Comment.builder()
                 .author(author)
-                .feed(feedId)
+                .feed(feed)
                 .content(content)
+                .commentInfo(commentInfo)
                 .build();
     }
 
-    public static Comment createChildComment(User author, String content, Feed feed, Comment parent) {
+    public static Comment createChildComment(User author, String content, Feed feed, Comment parent, CommentInfo commentInfo) {
         Comment childComment = Comment.builder()
                 .author(author)
                 .feed(feed)
                 .content(content)
+                .commentInfo(CommentInfo.CHILD_COMMENT)
                 .build();
         parent.addChildComment(childComment);
         return childComment;
@@ -109,15 +108,23 @@ public class Comment extends BaseEntity {
     }
 
     public List<CommentLike> getCommentLikes() {
-        return Collections.unmodifiableList(commentLikes);
+        return commentLikes;
     }
 
-    public Boolean getIsAuthor(User currentUser) {
-        return author != null && author.equals(currentUser);
+    public Long getLikesCount() {
+        return (long) commentLikes.size();
     }
 
-    public LocalDateTime getCreatedDate() {
-        return getCreatedAt(); // BaseEntity의 getCreatedAt() 메서드 사용
+    public Boolean isAuthor(User currentUser) {
+        return author.equals(currentUser);
+    }
+
+    public Boolean isLike(User currentUser){
+        return commentLikes.stream().anyMatch(like -> like.getUser().equals(currentUser));
+    }
+
+    public Boolean isDeleted(){
+        return commentStatus == CommentStatus.DELETED;
     }
 
     private void assignParent(Comment comment) {

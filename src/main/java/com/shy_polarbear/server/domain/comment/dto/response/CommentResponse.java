@@ -1,20 +1,17 @@
 package com.shy_polarbear.server.domain.comment.dto.response;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.comment.model.CommentLike;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GetCommentResponse {
+public class CommentResponse {
 
-
-    private List<CommentInfo> comments;
-    private Long lastCommentId;
+    private List<CommentInfo> comments = new ArrayList<>();
 
     @Getter
     @AllArgsConstructor
@@ -37,7 +34,5 @@ public class GetCommentResponse {
         private String createdDate;
 
         private List<CommentInfo> childComments;
-
     }
-
 }

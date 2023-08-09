@@ -15,9 +15,12 @@ public enum ExceptionStatus {
 
     //댓글
     NOT_FOUND_COMMENT(404, 2100, "해당 댓글이 존재하지 않습니다."),
-    NOT_MY_COMMENT_REPORT(400, 2101, "자신의 댓글을 신고할 수 없습니다."),
+    NOT_ALLOWED_SLEF_REPORT(400, 2101, "자신의 댓글을 신고할 수 없습니다."),
     COMMENT_REPORT_DUPLICATION(400, 2103, "이미 신고한 댓글입니다."),
     NOT_MY_COMMENT(400, 2104, "자신이 작성한 댓글만 수정할 수 있습니다."),
+
+
+    ALREADY_LIKED_COMMENT(400, 2105, "이미 좋아요를 눌렀습니다."),
 
     // 피드
     NOT_FOUND_FEED(404, 2001, "해당 피드가 존재하기 않습니다."),

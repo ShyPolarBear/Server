@@ -9,5 +9,5 @@ public class CommentPageRequest {
 
     private int pageNumber;
 
-    private int pageSize;
+    private int pageSize = 10;
 }

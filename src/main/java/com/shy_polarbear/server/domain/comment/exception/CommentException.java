@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.user.exception;
+package com.shy_polarbear.server.domain.comment.exception;
 
 import com.shy_polarbear.server.global.exception.CustomException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;

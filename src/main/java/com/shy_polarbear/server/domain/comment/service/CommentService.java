@@ -4,31 +4,32 @@ package com.shy_polarbear.server.domain.comment.service;
 
 import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentPageResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.GetCommentResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.UpdateCommentResponse;
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.comment.model.CommentLike;
-import com.shy_polarbear.server.domain.comment.model.CommentReport;
+import com.shy_polarbear.server.domain.comment.model.*;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
+import com.shy_polarbear.server.domain.comment.exception.CommentException;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
-import com.shy_polarbear.server.domain.user.exception.CommentException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.service.UserService;
-import com.shy_polarbear.server.global.exception.CustomException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import org.springframework.data.domain.PageRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -37,103 +38,56 @@ public class CommentService {
 
     private final UserService userService;
 
-    private final FeedService feedService;
-
     private final FeedRepository feedRepository;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository,
-                          UserService  userService, FeedService feedService, FeedRepository feedRepository){
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.feedService = feedService;
-        this.feedRepository = feedRepository;
-    }
+    private final FeedService feedService;
+
 
     // 댓글 등록하기
     public CreateCommentResponse createComment(Long feedId, CreateCommentRequest createCommentRequest) {
         User user = userService.getCurruentUser();
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_USER));
-        Comment comment = Comment.createComment(user, createCommentRequest.getContent(), feed);
+        Feed feed = getFeedById(feedId);
+        Comment comment = createNewComment(user, createCommentRequest.getContent(), feed, CommentInfo.COMMENT);
         commentRepository.save(comment);
+
         return new CreateCommentResponse(comment.getId(), null);
     }
 
     // 대댓글 등록하기
     public CreateCommentResponse createChildComment(Long feedId, CreateCommentRequest createCommentRequest) {
         User user = userService.getCurruentUser();
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_FEED));
-        Comment parentComment = commentRepository.findById((createCommentRequest.getParentId()))
-                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
-        Comment comment = Comment.createChildComment(user, createCommentRequest.getContent(), feed, parentComment);
-        commentRepository.save(comment);
-        return new CreateCommentResponse(comment.getId(), parentComment.getId());
-    }
+        Feed feed = getFeedById(feedId);
 
-    private static final int DEFAULT_PAGE_SIZE = 10;
+        Long parentId = createCommentRequest.getParentId();
+        Comment parentComment = getParentCommentById(createCommentRequest.getParentId());
+
+        Comment comment = createNewChildComment(user, createCommentRequest.getContent(), feed, parentComment, CommentInfo.CHILD_COMMENT);
+        commentRepository.save(comment);
+
+        return new CreateCommentResponse(comment.getId(), parentId);
+    }
 
     // 댓글 조회
-    public List<GetCommentResponse.CommentInfo> getComments(Long feedId, int pageNumber, Integer pageSize) {
+    public CursorResult<Comment> getCommentsByFeedId (Long feedId, Long cursorId, Pageable page){
+        List<Comment> comments = getComments(feedId, cursorId, page);
+        Long lastIdOfList = comments.isEmpty() ? null : comments.get(comments.size() - 1).getId();
+        boolean hasNext = hasNext(lastIdOfList);
 
-        // pageSize가 null이거나 1보다 작으면 기본값으로 설정
-        if (pageSize == null || pageSize < 1) {
-            pageSize = DEFAULT_PAGE_SIZE;
-        }
-
-        // 페이지 번호와 페이지 크기를 기반으로 댓글 목록을 가져오는 메서드를 호출합니다.
-        List<Comment> comments = commentRepository.findCommentsByFeedId(feedId, PageRequest.of(pageNumber, pageSize));
-
-        // comments를 GetCommentResponse.CommentInfo 형태로 변환하여 리턴합니다.
-        return comments.stream()
-                .map(comment -> createCommentInfo(comment))
-                .collect(Collectors.toList());
+        return new CursorResult<>(comments, hasNext);
     }
 
+    private List<Comment> getComments(Long feedId, Long commentId, Pageable page){
+        Feed findFeed = getFeedById(feedId);
 
-    // 다음 페이지가 있는지 확인하는 로직을 구현합니다.
-    public boolean hasNextPage(Long feedId, int pageNumber, int pageSize) {
-        List<Comment> nextPageComments = commentRepository.findCommentsByFeedId(feedId, PageRequest.of(pageNumber + 1, pageSize));
-        return !nextPageComments.isEmpty();
+
+        return commentId == null ?
+                this.commentRepository.findAllByFeedIdOrderByCreatedAt(findFeed.getId(), page) :
+                this.commentRepository.findAllByFeedIdAndIdLessThanOrderByCreatedAtDesc(findFeed.getId(), commentId, page);
     }
 
-    // 댓글을 GetCommentResponse.CommentInfo 형태로 변환하는 메서드
-    private GetCommentResponse.CommentInfo createCommentInfo(Comment comment) {
-        User currentUser = userService.getCurruentUser();
-
-        List<GetCommentResponse.CommentInfo> childComments = comment.getChildComments().stream()
-                .map(childComment -> createCommentInfo(childComment))
-                .collect(Collectors.toList());
-
-        // 작성자 정보 추출
-        String authorName = comment.getAuthor() != null ? comment.getAuthor().getNickName() : null;
-        String authorProfileImage = comment.getAuthor() != null ? comment.getAuthor().getProfileImage() : null;
-
-        // 좋아요 수 계산
-        long likeCount = comment.getCommentLikes().size();
-
-        // 현재 사용자가 댓글 작성자인지 확인
-        boolean isAuthor = comment.getIsAuthor(currentUser);
-
-        // 현재 사용자가 댓글에 좋아요를 눌렀는지 확인
-        boolean isLike = comment.getCommentLikes().stream()
-                .anyMatch(like -> like.getUser().equals(currentUser));
-
-        // 댓글 작성일자
-        String createdDate = comment.getCreatedDate().toString();
-
-        return new GetCommentResponse.CommentInfo(
-                comment.getId(),
-                authorName,
-                authorProfileImage,
-                comment.getContent(),
-                likeCount,
-                isAuthor,
-                isLike,
-                createdDate,
-                childComments
-        );
+    private Boolean hasNext(Long commentId){
+        if (commentId == null) return false;
+        return this.commentRepository.existsByIdLessThan(commentId);
     }
 
     // 댓글 수정
@@ -154,35 +108,43 @@ public class CommentService {
 
     // 댓글 삭제
     public boolean deleteComment(Long commentId) {
-        // 현재 사용자 정보 가져오기
-        User findUser = userService.getCurruentUser();
-
-        // 댓글 조회
         Comment existingComment = commentRepository.findById(commentId).orElse(null);
-        if (existingComment != null) {
-            commentRepository.delete(existingComment);
-            return true;
-        } else return false;
+        if (existingComment == null) {
+            return false;
+        }
+
+        User currentUser = userService.getCurruentUser();
+        if (!existingComment.getAuthor().equals(currentUser)) {
+            return false;
+        }
+
+        commentRepository.delete(existingComment);
+        return true;
     }
 
     // 댓글 좋아요
-    public void likeComment(Long commentId, Long userId) {
+    public CommentLikeResponse likeComment(Long commentId, Long userId) {
         // 좋아요를 누르는 유저
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CommentException(ExceptionStatus.NOT_FOUND_USER));
         // 댓글 조회
-        Comment existingComment = commentRepository.findById(commentId).orElse(null);
-        if (existingComment != null) {
-            // 이미 해당 사용자가 댓글에 좋아요를 누른 경우, 중복 추가를 막기 위해 체크
-            if (existingComment.getCommentLikes().stream().noneMatch(like -> like.getUser().equals(user))) {
-                CommentLike commentLike = new CommentLike(user, existingComment);
-                existingComment.addLike(commentLike);
-                commentRepository.save(existingComment);
-            }
-        } else {
-            throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
+        Comment existingComment = commentRepository.findById(commentId).orElseThrow(() ->
+                new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+
+        // 이미 좋아요를 누른경우
+        if (isCommentAlreadyLiked(existingComment, user)) {
+            throw new CommentException(ExceptionStatus.ALREADY_LIKED_COMMENT);
         }
+
+        // commentLike 객체 생성
+        CommentLike commentLike = new CommentLike(user, existingComment);
+        existingComment.addLike(commentLike);
+
+        commentRepository.save(existingComment);
+
+        return new CommentLikeResponse(commentLike.getId());
     }
+
     // 댓글 신고
     public void reportComment(Long commentId, Long userId) {
         // 유저 조회
@@ -193,29 +155,52 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
 
-        if (existingComment != null) {
-            // 본인의 댓글 신고할 경우
-            if (existingComment.getAuthor().equals(user)){
-                throw new CommentException(ExceptionStatus.NOT_MY_COMMENT_REPORT);
-            }
-            // 이미 신고한 댓글인 경우
-            if (existingComment.getCommentReports().stream().anyMatch(report -> report.getUser().equals(user))){
-                throw new CommentException(ExceptionStatus.COMMENT_REPORT_DUPLICATION);
-            }
-
-            // 댓글에 신고 정보 추가
-            existingComment.addReport(new CommentReport(user));
-            existingComment.reportComment();
-            commentRepository.save(existingComment);
-        } else {
-            // 댓글이 존재하지 않는 경우
-            throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
+        // 본인의 댓글 신고할 경우
+        if (existingComment.getAuthor().equals(user)){
+            throw new CommentException(ExceptionStatus.NOT_ALLOWED_SLEF_REPORT);
         }
+        // 이미 신고한 댓글인 경우
+        if (existingComment.getCommentReports().stream().anyMatch(report -> report.getUser().equals(user))){
+            throw new CommentException(ExceptionStatus.COMMENT_REPORT_DUPLICATION);
+        }
+
+        // 댓글에 신고 정보 추가
+        existingComment.addReport(new CommentReport(user));
+        existingComment.reportComment();
+        commentRepository.save(existingComment);
     }
 
     private Comment findComment(Long commentId) {
         Optional<Comment> findComment = commentRepository.findById(commentId);
 
         return findComment.orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+    }
+
+    private Feed getFeedById(Long feedId) {
+        return feedRepository.findById(feedId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_FEED));
+    }
+
+    private Comment getParentCommentById(Long parentId) {
+        return commentRepository.findById(parentId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+    }
+
+    private Comment createNewComment(User user, String content, Feed feed, CommentInfo comment) {
+        return Comment.createComment(user, content, feed, comment);
+    }
+
+    private Comment createNewChildComment(User user, String content, Feed feed, Comment parentComment, CommentInfo childComment) {
+        return Comment.createChildComment(user, content, feed, parentComment, childComment);
+    }
+
+    // 좋아요를 누른 댓글인지 확인하는 메소드
+    private boolean isCommentAlreadyLiked(Comment comment, User user) {
+        for (CommentLike like : comment.getCommentLikes()) {
+            if (like.getUser().equals(user)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

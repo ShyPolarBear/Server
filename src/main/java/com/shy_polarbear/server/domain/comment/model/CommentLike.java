@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class CommentLike extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_like_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
