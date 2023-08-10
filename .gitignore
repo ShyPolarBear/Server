@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+*.yml
+application.properties
+
+### just memo
+memo.md

@@ -8,6 +8,7 @@ import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@DependsOn("LoginUserInitializer")
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class FeedInitializer {
 
     private final FeedRepository feedRepository;
@@ -28,8 +31,7 @@ public class FeedInitializer {
         createDummyFeed();
     }
 
-    @Transactional
-    void createDummyFeed() {
+    private void createDummyFeed() {
         User user = userRepository.findByProviderId("0000")
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
         if (feedRepository.count() == 0) {
