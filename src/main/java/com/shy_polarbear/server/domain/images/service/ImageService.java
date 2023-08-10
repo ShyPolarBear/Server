@@ -31,8 +31,8 @@ public class ImageService {
     public UploadImageResponse uploadImages(UploadImageRequest uploadImageRequest) {
         List<MultipartFile> multipartImageFiles = uploadImageRequest.getImageFiles();
         String fileType = uploadImageRequest.getType();
-        if (multipartImageFiles == null || multipartImageFiles.size() > 5 || multipartImageFiles.isEmpty() || (fileType.equals("profile") && !(multipartImageFiles.size() == 1))) {
-            throw new ImageException(ExceptionStatus.INVALID_IMAGE_COUNT);
+        if ((fileType.equals("profile") && !(multipartImageFiles.size() == 1))) {
+            throw new ImageException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
 
         List<String> s3UploadImageUrls = multipartImageFiles.stream()
