@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class DeleteImageRequest {
-    private List<String> imageUrls = new ArrayList<>();
+    @NotNull
+    @Size(min = 1, max = 5)
+    private List<String> imageUrls;
 }

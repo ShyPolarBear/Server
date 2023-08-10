@@ -12,6 +12,6 @@ public class UpdateImageResponse {
 
     public UpdateImageResponse(List<String> imageLinks) {
         imageLinks.stream()
-                .map(image -> this.imageLinks.add(image));
+                .forEach(image -> this.imageLinks.add(image));
     }
 }
