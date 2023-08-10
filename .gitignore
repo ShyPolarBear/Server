@@ -38,3 +38,6 @@ out/
 
 *.yml
 application.properties
+
+### just memo
+memo.md

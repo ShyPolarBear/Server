@@ -5,6 +5,7 @@ package com.shy_polarbear.server.global.auth.security;
 import com.shy_polarbear.server.global.auth.jwt.JwtAuthenticationEntryPoint;
 import com.shy_polarbear.server.global.auth.jwt.JwtAuthenticationFilter;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.global.common.constants.GlobalConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,10 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/api/auth/join/**", "/api/auth/login/**", "/api/auth/reissue/**",
-                            "/api/user/duplicate-nickname",
-                            "/api/prize/**",
-                            "/api/quiz").permitAll()
+                            .antMatchers(GlobalConstants.permittedUrls).permitAll()
                         .anyRequest().authenticated()
                 .and()
                     .logout()
