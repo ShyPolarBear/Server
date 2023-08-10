@@ -1,24 +1,20 @@
 package com.shy_polarbear.server.domain.images.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.shy_polarbear.server.domain.images.exception.ImageException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class S3FileService {
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
@@ -38,11 +34,12 @@ public class S3FileService {
         return s3UploadImageUrl;
     }
 
-    void removeNewFile(File targetFile) {
-//        if(targetFile.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        }else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
+    void delete(String s3DeleteFilePath) {
+        try {
+            System.out.println("s3DeleteFilePath = " + s3DeleteFilePath);
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3DeleteFilePath));
+        } catch (Exception e) {
+            throw new ImageException(ExceptionStatus.FAIL_DELETE_IMAGES);
+        }
     }
 }

@@ -14,9 +14,11 @@ import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -27,20 +29,19 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    //TODO: 실제 api 개발 시 ModelAttribute validation 필요
     @PostMapping
-    public ApiResponse<UploadImageResponse> uploadImages(@ModelAttribute UploadImageRequest uploadImageRequest) {
-        return ApiResponse.success(imageService.uploadImages(uploadImageRequest));
+    public ApiResponse<UploadImageResponse> uploadImages(@Valid @ModelAttribute UploadImageRequest uploadImageRequest) {
+        return ApiResponse.success(imageService.upload(uploadImageRequest));
     }
 
     @PutMapping
-    public ApiResponse<UpdateImageResponse> updateImages(@ModelAttribute UpdateImageRequest updateImageRequest) {
-        return ApiResponse.success(imageService.updateImages(updateImageRequest));
+    public ApiResponse<UpdateImageResponse> updateImages(@Valid @ModelAttribute UpdateImageRequest updateImageRequest) {
+        return ApiResponse.success(imageService.update(updateImageRequest));
     }
 
     @DeleteMapping
-    public ApiResponse<DeleteImageResponse> deleteImages(@RequestBody DeleteImageRequest deleteImageRequest) {
-        return ApiResponse.success(imageService.deleteImages(deleteImageRequest));
+    public ApiResponse<DeleteImageResponse> deleteImages(@Valid @RequestBody DeleteImageRequest deleteImageRequest) {
+        return ApiResponse.success(imageService.delete(deleteImageRequest));
     }
 
 }
