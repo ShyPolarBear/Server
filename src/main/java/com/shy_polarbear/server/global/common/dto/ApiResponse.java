@@ -3,11 +3,13 @@ package com.shy_polarbear.server.global.common.dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.HashMap;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private Integer code;
     private T data;
@@ -30,5 +32,9 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> error(int code, T data, String message) {
         return new ApiResponse<>(code, data, message);
+    }
+
+    public static <T> ApiResponse<T> fail(int code, String message) {
+        return new ApiResponse<>(code, null, message);
     }
 }
