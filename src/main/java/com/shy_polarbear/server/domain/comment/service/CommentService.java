@@ -4,10 +4,7 @@ package com.shy_polarbear.server.domain.comment.service;
 
 import com.shy_polarbear.server.domain.comment.dto.request.CreateCommentRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.UpdateCommentRequest;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentPageResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CreateCommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.UpdateCommentResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.*;
 import com.shy_polarbear.server.domain.comment.model.*;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
@@ -20,10 +17,11 @@ import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 
@@ -42,12 +40,15 @@ public class CommentService {
 
     private final FeedService feedService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
     // 댓글 등록하기
     public CreateCommentResponse createComment(Long feedId, CreateCommentRequest createCommentRequest) {
         User user = userService.getCurruentUser();
         Feed feed = getFeedById(feedId);
-        Comment comment = createNewComment(user, createCommentRequest.getContent(), feed, CommentInfo.COMMENT);
+        Comment comment = createNewComment(user, createCommentRequest.getContent(), feed, CommentType.COMMENT);
         commentRepository.save(comment);
 
         return new CreateCommentResponse(comment.getId(), null);
@@ -61,7 +62,7 @@ public class CommentService {
         Long parentId = createCommentRequest.getParentId();
         Comment parentComment = getParentCommentById(createCommentRequest.getParentId());
 
-        Comment comment = createNewChildComment(user, createCommentRequest.getContent(), feed, parentComment, CommentInfo.CHILD_COMMENT);
+        Comment comment = createNewChildComment(user, createCommentRequest.getContent(), feed, parentComment, CommentType.CHILD_COMMENT);
         commentRepository.save(comment);
 
         return new CreateCommentResponse(comment.getId(), parentId);
@@ -98,7 +99,7 @@ public class CommentService {
         Comment findComment = findComment(commentId);
         // 본인이 작성한 댓글인지 확인
         if (!findComment.getAuthor().equals(findUser)){
-            throw new CommentException(ExceptionStatus.NOT_MY_COMMENT);
+            throw new CommentException(ExceptionStatus.NOT_MY_COMMENT_UPDATE);
         }
         // 댓글 내용 업데이트
         findComment.updateContent(updateCommentRequest.getContent());
@@ -107,19 +108,22 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public boolean deleteComment(Long commentId) {
+    public CommentDeleteResponse deleteComment(Long commentId) {
         Comment existingComment = commentRepository.findById(commentId).orElse(null);
         if (existingComment == null) {
-            return false;
+            throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
         }
 
         User currentUser = userService.getCurruentUser();
         if (!existingComment.getAuthor().equals(currentUser)) {
-            return false;
+            throw new CommentException(ExceptionStatus.NOT_MY_COMMENT_DELETE);
         }
 
         commentRepository.delete(existingComment);
-        return true;
+
+        CommentDeleteResponse response = new CommentDeleteResponse(commentId);
+
+        return response;
     }
 
     // 댓글 좋아요
@@ -127,6 +131,7 @@ public class CommentService {
         // 좋아요를 누르는 유저
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CommentException(ExceptionStatus.NOT_FOUND_USER));
+
         // 댓글 조회
         Comment existingComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
@@ -137,37 +142,13 @@ public class CommentService {
         }
 
         // commentLike 객체 생성
-        CommentLike commentLike = new CommentLike(user, existingComment);
+        CommentLike commentLike = CommentLike.createCommentLike(existingComment, user);
+        entityManager.persist(commentLike);
         existingComment.addLike(commentLike);
 
         commentRepository.save(existingComment);
 
-        return new CommentLikeResponse(commentLike.getId());
-    }
-
-    // 댓글 신고
-    public void reportComment(Long commentId, Long userId) {
-        // 유저 조회
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CommentException(ExceptionStatus.NOT_FOUND_USER));
-
-        // 댓글 조회
-        Comment existingComment = commentRepository.findById(commentId).orElseThrow(() ->
-                new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
-
-        // 본인의 댓글 신고할 경우
-        if (existingComment.getAuthor().equals(user)){
-            throw new CommentException(ExceptionStatus.NOT_ALLOWED_SLEF_REPORT);
-        }
-        // 이미 신고한 댓글인 경우
-        if (existingComment.getCommentReports().stream().anyMatch(report -> report.getUser().equals(user))){
-            throw new CommentException(ExceptionStatus.COMMENT_REPORT_DUPLICATION);
-        }
-
-        // 댓글에 신고 정보 추가
-        existingComment.addReport(new CommentReport(user));
-        existingComment.reportComment();
-        commentRepository.save(existingComment);
+        return new CommentLikeResponse(commentLike);
     }
 
     private Comment findComment(Long commentId) {
@@ -186,11 +167,11 @@ public class CommentService {
                 .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
     }
 
-    private Comment createNewComment(User user, String content, Feed feed, CommentInfo comment) {
+    private Comment createNewComment(User user, String content, Feed feed, CommentType comment) {
         return Comment.createComment(user, content, feed, comment);
     }
 
-    private Comment createNewChildComment(User user, String content, Feed feed, Comment parentComment, CommentInfo childComment) {
+    private Comment createNewChildComment(User user, String content, Feed feed, Comment parentComment, CommentType childComment) {
         return Comment.createChildComment(user, content, feed, parentComment, childComment);
     }
 

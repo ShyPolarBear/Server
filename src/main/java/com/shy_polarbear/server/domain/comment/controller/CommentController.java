@@ -49,17 +49,6 @@ public class CommentController {
 
         return ApiResponse.success(cursorResult);
     }
-//    @GetMapping("/{feedId}")
-//    public ApiResponse<CommentPageResponse> findCommentsByFeedId(@PathVariable Long feedId,
-//                                                            @RequestParam(required = false) Long lastCommentId,
-//                                                            @RequestParam(required = false) Integer limit) {
-//
-//        limit = (limit == null) ? 10 : limit;
-//        if (lastCommentId == null){
-//            return ApiResponse.success(commentService.)
-//        }
-//        return ApiResponse.success(commentService.);
-//    }
 
     // 댓글 수정
     @PutMapping("/{commentId}")
@@ -71,26 +60,12 @@ public class CommentController {
     // 댓글 삭제
     @DeleteMapping("/{commentId}")
     public ApiResponse<CommentDeleteResponse> deleteComment(@PathVariable Long commentId) {
-        boolean deleted = commentService.deleteComment(commentId);
-        if (deleted) {
-            CommentDeleteResponse response = new CommentDeleteResponse(commentId);
-            return ApiResponse.success(response);
-        } else {
-            return ApiResponse.error(2100, "삭제할 댓글이 없습니다.");
-        }
+        return ApiResponse.success(commentService.deleteComment(commentId));
     }
 
     // 댓글 좋아요
     @PutMapping("/{commentId}/like")
     public ApiResponse<CommentLikeResponse> likeComment(@PathVariable Long commentId, @RequestParam Long userId){
-        CommentLikeResponse commentLikeResponse = commentService.likeComment(commentId, userId);
-        return ApiResponse.success(commentLikeResponse);
-    }
-
-    // 댓글 신고
-    @GetMapping("/{commentId}/report")
-    public ApiResponse reportComment(@PathVariable Long commentId, @RequestParam Long userId){
-        commentService.reportComment(commentId, userId);
-        return ApiResponse.success("");
+        return ApiResponse.success(commentService.likeComment(commentId, userId));
     }
 }

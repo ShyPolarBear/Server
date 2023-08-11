@@ -33,7 +33,7 @@ public class Comment extends BaseEntity {
     private CommentStatus commentStatus;
 
     @Enumerated(EnumType.STRING)
-    private CommentInfo commentInfo;
+    private CommentType commentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
@@ -41,9 +41,6 @@ public class Comment extends BaseEntity {
 
     @OneToMany(mappedBy = "comment")
     private List<CommentLike> commentLikes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentReport> commentReports = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -55,32 +52,30 @@ public class Comment extends BaseEntity {
 
 
     @Builder
-    private Comment(User author, String content, List<CommentReport> commentReports,
-                   Comment parent, Feed feed, CommentInfo commentInfo) {
+    private Comment(User author, String content, Comment parent, Feed feed, CommentType commentType) {
         this.author = author;
         this.content = content;
-        this.commentReports = commentReports;
         this.parent = parent;
         this.feed = feed;
         this.commentStatus = CommentStatus.ENGAGED;
-        this.commentInfo = commentInfo;
+        this.commentType = commentType;
     }
 
-    public static Comment createComment(User author, String content, Feed feed, CommentInfo commentInfo) {
+    public static Comment createComment(User author, String content, Feed feed, CommentType commentType) {
         return Comment.builder()
                 .author(author)
                 .feed(feed)
                 .content(content)
-                .commentInfo(commentInfo)
+                .commentType(commentType)
                 .build();
     }
 
-    public static Comment createChildComment(User author, String content, Feed feed, Comment parent, CommentInfo commentInfo) {
+    public static Comment createChildComment(User author, String content, Feed feed, Comment parent, CommentType commentType) {
         Comment childComment = Comment.builder()
                 .author(author)
                 .feed(feed)
                 .content(content)
-                .commentInfo(CommentInfo.CHILD_COMMENT)
+                .commentType(CommentType.CHILD_COMMENT)
                 .build();
         parent.addChildComment(childComment);
         return childComment;
@@ -90,13 +85,6 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void reportComment(){
-        this.commentStatus = CommentStatus.REPORTED;
-    }
-
-    public void addReport(CommentReport commentReport) {
-        this.commentReports.add(commentReport);
-    }
 
     public void addLike(CommentLike commentLike) {
         this.commentLikes.add(commentLike);
@@ -120,7 +108,7 @@ public class Comment extends BaseEntity {
     }
 
     public Boolean isLike(User currentUser){
-        return commentLikes.stream().anyMatch(like -> like.getUser().equals(currentUser));
+        return commentLikes.stream().anyMatch(like -> like.getComment().isAuthor(currentUser));
     }
 
     public Boolean isDeleted(){
