@@ -2,6 +2,8 @@ package com.shy_polarbear.server.domain.images.service;
 
 import com.shy_polarbear.server.domain.images.exception.ImageException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URLDecoder;
@@ -11,13 +13,11 @@ import java.util.UUID;
 
 import static java.text.MessageFormat.format;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilePathUtils {
 
     private static final String FILE_EXTENSION_SEPARATOR = ".";
     private static final String FILE_SEPARATOR = "/";
-
-    private FilePathUtils() {
-    }
 
     // 파일경로  = {파일타입}/{UUID}_{유저파일이름}.{확장자}
     static String createS3UploadFilePath(MultipartFile multipartFile, String fileType) {
