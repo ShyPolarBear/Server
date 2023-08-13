@@ -3,6 +3,8 @@ package com.shy_polarbear.server.domain.user.service;
 import com.shy_polarbear.server.domain.user.dto.auth.response.LogoutResponse;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
+import com.shy_polarbear.server.domain.user.infra.KakaoProvider;
+import com.shy_polarbear.server.domain.user.infra.ProviderType;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.RefreshToken;
 import com.shy_polarbear.server.global.auth.jwt.RefreshTokenRepository;
@@ -67,7 +69,7 @@ public class AuthService {
         //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
                 joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
-                UserRole.ROLE_USR, providerId, ProviderType.KAKAO.getValue(), passwordEncoder);
+                UserRole.ROLE_USR, providerId, ProviderType.KAKAO.value, passwordEncoder);
         userService.save(joinUser);
 
         //로그인 (유저 인증)

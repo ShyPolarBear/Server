@@ -1,16 +1,15 @@
 package com.shy_polarbear.server.global.exception;
 
+
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum ExceptionStatus {
 
     //공통
     CLIENT_ERROR(400, 9990, "클라이언트 오류"),
     SERVER_ERROR(500, 9991, "서버 오류"),
-
+    INVALID_INPUT_VALUE(400, 9000, "올바르지 않은 입력값입니다."),
 
     //로그인,회원가입
     UNAUTHORIZED_USER(401, 1000, "로그인이 필요합니다."),
@@ -28,12 +27,15 @@ public enum ExceptionStatus {
     //이미지
     FAIL_UPLOAD_IMAGES(400, 7000, "이미지 업로드 실패했습니다."),
     INVALID_IMAGE_TYPE(400, 7001, "이미지 타입이 올바르지 않습니다."),
-    INVALID_IMAGE_COUNT(400, 7002, "올바르지 않은 이미지 개수입니다."),
     FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),;
 
     private final int httpCode;
     private final int customErrorCode;
     private final String message;
 
-
+    ExceptionStatus(int httpCode, int customErrorCode, String message) {
+        this.httpCode = httpCode;
+        this.customErrorCode = customErrorCode;
+        this.message = message;
+    }
 }
