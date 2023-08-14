@@ -8,7 +8,7 @@ public class UpdateCommentResponse {
 
     private Long commentId;
 
-    public UpdateCommentResponse(Long commentId) {
+    private UpdateCommentResponse(Long commentId) {
         this.commentId = commentId;
     }
 

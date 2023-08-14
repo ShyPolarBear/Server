@@ -10,19 +10,21 @@ import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.comment.exception.CommentException;
-import com.shy_polarbear.server.domain.feed.service.FeedService;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.service.UserService;
+import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,7 +40,6 @@ public class CommentService {
 
     private final FeedRepository feedRepository;
 
-    private final FeedService feedService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -69,26 +70,55 @@ public class CommentService {
     }
 
     // 댓글 조회
-    public CursorResult<Comment> getCommentsByFeedId (Long feedId, Long cursorId, Pageable page){
-        List<Comment> comments = getComments(feedId, cursorId, page);
-        Long lastIdOfList = comments.isEmpty() ? null : comments.get(comments.size() - 1).getId();
-        boolean hasNext = hasNext(lastIdOfList);
+    public CommentPageResponse findAllComments(Long feedId){
+        Slice<Comment> commentSlice = commentRepository.findByFeedIdOrderByCreatedAtDesc(feedId);
 
-        return new CursorResult<>(comments, hasNext);
+        List<Comment> comments = commentSlice.getContent();
+        boolean isLast = !commentSlice.hasNext();
+        User currentUser = userService.getCurruentUser(); // 현재 사용자 정보를 가져와야 함
+
+        CommentPageResponse response = CommentPageResponse.builder()
+                .isLast(isLast)
+                .commentList(comments)
+                .currentUser(currentUser)
+                .build();
+
+        return response;
     }
 
-    private List<Comment> getComments(Long feedId, Long commentId, Pageable page){
-        Feed findFeed = getFeedById(feedId);
+    public CommentPageResponse findCommentsByFeedIdWithCursor(Long feedId, Long lastCommentId, int size){
+        PageRequest pageRequest = PageRequest.of(0, size);
 
+        User user = userService.getCurruentUser();
 
-        return commentId == null ?
-                this.commentRepository.findAllByFeedIdOrderByCreatedAt(findFeed.getId(), page) :
-                this.commentRepository.findAllByFeedIdAndIdLessThanOrderByCreatedAtDesc(findFeed.getId(), commentId, page);
+        // 페이지네이션된 댓글 목록 가져오기
+        Slice<Comment> commentSlice = commentRepository.findCommentsByFeedIdWithCursor(feedId, lastCommentId, pageRequest);
+
+        // 다음 페이지가 있는지 여부 판단
+        boolean isLast = !commentSlice.hasNext();
+
+        //댓글 페이지 응답 생성
+        return CommentPageResponse.builder()
+                .isLast(isLast)
+                .commentList(commentSlice.getContent())
+                .currentUser(user)
+                .build();
     }
 
-    private Boolean hasNext(Long commentId){
-        if (commentId == null) return false;
-        return this.commentRepository.existsByIdLessThan(commentId);
+    public CommentPageResponse findChildCommentsByParentIdWithCursor(Long parentId, Long lastComment, int size){
+        PageRequest pageRequest = PageRequest.of(0, size);
+
+        User user = userService.getCurruentUser();
+
+        Slice<Comment> childCommentSlice = commentRepository.findChildCommentsByParentIdWithCursor(parentId, lastComment, pageRequest);
+
+        boolean isLast = !childCommentSlice.hasNext();
+
+        return CommentPageResponse.builder()
+                .isLast(isLast)
+                .commentList(childCommentSlice.getContent())
+                .currentUser(user)
+                .build();
     }
 
     // 댓글 수정

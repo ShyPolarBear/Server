@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,11 +16,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class CommentPageResponse {
 
-    private Integer count;
-
     private Boolean isLast;
 
-    private List<AllCommentsInFeed> allCommentsInFeed;
+    private List<AllCommentsInFeed> content = new ArrayList<>();
 
 
     @AllArgsConstructor
@@ -43,6 +42,7 @@ public class CommentPageResponse {
         private LocalDateTime createdDate;
 
         private Boolean isDeleted;
+
         private static AllCommentsInFeed from(Comment comment, User currentUser) {
             Long commentId = comment.getId();
             String author = comment.getAuthor().getNickName();
@@ -61,9 +61,8 @@ public class CommentPageResponse {
 
     @Builder
     public CommentPageResponse(Boolean isLast, List<Comment> commentList, User currentUser){
-        this.count = commentList.size();
         this.isLast = isLast;
-        this.allCommentsInFeed = commentList.stream()
+        this.content = commentList.stream()
                 .map((comment -> AllCommentsInFeed.from(comment, currentUser)))
                 .collect(Collectors.toList());
     }
