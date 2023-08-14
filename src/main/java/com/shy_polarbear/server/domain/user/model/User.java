@@ -35,7 +35,7 @@ public class User extends BaseEntity {
 
     //TODO: 기본값 설정하기
     private Boolean isBlackListUser;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserQuiz> userQuiz = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
