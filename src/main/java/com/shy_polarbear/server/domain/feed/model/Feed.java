@@ -66,4 +66,9 @@ public class Feed extends BaseEntity {
     public boolean isAuthor(User user) {
         return this.author.getId().equals(user.getId());
     }
+
+    public boolean isLike(User user) {
+        return feedLikes.stream()
+                .anyMatch(feedLike -> feedLike.isUser(user));
+    }
 }

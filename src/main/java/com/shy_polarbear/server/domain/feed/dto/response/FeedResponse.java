@@ -25,20 +25,19 @@ public class FeedResponse {
     private Boolean isLike;
     private Boolean isAuthor;
 
-    public static FeedResponse from(Feed feed) {
-//        return FeedResponse.builder()
-//                .feedId(feed.getId())
-//                .title(feed.getTitle())
-//                .content(feed.getContent())
-//                .author(feed.getAuthor().getNickName())
-//                .authorProfileImage(feed.getAuthor().getProfileImage())
-//                .feedImage(feed.getFeedImages())
+    public static FeedResponse from(Feed feed, boolean isLike, boolean isAuthor) {
+        return FeedResponse.builder()
+                .feedId(feed.getId())
+                .title(feed.getTitle())
+                .content(feed.getContent())
+                .author(feed.getAuthor().getNickName())
+                .authorProfileImage(feed.getAuthor().getProfileImage())
+                .feedImage(feed.getFeedImages())
 //                .createdDate(feed.getCreatedAt())
-//                .commentCount(feed.getComments().size())
-//                .likeCount(feed.getFeedLikes().size())
-//                .isLike()
-//                .isAuthor()
-//                .build();
-        return null;
+                .commentCount(feed.getComments().size())
+                .likeCount(feed.getFeedLikes().size())
+                .isLike(isLike)
+                .isAuthor(isAuthor)
+                .build();
     }
 }

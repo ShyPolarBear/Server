@@ -32,7 +32,7 @@ public class FeedController {
 
     @GetMapping("/{feedId}")
     public ApiResponse<FeedResponse> findOneFeed(@PathVariable Long feedId) {
-        return ApiResponse.success(feedService.findFeedById(feedId));
+        return ApiResponse.success(feedService.findFeed(feedId));
     }
 
     @PutMapping("/{feedId}")
@@ -43,6 +43,6 @@ public class FeedController {
 
     @DeleteMapping("/{feedId}")
     public ApiResponse<DeleteFeedResponse> deleteFeed(@PathVariable Long feedId) {
-        return null;
+        return ApiResponse.success(feedService.deleteFeed(feedId));
     }
 }
