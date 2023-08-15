@@ -33,7 +33,7 @@ public class FeedResponse {
                 .author(feed.getAuthor().getNickName())
                 .authorProfileImage(feed.getAuthor().getProfileImage())
                 .feedImage(feed.getFeedImages())
-//                .createdDate(feed.getCreatedAt())
+                .createdDate(feed.getCreatedDate())
                 .commentCount(feed.getComments().size())
                 .likeCount(feed.getFeedLikes().size())
                 .isLike(isLike)

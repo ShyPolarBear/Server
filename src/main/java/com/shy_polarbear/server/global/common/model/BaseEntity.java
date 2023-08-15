@@ -7,9 +7,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @MappedSuperclass
@@ -18,8 +18,20 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @CreatedDate
-    protected LocalDateTime createdAt;
+    @Column(updatable = false)
+    protected String createdDate;
 
     @LastModifiedDate
-    protected LocalDateTime modifiedAt;
+    protected String modifiedDate;
+
+    @PrePersist
+    public void onPrePersist(){
+        this.createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.modifiedDate = this.createdDate;
+    }
+
+    @PreUpdate
+    public void onPreUpdate(){
+        this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }
