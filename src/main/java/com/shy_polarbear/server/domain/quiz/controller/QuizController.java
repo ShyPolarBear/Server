@@ -1,8 +1,6 @@
 package com.shy_polarbear.server.domain.quiz.controller;
 
-import com.shy_polarbear.server.domain.quiz.dto.OXQuizScoreRequest;
-import com.shy_polarbear.server.domain.quiz.dto.OXQuizScoreResponse;
-import com.shy_polarbear.server.domain.quiz.dto.QuizCardResponse;
+import com.shy_polarbear.server.domain.quiz.dto.*;
 import com.shy_polarbear.server.domain.quiz.service.QuizService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
@@ -50,4 +48,15 @@ public class QuizController {
         OXQuizScoreResponse response = quizService.scoreOXQuizSubmission(principalDetails.getUser().getId(), quizId, requestBody);
         return success(response);
     }
+
+    @PostMapping("/multiple-choice/{quizId}/score")
+    public ApiResponse<MultipleChoiceQuizScoreResponse> scoreMultipleChoiceQuiz(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable long quizId,
+            @Valid @RequestBody MultipleChoiceQuizScoreRequest requestBody
+    ) {
+        MultipleChoiceQuizScoreResponse response = quizService.scoreMultipleQuizSubmission(principalDetails.getUser().getId(), quizId, requestBody);
+        return success(response);
+    }
+
 }
