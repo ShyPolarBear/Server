@@ -29,7 +29,12 @@ public enum ExceptionStatus {
     FAIL_UPLOAD_IMAGES(400, 7000, "이미지 업로드 실패했습니다."),
     INVALID_IMAGE_TYPE(400, 7001, "이미지 타입이 올바르지 않습니다."),
     INVALID_IMAGE_COUNT(400, 7002, "올바르지 않은 이미지 개수입니다."),
-    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),;
+    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),
+
+    // 퀴즈
+    ALREADY_SOLVED_DAILY_QUIZ(400, 3000, "이미 오늘 데일리 퀴즈를 풀었습니다."),
+    NOT_FOUND_QUIZ(404, 3001, "존재하지 않는 퀴즈입니다."),;
+
 
     private final int httpCode;
     private final int customErrorCode;
