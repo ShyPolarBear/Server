@@ -1,7 +1,6 @@
 package com.shy_polarbear.server.domain.point.model;
 
 
-import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
@@ -25,23 +24,24 @@ public class Point extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ranking_id")
-    private Ranking ranking;
-
     @Enumerated(EnumType.STRING)
     private PointType pointType;
 
+    @Column(nullable = false)
+    private int value;
+
     @Builder
-    private Point(User user, PointType pointType) {
+    private Point(User user, PointType pointType, int value) {
         this.user = user;
         this.pointType = pointType;
+        this.value = value;
     }
 
     public static Point createPoint(User user, PointType pointType) {
         Point point = Point.builder()
                 .user(user)
                 .pointType(pointType)
+                .value(pointType.getValue())
                 .build();
         user.addPoint(point);
         return point;
