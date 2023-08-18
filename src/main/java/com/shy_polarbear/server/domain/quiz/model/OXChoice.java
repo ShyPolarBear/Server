@@ -3,9 +3,7 @@ package com.shy_polarbear.server.domain.quiz.model;
 import com.shy_polarbear.server.global.common.util.EnumModel;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
 public enum OXChoice implements EnumModel<String> {
     O("O"),X("X");

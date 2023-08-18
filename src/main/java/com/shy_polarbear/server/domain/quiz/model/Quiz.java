@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Entity
@@ -19,10 +18,10 @@ public abstract class Quiz extends BaseEntity {
     @Column(name = "quiz_id")
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String question;
 
-    @NotBlank
+    @Column(nullable = false)
     private String explanation;
 
     protected Quiz(String question, String explanation) {

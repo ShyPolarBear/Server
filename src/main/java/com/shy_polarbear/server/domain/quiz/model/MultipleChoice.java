@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -19,15 +17,14 @@ public class MultipleChoice extends BaseEntity {
     @Column(name = "multiple_chioce_id")
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String content;
 
-    @NotNull
+    @Column(nullable = false)
     private boolean isAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(name = "quiz_id", nullable = false)
     private MultipleChoiceQuiz multipleChoiceQuiz;
 
     @Builder
