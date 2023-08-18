@@ -66,6 +66,10 @@ public class UserService {
         return findUser;
     }
 
+    public User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
+    }
+
     public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit) {
         User user = getCurruentUser();
         Slice<Feed> findFeedList = feedRepository.findByIdLessThanAndAuthorOrderByIdDesc(lastFeedId, user, PageRequest.of(0, limit));

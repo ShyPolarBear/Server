@@ -1,5 +1,7 @@
 package com.shy_polarbear.server.domain.quiz.controller;
 
+import com.shy_polarbear.server.domain.quiz.dto.OXQuizScoreRequest;
+import com.shy_polarbear.server.domain.quiz.dto.OXQuizScoreResponse;
 import com.shy_polarbear.server.domain.quiz.dto.QuizCardResponse;
 import com.shy_polarbear.server.domain.quiz.service.QuizService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
@@ -9,10 +11,11 @@ import com.shy_polarbear.server.global.common.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+import static com.shy_polarbear.server.global.common.dto.ApiResponse.success;
 
 @Slf4j
 @RestController
@@ -26,7 +29,7 @@ public class QuizController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         QuizCardResponse response = quizService.getDailyQuiz(principalDetails.getUser().getId());
-        return ApiResponse.success(response);
+        return success(response);
     }
 
     @GetMapping("/review")
@@ -35,7 +38,16 @@ public class QuizController {
             @RequestParam(required = false, defaultValue = BusinessLogicConstants.REVIEW_QUIZ_LIMIT_PARAM_DEFAULT_VALUE) int limit
     ) {
         PageResponse<QuizCardResponse> pageResponse = quizService.getReviewQuizzes(principalDetails.getUser().getId(), limit);
-        return ApiResponse.success(pageResponse);
+        return success(pageResponse);
     }
 
+    @PostMapping("/ox/{quizId}/score")
+    public ApiResponse<OXQuizScoreResponse> scoreOXQuiz(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable long quizId,
+            @Valid @RequestBody OXQuizScoreRequest requestBody
+    ) {
+        OXQuizScoreResponse response = quizService.scoreOXQuizSubmission(principalDetails.getUser().getId(), quizId, requestBody);
+        return success(response);
+    }
 }
