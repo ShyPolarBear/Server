@@ -2,15 +2,13 @@ package com.shy_polarbear.server.domain.quiz.model;
 
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserQuiz extends BaseEntity {
 
@@ -18,35 +16,37 @@ public class UserQuiz extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_quiz_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
-    private boolean isCorrect;
-    private String userAnswer;
+
+    @Column(nullable = false)
+    private boolean isCorrect;  // TODO: 중복성 고민 + 성능 고민
+
+    @Enumerated(EnumType.STRING)
+    private OXChoice submittedOXAnswer;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "submitted_multiple_chioce_id")
+    private MultipleChoice submittedMultipleChoiceAnswer;
+
+    @Builder
+    public UserQuiz(User user, Quiz quiz, boolean isCorrect, OXChoice submittedOXAnswer, MultipleChoice submittedMultipleChoiceAnswer) {
+        this.user = user;
+        this.quiz = quiz;
+        this.isCorrect = isCorrect;
+        this.submittedOXAnswer = submittedOXAnswer;
+        this.submittedMultipleChoiceAnswer = submittedMultipleChoiceAnswer;
+    }
 
     //연관관계 편의 메서드
     public void assignUser(User user) {
         this.user = user;
         user.addUserQuiz(this);
-    }
-
-    @Builder
-    private UserQuiz(User user, Quiz quiz, String userAnswer) {
-        this.user = user;
-        this.quiz = quiz;
-        this.userAnswer = userAnswer;
-    }
-
-    public static UserQuiz createUserQuiz(User user, Quiz quiz, String userAnswer) {
-        UserQuiz userQuiz = UserQuiz.builder()
-                .user(user)
-                .quiz(quiz)
-                .userAnswer(userAnswer)
-                .build();
-        user.addUserQuiz(userQuiz);
-        return userQuiz;
     }
 }
