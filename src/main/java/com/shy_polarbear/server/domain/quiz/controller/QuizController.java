@@ -30,6 +30,14 @@ public class QuizController {
         return success(response);
     }
 
+    @GetMapping("/daily/whether-solved")
+    public ApiResponse<WhetherDailyQuizSolvedResponse> getWhetherDailyQuizSolved(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        WhetherDailyQuizSolvedResponse response = quizService.getWhetherDailyQuizSolved(principalDetails.getUser().getId());
+        return success(response);
+    }
+
     @GetMapping("/review")
     public ApiResponse<PageResponse<QuizCardResponse>> getReviewQuizzes(
             @AuthenticationPrincipal PrincipalDetails principalDetails,

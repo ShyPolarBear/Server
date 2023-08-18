@@ -15,7 +15,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -50,6 +52,17 @@ public class QuizService {
         return PageResponse.of(result, count);
     }
 
+    // 데일리 퀴즈 풀이 여부 조회 : 오늘 0시 0분 0초를 기준으로 해당 유저가 정답을 맞춘 문제를 조회
+    public WhetherDailyQuizSolvedResponse getWhetherDailyQuizSolved(Long currentUserId) {
+        LocalDateTime todayStartTime = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstByCreatedAtAfterAndUserIdAndCorrectTrue(todayStartTime, currentUserId);
+
+        boolean isSolved = optionalUserQuiz.isPresent();    // 레코드 존재 여부
+        Long quizId = isSolved ? optionalUserQuiz.get().getId() : null; // 존재 여부에 따라 id값 할당
+
+        return WhetherDailyQuizSolvedResponse.of(quizId, isSolved);
+    }
+
     // OX 퀴즈 채점
     @Transactional
     public OXQuizScoreResponse scoreOXQuizSubmission(Long currentUserId, long quizId, OXQuizScoreRequest request) {
@@ -65,7 +78,7 @@ public class QuizService {
                 .user(user)
                 .quiz(oxQuiz)
                 .submittedOXAnswer(submittedChoice)
-                .isCorrect(isCorrect)
+                .correct(isCorrect)
                 .build());
 
         return OXQuizScoreResponse.of(oxQuiz, isCorrect, pointValue);
@@ -92,7 +105,7 @@ public class QuizService {
                 .user(user)
                 .quiz(multipleChoiceQuiz)
                 .submittedMultipleChoiceAnswer(submittedChoice)
-                .isCorrect(isCorrect)
+                .correct(isCorrect)
                 .build());
 
         return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, answer.getId(), isCorrect, pointValue);

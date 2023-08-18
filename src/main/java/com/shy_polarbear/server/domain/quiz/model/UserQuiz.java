@@ -26,7 +26,7 @@ public class UserQuiz extends BaseEntity {
     private Quiz quiz;
 
     @Column(nullable = false)
-    private boolean isCorrect;  // TODO: 중복성 고민 + 성능 고민
+    private boolean correct;
 
     @Enumerated(EnumType.STRING)
     private OXChoice submittedOXAnswer;
@@ -36,10 +36,10 @@ public class UserQuiz extends BaseEntity {
     private MultipleChoice submittedMultipleChoiceAnswer;
 
     @Builder
-    public UserQuiz(User user, Quiz quiz, boolean isCorrect, OXChoice submittedOXAnswer, MultipleChoice submittedMultipleChoiceAnswer) {
+    public UserQuiz(User user, Quiz quiz, boolean correct, OXChoice submittedOXAnswer, MultipleChoice submittedMultipleChoiceAnswer) {
         this.user = user;
         this.quiz = quiz;
-        this.isCorrect = isCorrect;
+        this.correct = correct;
         this.submittedOXAnswer = submittedOXAnswer;
         this.submittedMultipleChoiceAnswer = submittedMultipleChoiceAnswer;
     }
