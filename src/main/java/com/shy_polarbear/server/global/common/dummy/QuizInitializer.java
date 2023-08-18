@@ -36,7 +36,6 @@ public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않
         } else {
             createDummyOXQuiz();
             createDummyMultipleChoiceQuiz();
-            createDummyUserQuiz();
             log.info("[QuizInitializer] 퀴즈 생성 완료");
         }
     }
@@ -46,6 +45,9 @@ public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않
         quizRepository.save(OXQuiz.builder().question("철 캔과 알루미늄 캔을 구분해서 버려야 한다").answer(OXChoice.O).explanation("내용물을 비우고 물로 헹군 후 압착하여 철, 알루미늄 캔 구분해서 배출해요 \n 알루미늄 캔을 땅속에 묻혀 분해되는 데 걸리는 시간이 500년이나 된답니다!").build());
         quizRepository.save(OXQuiz.builder().question("게 껍데기는 음식물 쓰레기로 버려야 한다").answer(OXChoice.X).explanation("'동물 사료로 쓰일 수 있는가?' 동물이 먹을 수 있을 대 음식물쓰레기, 아닐 경우 일반쓰레기로 분류돼요!").build());
         quizRepository.save(OXQuiz.builder().question("양파 껍질은 일반 쓰레기로 버려야 한다").answer(OXChoice.O).explanation("까도까도 끝이 없는 양파 껍질!\n EX) 대파, 미나리 등의 뿌리, 양파, 마늘, 옥수수 등의 껍질, 고추씨, 고춧대, 옥수숫대 등 질긴 채소류, 호두, 밤, 땅콩 등 딱딱한 껍데기와 복숭아, 살구, 감 등 핵과류의 단단한 씨를 가진 과일류는 일반쓰레기로 분류돼요!").build());
+        quizRepository.save(OXQuiz.builder().question("미세먼지는 1군 발암물질이다").answer(OXChoice.O).explanation("미세먼지는 호흡기 및 심혈관계 질환의 발생과 연관이 있으며 사망률을 증가시키므로 주의가 필요합니다!").build());
+        quizRepository.save(OXQuiz.builder().question("폐형광등, 건전지는 일반 쓰레기다").answer(OXChoice.X).explanation("폐건전지가 든 일반 쓰레기를 태우면 폭발위험이 있으므로 주민센터 / 행정 복지 센터 / 폐건전지 수거함에 버려주세요!").build());
+        quizRepository.save(OXQuiz.builder().question("야간 인공조명은 동식물 성장에 해롭다").answer(OXChoice.O).explanation("야간 인공조명은 동식물의 생태계를 파괴시키는 빛공해에 포함되어 정상적인 성장에 악영향을 끼칩니다").build());
     }
 
     private void createDummyMultipleChoiceQuiz() {
@@ -68,20 +70,4 @@ public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않
         multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("6월 5일").build());
     }
 
-    private void createDummyUserQuiz() {
-        User user = userRepository.findByProviderId("0000")
-                .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
-
-        OXChoice userAnswer = OXChoice.X;
-
-        for (OXQuiz quiz : oxQuizRepository.findAll()) {
-            userQuizRepository.save(UserQuiz.builder()
-                    .user(user)
-                    .quiz(quiz)
-                    .submittedOXAnswer(userAnswer)
-                    .isCorrect(quiz.getAnswer().equals(userAnswer))
-                    .build());
-        }
-
-    }
 }
