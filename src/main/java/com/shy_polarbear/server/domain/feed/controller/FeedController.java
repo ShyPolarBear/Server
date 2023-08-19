@@ -11,6 +11,8 @@ import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class FeedController {
     private final FeedService feedService;
 
     @PostMapping
-    public ApiResponse<CreateFeedResponse> createFeed(@RequestBody CreateFeedRequest createFeedRequest) {
+    public ApiResponse<CreateFeedResponse> createFeed(@Valid @RequestBody CreateFeedRequest createFeedRequest) {
         return ApiResponse.success(feedService.createFeed(createFeedRequest));
     }
 
@@ -37,7 +39,7 @@ public class FeedController {
 
     @PutMapping("/{feedId}")
     public ApiResponse<UpdateFeedResponse> updateFeed(@PathVariable Long feedId,
-                                                      @RequestBody UpdateFeedRequest updateFeedRequest) {
+                                                      @Valid @RequestBody UpdateFeedRequest updateFeedRequest) {
         return ApiResponse.success(feedService.updateFeed(feedId, updateFeedRequest));
     }
 
