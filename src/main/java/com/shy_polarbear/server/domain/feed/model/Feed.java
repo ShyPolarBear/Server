@@ -23,7 +23,7 @@ public class Feed extends BaseEntity {
     private Long id;
     private String title;
     private String content;
-    @OneToMany(mappedBy = "feed")
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeedImage> feedImages = new ArrayList<>();
@@ -31,7 +31,7 @@ public class Feed extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "feed")
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder

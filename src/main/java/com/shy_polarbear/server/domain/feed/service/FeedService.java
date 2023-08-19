@@ -63,9 +63,6 @@ public class FeedService {
     }
 
     public DeleteFeedResponse deleteFeed(Long feedId) {
-        //피드가 삭제되면, 피드 좋아요도 삭제된다.
-        //피드가 삭제되면, 피드에 달린 댓글들도 삭제된다.
-        //피드가 삭제되면, 피드 이미지들도 삭제된다.
         User user = userService.getCurruentUser();
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
