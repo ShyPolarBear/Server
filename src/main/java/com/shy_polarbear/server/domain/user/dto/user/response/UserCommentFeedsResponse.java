@@ -34,7 +34,7 @@ public class UserCommentFeedsResponse {
             if (feed.getFeedImages().size() == 0) {
                 return new UserFeedResponse(feedId, title, null, author, authorProfileImage);
             }
-            return new UserFeedResponse(feedId, title, feed.getFeedImages().get(0), author, authorProfileImage);
+            return new UserFeedResponse(feedId, title, feed.getFeedImages().get(0).getUrl(), author, authorProfileImage);
         }
     }
 

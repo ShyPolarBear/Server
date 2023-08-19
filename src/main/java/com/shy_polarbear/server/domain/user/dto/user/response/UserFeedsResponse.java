@@ -28,7 +28,7 @@ public class UserFeedsResponse {
             if (feed.getFeedImages().size() == 0) {
                 return new UserFeedResponse(feed.getId(), feed.getTitle(), null);
             }
-            return new UserFeedResponse(feed.getId(), feed.getTitle(), feed.getFeedImages().get(0));
+            return new UserFeedResponse(feed.getId(), feed.getTitle(), feed.getFeedImages().get(0).getUrl());
         }
     }
 

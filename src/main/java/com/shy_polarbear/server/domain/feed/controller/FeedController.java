@@ -45,4 +45,5 @@ public class FeedController {
     public ApiResponse<DeleteFeedResponse> deleteFeed(@PathVariable Long feedId) {
         return ApiResponse.success(feedService.deleteFeed(feedId));
     }
+
 }

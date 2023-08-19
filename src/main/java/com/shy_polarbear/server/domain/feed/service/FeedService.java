@@ -8,6 +8,7 @@ import com.shy_polarbear.server.domain.feed.dto.response.FeedResponse;
 import com.shy_polarbear.server.domain.feed.dto.response.UpdateFeedResponse;
 import com.shy_polarbear.server.domain.feed.exception.FeedException;
 import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.model.FeedImage;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -27,7 +29,8 @@ public class FeedService {
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest) {
         User user = userService.getCurruentUser();
-        Feed feed = Feed.createFeed(createFeedRequest.getTitle(), createFeedRequest.getContent(), createFeedRequest.getFeedImages(), user);
+        List<FeedImage> feedImages = FeedImage.createFeedImages(createFeedRequest.getFeedImages());
+        Feed feed = Feed.createFeed(createFeedRequest.getTitle(), createFeedRequest.getContent(), feedImages, user);
         feedRepository.save(feed);
         return new CreateFeedResponse(feed.getId());
     }
@@ -42,7 +45,8 @@ public class FeedService {
         User user = userService.getCurruentUser();
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
-        findFeed.update(updateFeedRequest.getTitle(), updateFeedRequest.getContent(), updateFeedRequest.getFeedImages());
+        List<FeedImage> feedImages = FeedImage.createFeedImages(updateFeedRequest.getFeedImages());
+        findFeed.update(updateFeedRequest.getTitle(), updateFeedRequest.getContent(), feedImages);
         return new UpdateFeedResponse(feedId);
     }
 

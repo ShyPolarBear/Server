@@ -18,7 +18,7 @@ public class FeedResponse {
     private String content;
     private String author;
     private String authorProfileImage;
-    private List<String> feedImage;
+    private List<String> feedImages;
     private String createdDate;
     private Integer commentCount;
     private Integer likeCount;
@@ -26,13 +26,16 @@ public class FeedResponse {
     private Boolean isAuthor;
 
     public static FeedResponse from(Feed feed, boolean isLike, boolean isAuthor) {
+        List<String> feedImages = feed.getFeedImages().stream()
+                .map(feedImage -> feedImage.getUrl())
+                .toList();
         return FeedResponse.builder()
                 .feedId(feed.getId())
                 .title(feed.getTitle())
                 .content(feed.getContent())
                 .author(feed.getAuthor().getNickName())
                 .authorProfileImage(feed.getAuthor().getProfileImage())
-                .feedImage(feed.getFeedImages())
+                .feedImages(feedImages)
                 .createdDate(feed.getCreatedDate())
                 .commentCount(feed.getComments().size())
                 .likeCount(feed.getFeedLikes().size())
