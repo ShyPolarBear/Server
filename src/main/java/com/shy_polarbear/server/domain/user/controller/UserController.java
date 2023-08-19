@@ -9,6 +9,7 @@ import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ApiResponse<UpdateUserInfoResponse> updateUserInfo(@RequestBody UpdateUserInfoRequest userInfoRequest) {
+    public ApiResponse<UpdateUserInfoResponse> updateUserInfo(@Valid @RequestBody UpdateUserInfoRequest userInfoRequest) {
         return ApiResponse.success(userService.updateUserInfo(userInfoRequest));
     }
 

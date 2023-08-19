@@ -27,7 +27,11 @@ public enum ExceptionStatus {
     //이미지
     FAIL_UPLOAD_IMAGES(400, 7000, "이미지 업로드 실패했습니다."),
     INVALID_IMAGE_TYPE(400, 7001, "이미지 타입이 올바르지 않습니다."),
-    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),;
+    FAIL_DELETE_IMAGES(400, 7030, "이미지 삭제 실패했습니다."),
+
+    //피드
+    NOT_FOUND_FEED(404, 2001, "존재하지 않는 피드입니다."),
+    NOT_MY_FEED(400, 2002, "본인의 피드가 아닙니다.");
 
     private final int httpCode;
     private final int customErrorCode;

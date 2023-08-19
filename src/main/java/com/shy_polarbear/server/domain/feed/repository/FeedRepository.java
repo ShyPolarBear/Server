@@ -20,6 +20,4 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     Slice<Feed> findByCommentsAuthorOrderByCommentsIdDesc(User user, PageRequest pageable);
 
-    List<Feed> findAllByIdGreaterThanOrderByIdDesc(Long id, Pageable pageable);
-
 }

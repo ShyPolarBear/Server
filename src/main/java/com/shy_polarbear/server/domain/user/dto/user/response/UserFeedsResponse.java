@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class UserFeedsResponse {
     private Integer count;
     private Boolean isLast;
-    private List<UserFeedResponse> myFeedList;
+    private List<UserFeedResponse> content;
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -28,7 +28,7 @@ public class UserFeedsResponse {
             if (feed.getFeedImages().size() == 0) {
                 return new UserFeedResponse(feed.getId(), feed.getTitle(), null);
             }
-            return new UserFeedResponse(feed.getId(), feed.getTitle(), feed.getFeedImages().get(0));
+            return new UserFeedResponse(feed.getId(), feed.getTitle(), feed.getFeedImages().get(0).getUrl());
         }
     }
 
@@ -36,7 +36,7 @@ public class UserFeedsResponse {
     public UserFeedsResponse(Boolean isLast, List<Feed> feedList) {
         this.count = feedList.size();
         this.isLast = isLast;
-        this.myFeedList = feedList.stream()
+        this.content = feedList.stream()
                 .map((feed -> UserFeedResponse.from(feed)))
                 .collect(Collectors.toList());
     }
