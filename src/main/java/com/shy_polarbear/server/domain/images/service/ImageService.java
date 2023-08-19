@@ -71,7 +71,7 @@ public class ImageService {
         return new DeleteImageResponse(imageUrls.size());
     }
 
-    private void deleteImages(List<String> imageUrls) {
+    public void deleteImages(List<String> imageUrls) {
         imageUrls.stream().forEach((imageUrl) -> {
             String filePath = FilePathUtils.parseFilePathFromUrl(imageUrl);
             s3FileService.delete(filePath);

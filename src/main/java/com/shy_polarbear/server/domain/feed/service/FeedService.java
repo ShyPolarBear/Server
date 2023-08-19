@@ -2,14 +2,14 @@ package com.shy_polarbear.server.domain.feed.service;
 
 import com.shy_polarbear.server.domain.feed.dto.request.CreateFeedRequest;
 import com.shy_polarbear.server.domain.feed.dto.request.UpdateFeedRequest;
-import com.shy_polarbear.server.domain.feed.dto.response.CreateFeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.DeleteFeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.FeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.UpdateFeedResponse;
+import com.shy_polarbear.server.domain.feed.dto.response.*;
 import com.shy_polarbear.server.domain.feed.exception.FeedException;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.model.FeedImage;
+import com.shy_polarbear.server.domain.feed.model.FeedLike;
+import com.shy_polarbear.server.domain.feed.repository.FeedLikeRepository;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
+import com.shy_polarbear.server.domain.images.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
@@ -26,6 +26,8 @@ public class FeedService {
 
     private final FeedRepository feedRepository;
     private final UserService userService;
+    private final ImageService imageService;
+    private final FeedLikeRepository feedLikeRepository;
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest) {
         User user = userService.getCurruentUser();
@@ -67,6 +69,23 @@ public class FeedService {
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
         feedRepository.delete(findFeed);
+
+        //s3 이미지 삭제
+        List<String> feedImageUrls = findFeed.getFeedImageUrls();
+        imageService.deleteImages(feedImageUrls);
         return new DeleteFeedResponse(feedId);
+    }
+
+    public LikeFeedResponse switchFeedLike(Long feedId) {
+        User user = userService.getCurruentUser();
+        Feed feed = findFeedById(feedId);
+        if (!feedLikeRepository.existsByUserAndFeed(user, feed)) {
+            FeedLike feedLike = FeedLike.createFeedLike(feed, user);
+            feedLikeRepository.save(feedLike);
+            return new LikeFeedResponse("좋아요 처리되었습니다.");
+        } else {
+            feedLikeRepository.deleteByUserAndFeed(user, feed);
+            return new LikeFeedResponse("좋아요 취소되었습니다.");
+        }
     }
 }

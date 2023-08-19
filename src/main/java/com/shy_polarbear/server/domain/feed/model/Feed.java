@@ -77,4 +77,10 @@ public class Feed extends BaseEntity {
         return feedLikes.stream()
                 .anyMatch(feedLike -> feedLike.isUser(user));
     }
+
+    public List<String> getFeedImageUrls() {
+        return feedImages.stream()
+                .map(feedImage -> feedImage.getUrl())
+                .toList();
+    }
 }

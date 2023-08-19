@@ -2,10 +2,7 @@ package com.shy_polarbear.server.domain.feed.controller;
 
 import com.shy_polarbear.server.domain.feed.dto.request.CreateFeedRequest;
 import com.shy_polarbear.server.domain.feed.dto.request.UpdateFeedRequest;
-import com.shy_polarbear.server.domain.feed.dto.response.CreateFeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.DeleteFeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.FeedResponse;
-import com.shy_polarbear.server.domain.feed.dto.response.UpdateFeedResponse;
+import com.shy_polarbear.server.domain.feed.dto.response.*;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -48,4 +45,8 @@ public class FeedController {
         return ApiResponse.success(feedService.deleteFeed(feedId));
     }
 
+    @PutMapping("/{feedId}/like")
+    public ApiResponse<LikeFeedResponse> switchFeedLike(@PathVariable Long feedId) {
+        return ApiResponse.success(feedService.switchFeedLike(feedId));
+    }
 }
