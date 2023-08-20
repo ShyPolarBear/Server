@@ -15,6 +15,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -54,8 +55,8 @@ public class QuizService {
 
     // 데일리 퀴즈 풀이 여부 조회 : 오늘 0시 0분 0초를 기준으로 해당 유저가 정답을 맞춘 문제를 조회
     public WhetherDailyQuizSolvedResponse getWhetherDailyQuizSolved(Long currentUserId) {
-        LocalDateTime todayStartTime = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
-        Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstByCreatedAtAfterAndUserIdAndCorrectTrue(todayStartTime, currentUserId);
+        LocalDate today = LocalDate.now();
+        Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstByCreatedDateStartingWithAndUserIdAndCorrectTrue(today.toString(), currentUserId);
 
         boolean isSolved = optionalUserQuiz.isPresent();    // 레코드 존재 여부
         Long quizId = isSolved ? optionalUserQuiz.get().getId() : null; // 존재 여부에 따라 id값 할당
