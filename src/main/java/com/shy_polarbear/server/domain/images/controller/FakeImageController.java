@@ -46,7 +46,7 @@ public class FakeImageController {
 
         //이미지 개수 체크
         if (files == null || files.size() > 5 || files.isEmpty() || (type.equals("profile") && !(files.size() == 1))) {
-            throw new ImageException(ExceptionStatus.INVALID_IMAGE_COUNT);
+            throw new ImageException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
         return files.size();
     }

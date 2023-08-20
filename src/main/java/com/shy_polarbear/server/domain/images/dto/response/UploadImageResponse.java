@@ -1,10 +1,15 @@
 package com.shy_polarbear.server.domain.images.dto.response;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+import java.util.List;
+
+
 @Getter
-public class DeleteImageResponse {
-    private Integer deletedImageCount;
+@AllArgsConstructor
+public class UploadImageResponse {
+    private List<String> imageLinks;
+
 }

@@ -33,8 +33,4 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> error(int code, T data, String message) {
         return new ApiResponse<>(code, data, message);
     }
-
-    public static <T> ApiResponse<T> fail(int code, String message) {
-        return new ApiResponse<>(code, null, message);
-    }
 }

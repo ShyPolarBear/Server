@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
@@ -24,48 +23,64 @@ public class Feed extends BaseEntity {
     private Long id;
     private String title;
     private String content;
-    @OneToMany(mappedBy = "feed")
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable(name = "feed_images", joinColumns = @JoinColumn(name = "feed_id"))
-    @Column(name = "feed_image")
-    private List<String> feedImages = new ArrayList<>();
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedImage> feedImages = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "feed")
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    private Feed(String title, String content, List<String> feedImages, User author) {
+    private Feed(String title, String content, List<FeedImage> feedImages, User author) {
         this.title = title;
         this.content = content;
         this.feedImages = feedImages;
         this.author = author;
     }
 
-    public static Feed createFeed(String title, String content, List<String> feedImages, User author) {
-        return Feed.builder()
+    public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
+        Feed feed = Feed.builder()
                 .title(title)
                 .content(content)
                 .feedImages(feedImages)
                 .author(author)
                 .build();
+        assignFeedToFeedImages(feedImages, feed);
+        return feed;
+    }
+
+    private static void assignFeedToFeedImages(List<FeedImage> feedImages, Feed feed) {
+        feedImages.stream()
+                .forEach(feedImage -> feedImage.assignFeed(feed));
     }
 
     public void addLike(FeedLike feedLike) {
         this.feedLikes.add(feedLike);
     }
 
-    public String getCreatedDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sdf.format(this.createdAt);
-    }
-
-    public void update(String title, String content, List<String> feedImage) {
+    public void update(String title, String content, List<FeedImage> feedImages) {
         this.title = title;
         this.content = content;
-        this.feedImages = feedImage;
+        this.feedImages.clear();
+        this.feedImages.addAll(feedImages);
+    }
+
+    public boolean isAuthor(User user) {
+        return this.author.getId().equals(user.getId());
+    }
+
+    public boolean isLike(User user) {
+        return feedLikes.stream()
+                .anyMatch(feedLike -> feedLike.isUser(user));
+    }
+
+    public List<String> getFeedImageUrls() {
+        return feedImages.stream()
+                .map(feedImage -> feedImage.getUrl())
+                .toList();
     }
 }
