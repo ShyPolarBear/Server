@@ -101,6 +101,7 @@ public class QuizService {
 
         boolean isCorrect = submittedChoice.equals(answer); // 제출된 답안과 실제 답 비교
         int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
+        int sequence = multipleChoiceList.indexOf(answer) + 1;// 정답 선택지의 순서
 
         userQuizRepository.save(UserQuiz.builder() // UserQuiz 레코드 저장
                 .user(user)
@@ -109,7 +110,7 @@ public class QuizService {
                 .correct(isCorrect)
                 .build());
 
-        return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, answer.getId(), isCorrect, pointValue);
+        return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, sequence, answer, isCorrect, pointValue);
     }
 
     // 퀴즈 유형에 따른 분기처리
