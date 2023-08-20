@@ -59,7 +59,7 @@ public class QuizService {
         Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstByCreatedDateStartingWithAndUserIdAndCorrectTrue(today.toString(), currentUserId);
 
         boolean isSolved = optionalUserQuiz.isPresent();    // 레코드 존재 여부
-        Long quizId = isSolved ? optionalUserQuiz.get().getId() : null; // 존재 여부에 따라 id값 할당
+        Long quizId = isSolved ? optionalUserQuiz.get().getQuiz().getId() : null; // 존재 여부에 따라 id값 할당
 
         return WhetherDailyQuizSolvedResponse.of(quizId, isSolved);
     }
