@@ -23,20 +23,6 @@ import org.springframework.web.client.HttpClientErrorException;
 @Slf4j
 public class ControllerAdvice {
 
-    //validation 에러
-    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> bindExceptionHandler(BindingResult bindingResult) {
-        int code = ExceptionStatus.INVALID_INPUT_VALUE.getCustomErrorCode();
-        StringBuilder reason = new StringBuilder();
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            String errorMessage = fieldError.getField() + " : " + fieldError.getDefaultMessage();
-            reason.append(errorMessage).append(", ");
-        }
-        log.warn("ValidationException({}) - {}", code, reason);
-        return ApiResponse.error(code, String.valueOf(reason));
-    }
-
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ApiResponse> customExceptionHandler(CustomException ex) {
         int httpCode = ex.exceptionStatus.getHttpCode();
@@ -73,6 +59,20 @@ public class ControllerAdvice {
     /**
      * Client Bad Request
      **/
+    //validation 에러
+    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> bindExceptionHandler(BindingResult bindingResult) {
+        int code = ExceptionStatus.INVALID_INPUT_VALUE.getCustomErrorCode();
+        StringBuilder reason = new StringBuilder();
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            String errorMessage = fieldError.getField() + " : " + fieldError.getDefaultMessage();
+            reason.append(errorMessage).append(", ");
+        }
+        log.warn("ValidationException({}) - {}", code, reason);
+        return ApiResponse.error(code, String.valueOf(reason));
+    }
+
     @ExceptionHandler(HttpClientErrorException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleHttpClientErrorException(HttpClientErrorException ex) {
