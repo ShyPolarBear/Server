@@ -26,7 +26,7 @@ public class UpdateUserInfoResponse {
         return UpdateUserInfoResponse.builder()
                 .id(user.getId())
                 .nickName(user.getEmail())
-                .profileImage(user.getProfileImage())
+                .profileImage(user.getProfileImage() == null ? "" : user.getProfileImage())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .build();
