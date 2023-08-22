@@ -2,7 +2,6 @@ package com.shy_polarbear.server.domain.quiz.model;
 
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,33 +9,23 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "DTYPE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quiz extends BaseEntity {
+public abstract class Quiz extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private QuizType quizType;
+
+    @Column(nullable = false)
     private String question;
-    private final int time = 17;
-    private String answer;
+
+    @Column(nullable = false)
     private String explanation;
 
-    @Builder
-    private Quiz(QuizType quizType, String question, String answer, String explanation) {
-        this.quizType = quizType;
+    protected Quiz(String question, String explanation) {
         this.question = question;
-        this.answer = answer;
         this.explanation = explanation;
-    }
-
-    public static Quiz createQuiz(QuizType quizType, String question, String answer, String explanation) {
-        return Quiz.builder()
-                .quizType(quizType)
-                .question(question)
-                .answer(answer)
-                .explanation(explanation)
-                .build();
     }
 }

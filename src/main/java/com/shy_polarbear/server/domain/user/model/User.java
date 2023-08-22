@@ -3,7 +3,6 @@ package com.shy_polarbear.server.domain.user.model;
 
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
-import com.shy_polarbear.server.domain.ranking.model.Ranking;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +34,7 @@ public class User extends BaseEntity {
 
     //TODO: 기본값 설정하기
     private Boolean isBlackListUser;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserQuiz> userQuiz = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
@@ -87,7 +86,6 @@ public class User extends BaseEntity {
                 .providerId(providerId)
                 .password(passwordEncoder.encode(providerId + "@password"))
                 .build();
-        Ranking.createRanking(user);
         return user;
     }
 

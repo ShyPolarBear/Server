@@ -1,7 +1,14 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.shy_polarbear'
@@ -47,6 +54,10 @@ dependencies {
 	//validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	//queryDSL
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -57,4 +68,23 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+//queryDSL 설정
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }

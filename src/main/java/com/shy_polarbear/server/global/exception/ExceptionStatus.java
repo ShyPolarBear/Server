@@ -31,7 +31,15 @@ public enum ExceptionStatus {
 
     //피드
     NOT_FOUND_FEED(404, 2001, "존재하지 않는 피드입니다."),
-    NOT_MY_FEED(400, 2002, "본인의 피드가 아닙니다.");
+    NOT_MY_FEED(400, 2002, "본인의 피드가 아닙니다."),
+
+    // 퀴즈
+    ALREADY_SOLVED_DAILY_QUIZ(400, 3000, "이미 오늘 데일리 퀴즈를 풀었습니다."),
+    NOT_FOUND_QUIZ(404, 3001, "존재하지 않는 퀴즈입니다."),
+    NOT_FOUND_CHOICE(404, 3010, "존재하지 않는 선택지입니다."),
+    NO_MORE_DAILY_QUIZ(404,3002,"데일리 퀴즈가 더 이상 존재하지 않습니다."),
+    ;
+
 
     private final int httpCode;
     private final int customErrorCode;
