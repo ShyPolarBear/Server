@@ -65,7 +65,7 @@ class UserServiceTest {
     @DisplayName("save() 메서드는 유저를 저장하고 userId를 반환한다.")
     @Test
     void save() {
-        Long userId = userService.save(user2);
+        Long userId = userService.saveUser(user2);
         Assertions.assertThat(userId).isEqualTo(user2.getId());
     }
 

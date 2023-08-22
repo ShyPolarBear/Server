@@ -70,7 +70,7 @@ public class AuthService {
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
                 joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
                 UserRole.ROLE_USR, providerId, ProviderType.KAKAO.value, passwordEncoder);
-        userService.save(joinUser);
+        userService.saveUser(joinUser);
 
         //로그인 (유저 인증)
         JwtDto issuedToken = authorizeUser(providerId);
@@ -92,12 +92,8 @@ public class AuthService {
     }
 
     // refresh token 삭제하는 방식 사용
-    public LogoutResponse logOut() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
-        User findUser = principal.getUser();
-        RefreshToken refreshToken = refreshTokenRepository.findByUser(findUser)
+    public LogoutResponse logOut(User user) {
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
                 .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
         refreshTokenRepository.delete(refreshToken);
         refreshTokenRepository.flush();
