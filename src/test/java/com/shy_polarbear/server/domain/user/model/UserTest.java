@@ -49,7 +49,7 @@ class UserTest {
     @Test
     void blockUser() {
         user1.blockUser(user2);
-        assertThat(user1.blockedUsers.size()).isEqualTo(1);
+        assertThat(user1.getBlockedUsers().size()).isEqualTo(1);
     }
 
 }
