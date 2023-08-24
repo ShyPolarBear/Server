@@ -5,7 +5,6 @@ import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -52,7 +51,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String providerId;
     @Column(nullable = false)
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
     @Column(nullable = false)
     private String password;
 
@@ -67,7 +67,7 @@ public class User extends BaseEntity {
     @Builder
     public User(Long id, String nickName, String email, String profileImage,
                 String phoneNumber, UserRole role,
-                String providerId, String provider, String password) {
+                String providerId, ProviderType provider, String password) {
         this.id = id;
         this.nickName = nickName;
         this.email = email;
@@ -82,7 +82,7 @@ public class User extends BaseEntity {
 
 
     public static User createUser(String nickName, String email, String profileImage,
-                                  String phoneNumber, UserRole role, String providerId, String provider, PasswordEncoder passwordEncoder) {
+                                  String phoneNumber, UserRole role, String providerId, ProviderType provider, PasswordEncoder passwordEncoder) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)

@@ -32,8 +32,8 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null, passwordEncoder);
-        user2 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null, passwordEncoder);
+        user1 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, "0", null, passwordEncoder);
+        user2 = User.createUser(nickName, email, profileImage, phoneNumber, userRole, "1", null, passwordEncoder);
     }
 
     @DisplayName("User 객체가 빌더 패턴으로 생성된다.")
@@ -42,7 +42,7 @@ class UserTest {
         assertThat(user1).isNotNull();
         assertThat(user1.getNickName()).isEqualTo(nickName);
         assertThat(user1.getUserStatus()).isEqualTo(UserStatus.ENGAGED);
-//        assertThat(user1.getIsBlackListUser()).isEqualTo(false);
+        assertThat(user1.getIsBlackListUser()).isEqualTo(false);
     }
 
     @DisplayName("user1이 user2를 차단한다.")

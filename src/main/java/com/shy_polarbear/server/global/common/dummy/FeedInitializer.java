@@ -33,7 +33,7 @@ public class FeedInitializer {
     }
 
     private void createDummyFeed() {
-        User user = userRepository.findByProviderId("0000")
+        User user = userRepository.findByProviderId("0")
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
         if (feedRepository.count() == 0) {
             log.info("더미 피드 10개를 생성합니다.");
@@ -41,7 +41,7 @@ public class FeedInitializer {
                 List<String> feedUrls = new ArrayList<>();
                 feedUrls.add("테스트 사진");
                 List<FeedImage> feedImages = FeedImage.createFeedImages(feedUrls);
-                Feed feed = Feed.createFeed("제목" + i, null, feedImages, user);
+                Feed feed = Feed.createFeed("제목" + i, "", feedImages, user);
                 feedRepository.save(feed);
             }
         }

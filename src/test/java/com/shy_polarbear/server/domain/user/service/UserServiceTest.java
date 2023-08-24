@@ -3,7 +3,7 @@ package com.shy_polarbear.server.domain.user.service;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.infra.ProviderType;
+import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
@@ -42,8 +42,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.createUser(nickName1, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.value, passwordEncoder);
-        user2 = User.createUser(nickName2, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO.value, passwordEncoder);
+        user1 = User.createUser(nickName1, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO, passwordEncoder);
+        user2 = User.createUser(nickName2, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO, passwordEncoder);
         userRepository.save(user1);
     }
 
