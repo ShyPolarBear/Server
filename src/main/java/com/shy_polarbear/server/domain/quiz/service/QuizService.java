@@ -55,7 +55,7 @@ public class QuizService {
     // 데일리 퀴즈 풀이 여부 조회 : 오늘 0시 0분 0초를 기준으로 해당 유저가 제출한 문제를 조회
     public WhetherDailyQuizSolvedResponse getWhetherDailyQuizSolved(Long currentUserId) {
         LocalDate today = LocalDate.now();
-        Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstByCreatedDateStartingWithAndUserIdOrderByCreatedDateDesc(today.toString(), currentUserId);
+        Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstSubmittedDailyQuizByUser(today.toString(), currentUserId);
 
         boolean isSubmitted = optionalUserQuiz.isPresent();    // 레코드 존재 여부
         Long quizId = isSubmitted ? optionalUserQuiz.get().getQuiz().getId() : null; // 존재 여부에 따라 id값 할당
