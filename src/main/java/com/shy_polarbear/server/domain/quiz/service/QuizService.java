@@ -78,14 +78,9 @@ public class QuizService {
 
         OXChoice submittedChoice = OXChoice.toEnum(request.answer());
         boolean isCorrect = submittedChoice.equals(oxQuiz.getAnswer()); // 제출된 답안과 실제 답 비교
-        int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
+        userQuizRepository.save(UserQuiz.createUserOXQuiz(user, oxQuiz, isCorrect, submittedChoice));
 
-        userQuizRepository.save(UserQuiz.builder() // UserQuiz 레코드 저장
-                .user(user)
-                .quiz(oxQuiz)
-                .submittedOXAnswer(submittedChoice)
-                .correct(isCorrect)
-                .build());
+        int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
 
         return OXQuizScoreResponse.of(oxQuiz, isCorrect, pointValue);
     }
@@ -98,22 +93,16 @@ public class QuizService {
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
         List<MultipleChoice> multipleChoiceList = multipleChoiceRepository.findAllByMultipleChoiceQuizId(quizId);
 
-        Long submittedChoiceId = request.answerId();
-        MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(submittedChoiceId)).findFirst()
+        MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.answerId())).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
         MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::isAnswer).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.SERVER_ERROR));    // 답이 없는 퀴즈는 서버쪽 오류
 
         boolean isCorrect = submittedChoice.equals(answer); // 제출된 답안과 실제 답 비교
+        userQuizRepository.save(UserQuiz.createUserMultipleChoiceQuiz(user, multipleChoiceQuiz, isCorrect, submittedChoice));
+
         int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
         int sequence = multipleChoiceList.indexOf(answer) + 1;// 정답 선택지의 순서
-
-        userQuizRepository.save(UserQuiz.builder() // UserQuiz 레코드 저장
-                .user(user)
-                .quiz(multipleChoiceQuiz)
-                .submittedMultipleChoiceAnswer(submittedChoice)
-                .correct(isCorrect)
-                .build());
 
         return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, sequence, answer, isCorrect, pointValue);
     }
