@@ -1,14 +1,10 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.quiz.model.*;
-import com.shy_polarbear.server.domain.quiz.repository.MultipleChoiceRepository;
-import com.shy_polarbear.server.domain.quiz.repository.OXQuizRepository;
+import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
+import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
+import com.shy_polarbear.server.domain.quiz.model.OXChoice;
+import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
 import com.shy_polarbear.server.domain.quiz.repository.QuizRepository;
-import com.shy_polarbear.server.domain.quiz.repository.UserQuizRepository;
-import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
@@ -24,10 +20,6 @@ import javax.transaction.Transactional;
 @Transactional
 public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않음. 퀴즈 업데이트를 한다면..?
     private final QuizRepository quizRepository;
-    private final OXQuizRepository oxQuizRepository;
-    private final MultipleChoiceRepository multipleChoiceRepository;
-    private final UserRepository userRepository;
-    private final UserQuizRepository userQuizRepository;
 
     @PostConstruct
     public void init() {
