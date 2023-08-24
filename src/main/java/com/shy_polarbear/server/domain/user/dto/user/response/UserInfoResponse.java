@@ -14,7 +14,7 @@ public class UserInfoResponse {
     @Builder
     private UserInfoResponse(String nickName, String profileImage, String email, String phoneNumber) {
         this.nickName = nickName;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage == null ? "" : profileImage;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }

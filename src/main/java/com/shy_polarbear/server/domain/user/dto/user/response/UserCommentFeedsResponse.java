@@ -30,7 +30,8 @@ public class UserCommentFeedsResponse {
             Long feedId = feed.getId();
             String title = feed.getTitle();
             String author = feed.getAuthor().getNickName();
-            String authorProfileImage = feed.getAuthor().getProfileImage();
+            String profileImageNullable = feed.getAuthor().getProfileImage();
+            String authorProfileImage = (profileImageNullable == null) ? "" : profileImageNullable;
             if (feed.getFeedImages().size() == 0) {
                 return new UserFeedResponse(feedId, title, null, author, authorProfileImage);
             }

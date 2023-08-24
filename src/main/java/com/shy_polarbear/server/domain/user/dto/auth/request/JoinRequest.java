@@ -18,6 +18,5 @@ public class JoinRequest {
     private String phoneNumber;
     @NotBlank
     private String email;
-    @NotBlank
     private String profileImage;
 }

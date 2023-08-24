@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class UpdateUserInfoRequest {
     @NotBlank
     private String nickName;
-    @NotBlank
     private String profileImage;
     @NotBlank
     private String email;
