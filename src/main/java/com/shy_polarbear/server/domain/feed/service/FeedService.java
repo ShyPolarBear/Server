@@ -11,7 +11,6 @@ import com.shy_polarbear.server.domain.feed.repository.FeedLikeRepository;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.images.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,15 +24,23 @@ import java.util.List;
 public class FeedService {
 
     private final FeedRepository feedRepository;
-    private final UserService userService;
     private final ImageService imageService;
     private final FeedLikeRepository feedLikeRepository;
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest, User user) {
-        List<FeedImage> feedImages = FeedImage.createFeedImages(createFeedRequest.getFeedImages());
+        List<String> imageUrls = createFeedRequest.getFeedImages();
+        List<FeedImage> feedImages = getFeedImages(imageUrls);
         Feed feed = Feed.createFeed(createFeedRequest.getTitle(), createFeedRequest.getContent(), feedImages, user);
         feedRepository.save(feed);
         return new CreateFeedResponse(feed.getId());
+    }
+
+    private static List<FeedImage> getFeedImages(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.size() == 0) {
+            return null;
+        } else {
+            return FeedImage.createFeedImages(imageUrls);
+        }
     }
 
     public FeedResponse findFeed(Long feedId, User user) {
@@ -44,7 +51,7 @@ public class FeedService {
     public UpdateFeedResponse updateFeed(Long feedId, UpdateFeedRequest updateFeedRequest, User user) {
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
-        List<FeedImage> feedImages = FeedImage.createFeedImages(updateFeedRequest.getFeedImages());
+        List<FeedImage> feedImages = getFeedImages(updateFeedRequest.getFeedImages());
         findFeed.update(updateFeedRequest.getTitle(), updateFeedRequest.getContent(), feedImages);
         return new UpdateFeedResponse(feedId);
     }

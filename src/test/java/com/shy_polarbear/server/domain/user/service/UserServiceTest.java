@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.user.service;
 
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
+import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.ProviderType;
@@ -18,21 +19,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 @DisplayName("UserService 클래스")
 class UserServiceTest {
-
     private User user1, user2;
-    private final String nickName1 = "노을";
-    private final String nickName2 = "진욱";
-    private final String email = "chi6465618@naver.com";
-    private final String profileImage = "";
-    private final String phoneNumber = "01093926465";
-    private final UserRole userRole = UserRole.ROLE_USR;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -42,15 +39,15 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user1 = User.createUser(nickName1, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO, passwordEncoder);
-        user2 = User.createUser(nickName2, email, profileImage, phoneNumber, userRole, "1", ProviderType.KAKAO, passwordEncoder);
-        userRepository.save(user1);
+        user1 = User.createUser("노을", "chi6465618@naver.com", null, "01093926465", UserRole.ROLE_USR, "1", ProviderType.KAKAO, passwordEncoder);
+        user2 = User.createUser("진욱", "1234@naver.com", null, "01071215469", UserRole.ROLE_USR, "2", ProviderType.KAKAO, passwordEncoder);
+        userRepository.save(user1); //user1은 가입시킨다.
     }
 
     @DisplayName("닉네임이 중복되지 않는다면 DuplicateNicknameResponse을 반환한다.")
     @Test
     void checkDuplicateNickName() {
-        DuplicateNicknameResponse response = userService.checkDuplicateNickName("이진욱");
+        DuplicateNicknameResponse response = userService.checkDuplicateNickName("중복될 수 없는 닉네임");
         Assertions.assertThat(response.getAvailable()).isTrue();
     }
 
@@ -62,13 +59,6 @@ class UserServiceTest {
                 () -> userService.checkDuplicateNickName(user1.getNickName()));
     }
 
-    @DisplayName("save() 메서드는 유저를 저장하고 userId를 반환한다.")
-    @Test
-    void save() {
-        Long userId = userService.saveUser(user2);
-        Assertions.assertThat(userId).isEqualTo(user2.getId());
-    }
-
     @DisplayName("이미 가입한 유저라면 UserException을 던진다. ")
     @Test
     void checkDuplicateUser() {
@@ -76,4 +66,20 @@ class UserServiceTest {
                 () -> userService.checkDuplicateUser(user1.getProviderId()));
     }
 
+    @DisplayName("saveUser() 메서드는 유저를 저장하고 userId를 반환한다.")
+    @Test
+    void save() {
+        Long userId = userService.saveUser(user2);
+        Assertions.assertThat(userId).isEqualTo(user2.getId());
+    }
+
+    @DisplayName("findUserInfo() 메서드는 유저의 정보를 반환한다.")
+    @Test
+    void findUserInfo() {
+        UserInfoResponse userInfo = userService.findUserInfo(user1);
+        Assertions.assertThat(userInfo.getEmail()).isEqualTo(user1.getEmail());
+        Assertions.assertThat(userInfo.getNickName()).isEqualTo(user1.getNickName());
+        Assertions.assertThat(userInfo.getPhoneNumber()).isEqualTo(user1.getPhoneNumber());
+        Assertions.assertThat(userInfo.getProfileImage()).isEqualTo("");
+    }
 }

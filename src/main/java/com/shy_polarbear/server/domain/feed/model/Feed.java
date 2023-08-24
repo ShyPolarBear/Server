@@ -45,14 +45,22 @@ public class Feed extends BaseEntity {
     }
 
     public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
-        Feed feed = Feed.builder()
-                .title(title)
-                .content(content)
-                .feedImages(feedImages)
-                .author(author)
-                .build();
-        assignFeedToFeedImages(feedImages, feed);
-        return feed;
+        if (feedImages == null) {
+            return Feed.builder()
+                    .title(title)
+                    .content(content)
+                    .author(author)
+                    .build();
+        } else {
+            Feed feed = Feed.builder()
+                    .title(title)
+                    .content(content)
+                    .feedImages(feedImages)
+                    .author(author)
+                    .build();
+            assignFeedToFeedImages(feedImages, feed);
+            return feed;
+        }
     }
 
     private static void assignFeedToFeedImages(List<FeedImage> feedImages, Feed feed) {
@@ -68,7 +76,10 @@ public class Feed extends BaseEntity {
         this.title = title;
         this.content = content;
         this.feedImages.clear();
-        this.feedImages.addAll(feedImages);
+        if (feedImages != null) {
+            assignFeedToFeedImages(feedImages, this);
+            this.feedImages.addAll(feedImages);
+        }
     }
 
     public boolean isAuthor(User user) {

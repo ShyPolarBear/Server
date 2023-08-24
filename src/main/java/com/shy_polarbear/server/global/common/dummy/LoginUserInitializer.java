@@ -27,7 +27,7 @@ public class LoginUserInitializer {
     private String profileImage = "";
     private String phoneNumber = "01093926465";
     private UserRole userRole = UserRole.ROLE_USR;
-    private String providerId = "0";
+    private String providerId = "0000";
     private ProviderType provider = ProviderType.KAKAO;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
