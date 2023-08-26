@@ -1,14 +1,10 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.quiz.model.*;
-import com.shy_polarbear.server.domain.quiz.repository.MultipleChoiceRepository;
-import com.shy_polarbear.server.domain.quiz.repository.OXQuizRepository;
+import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
+import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
+import com.shy_polarbear.server.domain.quiz.model.OXChoice;
+import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
 import com.shy_polarbear.server.domain.quiz.repository.QuizRepository;
-import com.shy_polarbear.server.domain.quiz.repository.UserQuizRepository;
-import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
@@ -24,10 +20,6 @@ import javax.transaction.Transactional;
 @Transactional
 public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않음. 퀴즈 업데이트를 한다면..?
     private final QuizRepository quizRepository;
-    private final OXQuizRepository oxQuizRepository;
-    private final MultipleChoiceRepository multipleChoiceRepository;
-    private final UserRepository userRepository;
-    private final UserQuizRepository userQuizRepository;
 
     @PostConstruct
     public void init() {
@@ -51,23 +43,26 @@ public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않
     }
 
     private void createDummyMultipleChoiceQuiz() {
-        MultipleChoiceQuiz quiz1 = quizRepository.save(MultipleChoiceQuiz.builder().question("다음 중 일반 쓰레기가 아닌 것은?").explanation("정답은 바나나 껍질!!\n이 밖에도 파인애플 껍질은 일반쓰레기, 바나나 겁질은 음식물쓰레기, 족발 뼈나 갈비뼈 등은 일반쓰레기라는 점 기억해주세요!").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("견과류 껍데기").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("일회용 티백").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(true).content("바나나 껍질").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("계란 껍데기").build());
+        MultipleChoiceQuiz quiz1 = MultipleChoiceQuiz.builder().question("다음 중 일반 쓰레기가 아닌 것은?").explanation("정답은 바나나 껍질!!\n이 밖에도 파인애플 껍질은 일반쓰레기, 바나나 겁질은 음식물쓰레기, 족발 뼈나 갈비뼈 등은 일반쓰레기라는 점 기억해주세요!").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("견과류 껍데기").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("일회용 티백").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(true).content("바나나 껍질").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz1).isAnswer(false).content("계란 껍데기").build();
+        quizRepository.save(quiz1);
 
-        MultipleChoiceQuiz quiz2 = quizRepository.save(MultipleChoiceQuiz.builder().question("에너지를 절약할 수 있는 겨울철 적정 실내온도는?").explanation("보건복지부와 질병관리본부에서 정한 18~20도는 난방에너지 절약이 가능하며, 이보다 높은 실내온도를 유지할 경우 추운 날씨에 대한 인체 적응력 및 면역력이 떨어진다고 합니다.").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("13-16도").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("16-18도").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(true).content("18-20도").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("26-28도").build());
+        MultipleChoiceQuiz quiz2 = MultipleChoiceQuiz.builder().question("에너지를 절약할 수 있는 겨울철 적정 실내온도는?").explanation("보건복지부와 질병관리본부에서 정한 18~20도는 난방에너지 절약이 가능하며, 이보다 높은 실내온도를 유지할 경우 추운 날씨에 대한 인체 적응력 및 면역력이 떨어진다고 합니다.").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("13-16도").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("16-18도").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(true).content("18-20도").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz2).isAnswer(false).content("26-28도").build();
+        quizRepository.save(quiz2);
 
-        MultipleChoiceQuiz quiz3 = quizRepository.save(MultipleChoiceQuiz.builder().question("세계 환경의 날은 언제일까?").explanation("유연환경계획(UNEP)은 1987년부터 매년 세계 환경의 날을 맞아 그해의 주제를 선정 및 발표하며, 대륙별로 돌아가며 한 나라를 정해 행사를 개최하고 있는데요. 한국에서도 1997년에 세계 환경의 날 행사를 개최했습니다 :)").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("3월 22일").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("4월 22일").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(true).content("5월 31일").build());
-        multipleChoiceRepository.save(MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("6월 5일").build());
+        MultipleChoiceQuiz quiz3 = MultipleChoiceQuiz.builder().question("세계 환경의 날은 언제일까?").explanation("유연환경계획(UNEP)은 1987년부터 매년 세계 환경의 날을 맞아 그해의 주제를 선정 및 발표하며, 대륙별로 돌아가며 한 나라를 정해 행사를 개최하고 있는데요. 한국에서도 1997년에 세계 환경의 날 행사를 개최했습니다 :)").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("3월 22일").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("4월 22일").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(true).content("5월 31일").build();
+        MultipleChoice.builder().multipleChoiceQuiz(quiz3).isAnswer(false).content("6월 5일").build();
+        quizRepository.save(quiz3);
     }
 
 }

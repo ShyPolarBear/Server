@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.quiz.dto;
+package com.shy_polarbear.server.domain.quiz.dto.response;
 
 import lombok.Builder;
 
