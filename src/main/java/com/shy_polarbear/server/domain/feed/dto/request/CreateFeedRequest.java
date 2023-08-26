@@ -8,6 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.MAX_IMAGES_COUNT;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +18,6 @@ public class CreateFeedRequest {
     private String title;
     @NotBlank
     private String content;
-    @Size(max = 5)
+    @Size(max = MAX_IMAGES_COUNT)
     private List<String> feedImages;
 }
