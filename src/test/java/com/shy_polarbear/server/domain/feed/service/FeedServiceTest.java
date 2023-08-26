@@ -33,7 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@DisplayName("Feed 클래스")
+@DisplayName("FeedService 클래스")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
