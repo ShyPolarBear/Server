@@ -36,7 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
-*.yml
+application.yml
+application-local.yml
+application-dev.yml
+application-prod.yml
 application.properties
 
 ### just memo

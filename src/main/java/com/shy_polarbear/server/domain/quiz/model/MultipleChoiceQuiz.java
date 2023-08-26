@@ -18,8 +18,7 @@ public class MultipleChoiceQuiz extends Quiz {
     private List<MultipleChoice> multipleChoiceList = new ArrayList<>();
 
     @Builder
-    public MultipleChoiceQuiz(String question, String explanation, List<MultipleChoice> multipleChoiceList) {
+    public MultipleChoiceQuiz(String question, String explanation) {
         super(question, explanation);
-        this.multipleChoiceList = multipleChoiceList;
     }
 }

@@ -44,9 +44,27 @@ public class UserQuiz extends BaseEntity {
         this.submittedMultipleChoiceAnswer = submittedMultipleChoiceAnswer;
     }
 
-    //연관관계 편의 메서드
-    public void assignUser(User user) {
-        this.user = user;
-        user.addUserQuiz(this);
+    public static UserQuiz createUserOXQuiz(User user, Quiz quiz, boolean correct, OXChoice submittedOXAnswer) {
+        UserQuiz userQuiz = UserQuiz.builder()
+                .user(user)
+                .quiz(quiz)
+                .correct(correct)
+                .submittedOXAnswer(submittedOXAnswer)
+                .build();
+
+        user.addUserQuiz(userQuiz);
+        return userQuiz;
+    }
+
+    public static UserQuiz createUserMultipleChoiceQuiz(User user, Quiz quiz, boolean correct, MultipleChoice submittedMultipleChoiceAnswer) {
+        UserQuiz userQuiz = UserQuiz.builder()
+                .user(user)
+                .quiz(quiz)
+                .correct(correct)
+                .submittedMultipleChoiceAnswer(submittedMultipleChoiceAnswer)
+                .build();
+
+        user.addUserQuiz(userQuiz);
+        return userQuiz;
     }
 }

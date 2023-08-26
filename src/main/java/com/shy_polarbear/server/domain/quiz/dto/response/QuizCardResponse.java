@@ -1,8 +1,8 @@
-package com.shy_polarbear.server.domain.quiz.dto;
+package com.shy_polarbear.server.domain.quiz.dto.response;
 
+import com.shy_polarbear.server.domain.quiz.dto.QuizType;
 import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
 import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
-import com.shy_polarbear.server.domain.quiz.model.Quiz;
 import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import lombok.Builder;
 

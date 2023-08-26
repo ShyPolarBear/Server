@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.quiz.dto;
+package com.shy_polarbear.server.domain.quiz.dto.request;
 
 import javax.validation.constraints.NotNull;
 
