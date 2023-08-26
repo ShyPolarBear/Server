@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(name = "user_unique", columnNames = {"nickName", "providerId", "provider", "password"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "user_unique", columnNames = {"nickName", "providerId", "password"})})
 @DynamicInsert
 public class User extends BaseEntity {
 
