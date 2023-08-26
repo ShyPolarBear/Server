@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.global.common.constants;
 
-public class BusinessLogicConstants {
+public abstract class BusinessLogicConstants {
 
     /** 퀴즈 **/
     public static final int OX_QUIZ_TIME_LIMIT = 17;

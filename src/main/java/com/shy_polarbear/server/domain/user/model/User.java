@@ -18,7 +18,6 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(name = "user_unique", columnNames = {"nickName", "providerId", "password"})})
 @DynamicInsert
 public class User extends BaseEntity {
 
@@ -26,7 +25,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickName;
     @Column(nullable = false)
     private String email;
@@ -48,12 +47,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "blockedUser")
     private List<BlockedUser> blockedUsers = new ArrayList<>();
     private LocalDateTime lastLoginDate;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String providerId;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String password;
 
     public void addUserQuiz(UserQuiz userQuiz) {

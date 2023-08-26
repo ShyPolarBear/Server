@@ -17,6 +17,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shy_polarbear.server.global.common.dummy.LoginUserInitializer.LOGIN_USER_PROVIDER_ID;
+
 @Component
 @DependsOn("LoginUserInitializer")
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class FeedInitializer {
     }
 
     private void createDummyFeed() {
-        User user = userRepository.findByProviderId("0")
+        User user = userRepository.findByProviderId(LOGIN_USER_PROVIDER_ID)
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
         if (feedRepository.count() == 0) {
             log.info("더미 피드 10개를 생성합니다.");
