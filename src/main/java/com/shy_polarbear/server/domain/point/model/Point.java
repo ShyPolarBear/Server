@@ -28,7 +28,7 @@ public class Point extends BaseEntity {
     @Column(nullable = false)
     private PointType pointType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "point_value")
     private int value;
 
     @Builder
