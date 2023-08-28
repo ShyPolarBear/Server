@@ -40,7 +40,7 @@ public class Feed extends BaseEntity {
     private Feed(String title, String content, List<FeedImage> feedImages, User author) {
         this.title = title;
         this.content = content;
-        this.feedImages = feedImages;
+        this.feedImages.addAll(feedImages);
         this.author = author;
     }
 
