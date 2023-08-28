@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -54,9 +55,8 @@ class UserServiceTest {
     @DisplayName("닉네임이 중복된다면 DuplicateNicknameException을 던진다.")
     @Test
     void checkDuplicateNickName_exception() {
-        assertThrows(new DuplicateNicknameException
-                (ExceptionStatus.NOT_FOUND_USER, new DuplicateNicknameResponse(false)).getClass(),
-                () -> userService.checkDuplicateNickName(user1.getNickName()));
+        DuplicateNicknameException exception = assertThrows(DuplicateNicknameException.class, () -> userService.checkDuplicateNickName(user1.getNickName()));
+        assertThat(exception.getExceptionStatus()).isEqualTo(ExceptionStatus.NICKNAME_DUPLICATION);
     }
 
     @DisplayName("이미 가입한 유저라면 UserException을 던진다. ")

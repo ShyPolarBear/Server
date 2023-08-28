@@ -14,7 +14,6 @@ import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +29,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -69,48 +69,46 @@ class FeedServiceTest {
 
         CreateFeedRequest createFeedRequest = new CreateFeedRequest("111", "111", imageUrls);
         CreateFeedResponse createFeedResponse = feedService.createFeed(createFeedRequest, user);
-        Assertions.assertThat(createFeedResponse.getFeedId()).isNotNull();
+        assertThat(createFeedResponse.getFeedId()).isNotNull();
     }
 
     @DisplayName("findFeed()메서드는 피드가 존재하지 않는다면 FeedException을 던진다.")
     @Test
     void findFeed_exception() {
-        assertThrows(new FeedException
-                        (ExceptionStatus.NOT_FOUND_FEED).getClass(),
-                () -> feedService.findFeed(-1L, user));
+        FeedException feedException = assertThrows(FeedException.class, () -> feedService.findFeed(-1L, user));
+        assertThat(feedException.getExceptionStatus()).isEqualTo(ExceptionStatus.NOT_FOUND_FEED);
     }
 
     @DisplayName("findFeed()메서드는 피드가 존재하면 FeedResponse를 리턴한다.")
     @Test
     void findFeed() {
         FeedResponse feedResponse = feedService.findFeed(saveFeed.getId(), user);
-        Assertions.assertThat(feedResponse.getFeedId()).isEqualTo(saveFeed.getId());
+        assertThat(feedResponse.getFeedId()).isEqualTo(saveFeed.getId());
     }
 
     //수정 테스트 실패함
-//    @DisplayName("updateFeed() 메서드는 피드를 수정한다.")
-//    @Test
-//    void updateFeed() {
-//        UpdateFeedRequest updateFeedRequest = new UpdateFeedRequest("수정 제목", "수정 내용", null);
-//        feedService.updateFeed(saveFeed.getId(), updateFeedRequest, user);
-//        Feed feed = feedRepository.findById(saveFeed.getId()).get();
-//        Assertions.assertThat(feed.getTitle()).isEqualTo("수정 제목");
-//    }
+    @DisplayName("updateFeed() 메서드는 피드를 수정한다.")
+    @Test
+    void updateFeed() {
+        UpdateFeedRequest updateFeedRequest = new UpdateFeedRequest("수정 제목", "수정 내용", null);
+        feedService.updateFeed(saveFeed.getId(), updateFeedRequest, user);
+        Feed feed = feedRepository.findById(saveFeed.getId()).get();
+        assertThat(feed.getTitle()).isEqualTo("수정 제목");
+    }
 
     @DisplayName("updateFeed() 메서드는 유저가 피드 작성자가 아니라면 FeedException을 던진다.")
     @Test
     void updateFeed_exception() {
         UpdateFeedRequest updateFeedRequest = new UpdateFeedRequest("수정 제목", "수정 내용", null);
-        assertThrows(new FeedException
-                        (ExceptionStatus.NOT_MY_FEED).getClass(),
-                () -> feedService.updateFeed(saveFeed.getId(), updateFeedRequest, anotherUser));
+        FeedException feedException = assertThrows(FeedException.class, () -> feedService.updateFeed(saveFeed.getId(), updateFeedRequest, anotherUser));
+        assertThat(feedException.getExceptionStatus()).isEqualTo(ExceptionStatus.NOT_MY_FEED);
     }
 
     @DisplayName("switchFeedLike()는 좋아요 취소 상태에서 좋아요를 실행한다.")
     @Test
     void switchFeedLike_like() {
         LikeFeedResponse likeFeedResponse = feedService.switchFeedLike(saveFeed.getId(), user);
-        Assertions.assertThat(likeFeedResponse.getResult()).isEqualTo("좋아요 처리되었습니다.");
+        assertThat(likeFeedResponse.getResult()).isEqualTo("좋아요 처리되었습니다.");
     }
 
     @DisplayName("switchFeedLike()는 좋아요 상태에서 좋아요 취소를 실행한다.")
@@ -118,6 +116,6 @@ class FeedServiceTest {
     void switchFeedLike_cancel() {
         feedService.switchFeedLike(saveFeed.getId(), user);
         LikeFeedResponse likeFeedResponse = feedService.switchFeedLike(saveFeed.getId(), user);
-        Assertions.assertThat(likeFeedResponse.getResult()).isEqualTo("좋아요 취소되었습니다.");
+        assertThat(likeFeedResponse.getResult()).isEqualTo("좋아요 취소되었습니다.");
     }
 }
