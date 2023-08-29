@@ -66,7 +66,6 @@ class FeedServiceTest {
     @DisplayName("createFeed() 메서드는 CreateFeedResponse에 feedId를 담아 리턴한다.")
     @Test
     void createFeed() {
-
         CreateFeedRequest createFeedRequest = new CreateFeedRequest("111", "111", imageUrls);
         CreateFeedResponse createFeedResponse = feedService.createFeed(createFeedRequest, user);
         assertThat(createFeedResponse.getFeedId()).isNotNull();
@@ -75,8 +74,9 @@ class FeedServiceTest {
     @DisplayName("findFeed()메서드는 피드가 존재하지 않는다면 FeedException을 던진다.")
     @Test
     void findFeed_exception() {
-        FeedException feedException = assertThrows(FeedException.class, () -> feedService.findFeed(-1L, user));
-        assertThat(feedException.getExceptionStatus()).isEqualTo(ExceptionStatus.NOT_FOUND_FEED);
+        assertThatThrownBy( () -> feedService.findFeed(-1L, user))
+                .isInstanceOf(FeedException.class)
+                .hasMessage(ExceptionStatus.NOT_FOUND_FEED.getMessage());
     }
 
     @DisplayName("findFeed()메서드는 피드가 존재하면 FeedResponse를 리턴한다.")
@@ -100,8 +100,9 @@ class FeedServiceTest {
     @Test
     void updateFeed_exception() {
         UpdateFeedRequest updateFeedRequest = new UpdateFeedRequest("수정 제목", "수정 내용", null);
-        FeedException feedException = assertThrows(FeedException.class, () -> feedService.updateFeed(saveFeed.getId(), updateFeedRequest, anotherUser));
-        assertThat(feedException.getExceptionStatus()).isEqualTo(ExceptionStatus.NOT_MY_FEED);
+        assertThatThrownBy(() -> feedService.updateFeed(saveFeed.getId(), updateFeedRequest, anotherUser))
+                .isInstanceOf(FeedException.class)
+                .hasMessage(ExceptionStatus.NOT_MY_FEED.getMessage());
     }
 
     @DisplayName("switchFeedLike()는 좋아요 취소 상태에서 좋아요를 실행한다.")

@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.feed.exception.FeedException;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -55,15 +57,17 @@ class UserServiceTest {
     @DisplayName("닉네임이 중복된다면 DuplicateNicknameException을 던진다.")
     @Test
     void checkDuplicateNickName_exception() {
-        DuplicateNicknameException exception = assertThrows(DuplicateNicknameException.class, () -> userService.checkDuplicateNickName(user1.getNickName()));
-        assertThat(exception.getExceptionStatus()).isEqualTo(ExceptionStatus.NICKNAME_DUPLICATION);
+        assertThatThrownBy(() ->  userService.checkDuplicateNickName(user1.getNickName()))
+                .isInstanceOf(DuplicateNicknameException.class)
+                .hasMessage(ExceptionStatus.NICKNAME_DUPLICATION.getMessage());
     }
 
     @DisplayName("이미 가입한 유저라면 UserException을 던진다. ")
     @Test
     void checkDuplicateUser() {
-        assertThrows(new UserException(ExceptionStatus.USER_ALREADY_EXISTS).getClass(),
-                () -> userService.checkDuplicateUser(user1.getProviderId()));
+        assertThatThrownBy(() ->  userService.checkDuplicateUser(user1.getProviderId()))
+                .isInstanceOf(UserException.class)
+                .hasMessage(ExceptionStatus.USER_ALREADY_EXISTS.getMessage());
     }
 
     @DisplayName("saveUser() 메서드는 유저를 저장하고 userId를 반환한다.")
