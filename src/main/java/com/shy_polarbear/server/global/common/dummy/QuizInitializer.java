@@ -8,6 +8,7 @@ import com.shy_polarbear.server.domain.quiz.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Profile({"local", "dev"})
 public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않음. 퀴즈 업데이트를 한다면..?
     private final QuizRepository quizRepository;
 

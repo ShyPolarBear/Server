@@ -8,7 +8,6 @@ import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.auth.security.SecurityUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -40,56 +39,43 @@ public class UserService {
         }
     }
 
-    public Long save(User user) {
+    public Long saveUser(User user) {
         userRepository.save(user);
         return user.getId();
     }
 
-    public UserInfoResponse findUserInfo() {
-        User findUser = getCurruentUser();
-        return UserInfoResponse.from(findUser);
+    public UserInfoResponse findUserInfo(User user) {
+        return UserInfoResponse.from(user);
     }
 
-    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest) {
-        User findUser = getCurruentUser();
-        if (!findUser.isSameNickName(userInfoRequest.getNickName())) {
+    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest, User user) {
+        if (!user.isSameNickName(userInfoRequest.getNickName())) {
             checkDuplicateNickName(userInfoRequest.getNickName());
         }
-        findUser.updateInfo(userInfoRequest.getNickName(), userInfoRequest.getProfileImage(), userInfoRequest.getEmail(), userInfoRequest.getPhoneNumber());
-        return UpdateUserInfoResponse.from(findUser);
-    }
-
-    public User getCurruentUser() {
-        String providerId = SecurityUtils.getLoginUserProviderId();
-        User findUser = userRepository.findByProviderId(providerId)
-                .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
-        return findUser;
+        user.updateInfo(userInfoRequest.getNickName(), userInfoRequest.getProfileImage(), userInfoRequest.getEmail(), userInfoRequest.getPhoneNumber());
+        return UpdateUserInfoResponse.from(user);
     }
 
     public User getUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
     }
 
-    public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit) {
-        User user = getCurruentUser();
+    public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit, User user) {
         Slice<Feed> findFeedList = feedRepository.findByIdLessThanAndAuthorOrderByIdDesc(lastFeedId, user, PageRequest.of(0, limit));
         return getUserFeedsResponse(findFeedList);
     }
 
-    public UserFeedsResponse findUserFeeds(Integer limit) {
-        User user = getCurruentUser();
+    public UserFeedsResponse findUserFeeds(Integer limit, User user) {
         Slice<Feed> findFeedList = feedRepository.findByAuthorOrderByIdDesc(user, PageRequest.of(0, limit));
         return getUserFeedsResponse(findFeedList);
     }
 
-    public UserCommentFeedsResponse findUserCommentFeedsByCursorId(Long lastCommentId, Integer limit) {
-        User user = getCurruentUser();
+    public UserCommentFeedsResponse findUserCommentFeedsByCursorId(Long lastCommentId, Integer limit, User user) {
         Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorAndCommentsIdLessThanOrderByCommentsIdDesc(user, lastCommentId, PageRequest.of(0, limit));
         return getUserCommentFeedsResponse(findFeedList);
     }
 
-    public UserCommentFeedsResponse findUserCommentFeeds(Integer limit) {
-        User user = getCurruentUser();
+    public UserCommentFeedsResponse findUserCommentFeeds(Integer limit, User user) {
         Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorOrderByCommentsIdDesc(user, PageRequest.of(0, limit));
         return getUserCommentFeedsResponse(findFeedList);
     }

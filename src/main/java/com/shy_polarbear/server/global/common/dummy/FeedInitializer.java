@@ -10,6 +10,7 @@ import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,11 +18,14 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shy_polarbear.server.global.common.dummy.LoginUserInitializer.LOGIN_USER_PROVIDER_ID;
+
 @Component
 @DependsOn("LoginUserInitializer")
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Profile({"local", "dev"})
 public class FeedInitializer {
 
     private final FeedRepository feedRepository;
@@ -33,7 +37,7 @@ public class FeedInitializer {
     }
 
     private void createDummyFeed() {
-        User user = userRepository.findByProviderId("0000")
+        User user = userRepository.findByProviderId(LOGIN_USER_PROVIDER_ID)
                 .orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
         if (feedRepository.count() == 0) {
             log.info("더미 피드 10개를 생성합니다.");
@@ -41,7 +45,7 @@ public class FeedInitializer {
                 List<String> feedUrls = new ArrayList<>();
                 feedUrls.add("테스트 사진");
                 List<FeedImage> feedImages = FeedImage.createFeedImages(feedUrls);
-                Feed feed = Feed.createFeed("제목" + i, null, feedImages, user);
+                Feed feed = Feed.createFeed("제목" + i, "", feedImages, user);
                 feedRepository.save(feed);
             }
         }

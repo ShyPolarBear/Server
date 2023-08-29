@@ -5,6 +5,7 @@ import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -15,37 +16,44 @@ import java.util.Objects;
 
 @Getter
 @Entity
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DynamicInsert
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+    @Column(nullable = false, unique = true)
     private String nickName;
+    @Column(nullable = false)
     private String email;
     private String profileImage;
+    @Column(nullable = false)
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private UserRole role;
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-
-    //TODO: 기본값 설정하기
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isBlackListUser;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserQuiz> userQuiz = new ArrayList<>();
-
     @OneToMany(mappedBy = "user")
     private List<Point> points = new ArrayList<>();
 
     // this 유저가 차단한 유저 리스트
     @OneToMany(mappedBy = "blockedUser")
-    List<BlockedUser> blockedUsers = new ArrayList<>();
+    private List<BlockedUser> blockedUsers = new ArrayList<>();
     private LocalDateTime lastLoginDate;
+    @Column(nullable = false, unique = true)
     private String providerId;
-    private String provider;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
+    @Column(nullable = false, unique = true)
     private String password;
 
     public void addUserQuiz(UserQuiz userQuiz) {
@@ -58,15 +66,14 @@ public class User extends BaseEntity {
 
     @Builder
     public User(Long id, String nickName, String email, String profileImage,
-                String phoneNumber, UserRole role, Boolean isBlackListUser,
-                String providerId, String provider, String password) {
+                String phoneNumber, UserRole role,
+                String providerId, ProviderType provider, String password) {
         this.id = id;
         this.nickName = nickName;
         this.email = email;
         this.profileImage = profileImage;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.isBlackListUser = isBlackListUser;
         this.providerId = providerId;
         this.provider = provider;
         this.password = password;
@@ -75,7 +82,7 @@ public class User extends BaseEntity {
 
 
     public static User createUser(String nickName, String email, String profileImage,
-                                  String phoneNumber, UserRole role, String providerId, String provider, PasswordEncoder passwordEncoder) {
+                                  String phoneNumber, UserRole role, String providerId, ProviderType provider, PasswordEncoder passwordEncoder) {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)

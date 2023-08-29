@@ -5,9 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.MAX_IMAGES_COUNT;
 
 @Getter
 @NoArgsConstructor
@@ -17,7 +18,6 @@ public class CreateFeedRequest {
     private String title;
     @NotBlank
     private String content;
-    @NotNull
-    @Size(min = 1, max = 5)
+    @Size(max = MAX_IMAGES_COUNT)
     private List<String> feedImages;
 }

@@ -27,7 +27,9 @@ public class FeedImage {
     }
 
     public static List<FeedImage> createFeedImages(List<String> urls) {
-        return urls.stream().map(url -> new FeedImage(url)).toList();
+        return urls.stream()
+                .map(url -> new FeedImage(url))
+                .toList();
     }
 
     void assignFeed(Feed feed) {

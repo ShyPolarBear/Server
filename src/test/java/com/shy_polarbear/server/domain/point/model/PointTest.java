@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.point.model;
 
+import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ class PointTest {
 
     @BeforeEach
     void setUp() {
-        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, null, null, passwordEncoder);
+        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, "1111", ProviderType.KAKAO, passwordEncoder);
     }
 
     @DisplayName("Point 객체가 생성되면 User의 point 값이 변경된다.")

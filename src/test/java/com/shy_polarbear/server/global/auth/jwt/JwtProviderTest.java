@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.global.auth.jwt;
 
 
+import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
@@ -28,29 +30,34 @@ class JwtProviderTest  {
     private final String email = "chi6465618@naver.com";
     private final String profileImage = "";
     private final String phoneNumber = "01093926465";
-    private final UserRole role = UserRole.ROLE_USR;
-    @Autowired private UserRepository userRepository;
+    private final UserRole userRole = UserRole.ROLE_USR;
+    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JwtProvider jwtProvider;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .nickName(nickName)
-                .email(email)
-                .profileImage(profileImage)
-                .phoneNumber(phoneNumber)
-                .role(role)
-                .providerId("1111")
-                .build();
-        userRepository.save(user);
+        user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, "0000", ProviderType.KAKAO, passwordEncoder);
     }
-    @Autowired private JwtProvider jwtProvider;
 
     @DisplayName("createAccessToken 메서드는 User가 주어지면, accessToken을 리턴한다.")
     @Test
     void createAccessToken() {
         String accessToken = jwtProvider.createAccessToken(user);
+        String tokenPayload = jwtProvider.getTokenPayload(accessToken);
+
         Assertions.assertThat(accessToken).isNotEmpty();
+        Assertions.assertThat(tokenPayload).isEqualTo("0000");
         assertThatCode(() -> jwtProvider.isValidateAccessToken(accessToken)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("createRefreshToken 메서드는 User가 주어지면, refreshToken을 리턴한다.")
+    @Test
+    void createRefreshToken() {
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        String tokenPayload = jwtProvider.getTokenPayload(refreshToken);
+
+        Assertions.assertThat(refreshToken).isNotEmpty();
+        Assertions.assertThat(tokenPayload).isEqualTo("0000");
+        assertThatCode(() -> jwtProvider.isValidateRefreshToken(refreshToken)).doesNotThrowAnyException();
     }
 }

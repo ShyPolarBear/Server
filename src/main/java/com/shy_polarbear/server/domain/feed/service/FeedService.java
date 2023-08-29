@@ -11,7 +11,6 @@ import com.shy_polarbear.server.domain.feed.repository.FeedLikeRepository;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.images.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,29 +24,34 @@ import java.util.List;
 public class FeedService {
 
     private final FeedRepository feedRepository;
-    private final UserService userService;
     private final ImageService imageService;
     private final FeedLikeRepository feedLikeRepository;
 
-    public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest) {
-        User user = userService.getCurruentUser();
-        List<FeedImage> feedImages = FeedImage.createFeedImages(createFeedRequest.getFeedImages());
+    public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest, User user) {
+        List<String> imageUrls = createFeedRequest.getFeedImages();
+        List<FeedImage> feedImages = getFeedImages(imageUrls);
         Feed feed = Feed.createFeed(createFeedRequest.getTitle(), createFeedRequest.getContent(), feedImages, user);
         feedRepository.save(feed);
         return new CreateFeedResponse(feed.getId());
     }
 
-    public FeedResponse findFeed(Long feedId) {
-        User user = userService.getCurruentUser();
+    private static List<FeedImage> getFeedImages(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.size() == 0) {
+            return null;
+        } else {
+            return FeedImage.createFeedImages(imageUrls);
+        }
+    }
+
+    public FeedResponse findFeed(Long feedId, User user) {
         Feed findFeed = findFeedById(feedId);
         return FeedResponse.from(findFeed, findFeed.isLike(user), findFeed.isAuthor(user));
     }
 
-    public UpdateFeedResponse updateFeed(Long feedId, UpdateFeedRequest updateFeedRequest) {
-        User user = userService.getCurruentUser();
+    public UpdateFeedResponse updateFeed(Long feedId, UpdateFeedRequest updateFeedRequest, User user) {
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
-        List<FeedImage> feedImages = FeedImage.createFeedImages(updateFeedRequest.getFeedImages());
+        List<FeedImage> feedImages = getFeedImages(updateFeedRequest.getFeedImages());
         findFeed.update(updateFeedRequest.getTitle(), updateFeedRequest.getContent(), feedImages);
         return new UpdateFeedResponse(feedId);
     }
@@ -64,8 +68,7 @@ public class FeedService {
         }
     }
 
-    public DeleteFeedResponse deleteFeed(Long feedId) {
-        User user = userService.getCurruentUser();
+    public DeleteFeedResponse deleteFeed(Long feedId, User user) {
         Feed findFeed = findFeedById(feedId);
         checkFeedAuthor(user, findFeed);
         feedRepository.delete(findFeed);
@@ -76,8 +79,7 @@ public class FeedService {
         return new DeleteFeedResponse(feedId);
     }
 
-    public LikeFeedResponse switchFeedLike(Long feedId) {
-        User user = userService.getCurruentUser();
+    public LikeFeedResponse switchFeedLike(Long feedId, User user) {
         Feed feed = findFeedById(feedId);
         if (!feedLikeRepository.existsByUserAndFeed(user, feed)) {
             FeedLike feedLike = FeedLike.createFeedLike(feed, user);
