@@ -76,7 +76,7 @@ public class QuizService {
         OXQuiz oxQuiz = oxQuizRepository.findById(quizId)
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
 
-        OXChoice submittedChoice = OXChoice.toEnum(request.answer());
+        OXChoice submittedChoice = OXChoice.toEnum(request.getAnswer());
         boolean isCorrect = submittedChoice.equals(oxQuiz.getAnswer()); // 제출된 답안과 실제 답 비교
         userQuizRepository.save(UserQuiz.createUserOXQuiz(user, oxQuiz, isCorrect, submittedChoice));
 
@@ -93,7 +93,7 @@ public class QuizService {
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
         List<MultipleChoice> multipleChoiceList = multipleChoiceRepository.findAllByMultipleChoiceQuizId(quizId);
 
-        MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.answerId())).findFirst()
+        MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.getAnswerId())).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
         MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::isAnswer).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.SERVER_ERROR));    // 답이 없는 퀴즈는 서버쪽 오류
