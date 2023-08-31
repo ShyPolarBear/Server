@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryCustom {
     Slice<Feed> findByIdLessThanAndAuthorOrderByIdDesc(Long id, User author, Pageable pageable);
 
     Slice<Feed> findByCommentsAuthorAndCommentsIdLessThanOrderByCommentsIdDesc(User author, Long commentId, Pageable pageable);
