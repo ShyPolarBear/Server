@@ -95,7 +95,7 @@ public class QuizService {
 
         MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.answerId())).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
-        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::isAnswer).findFirst()
+        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::getIsAnswer).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.SERVER_ERROR));    // 답이 없는 퀴즈는 서버쪽 오류
 
         boolean isCorrect = submittedChoice.equals(answer); // 제출된 답안과 실제 답 비교

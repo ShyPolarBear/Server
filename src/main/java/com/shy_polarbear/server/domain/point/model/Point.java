@@ -29,10 +29,10 @@ public class Point extends BaseEntity {
     private PointType pointType;
 
     @Column(nullable = false, name = "point_value")
-    private int value;
+    private Integer value;
 
     @Builder
-    private Point(User user, PointType pointType, int value) {
+    private Point(User user, PointType pointType, Integer value) {
         this.user = user;
         this.pointType = pointType;
         this.value = value;

@@ -23,14 +23,14 @@ public class MultipleChoice extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private boolean isAnswer;
+    private Boolean isAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
     private MultipleChoiceQuiz multipleChoiceQuiz;
 
     @Builder
-    public MultipleChoice(String content, boolean isAnswer, MultipleChoiceQuiz multipleChoiceQuiz) {
+    public MultipleChoice(String content, Boolean isAnswer, MultipleChoiceQuiz multipleChoiceQuiz) {
         this.content = content;
         this.isAnswer = isAnswer;
         setInitialMultipleChoiceQuiz(multipleChoiceQuiz);
