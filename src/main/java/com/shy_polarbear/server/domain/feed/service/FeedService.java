@@ -11,11 +11,18 @@ import com.shy_polarbear.server.domain.feed.repository.FeedLikeRepository;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.images.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
+import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -26,6 +33,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final ImageService imageService;
     private final FeedLikeRepository feedLikeRepository;
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest, User user) {
         List<String> imageUrls = createFeedRequest.getFeedImages();
@@ -89,5 +97,38 @@ public class FeedService {
             feedLikeRepository.deleteByUserAndFeed(user, feed);
             return new LikeFeedResponse("좋아요 취소되었습니다.");
         }
+    }
+
+    public PageResponse<FeedCardResponse> findAllFeeds(String sort, Long lastFeedId, int limit) {
+        FeedSort feedSort = FeedSort.toEnum(sort);
+
+        switch (feedSort) {
+            case BEST:
+                findBestFeeds(lastFeedId, limit);
+                break;
+            case RECENT:
+                findRecentFeeds(lastFeedId, limit);
+                break;
+            case RECENT_BEST:
+                findRecentBestFeeds(lastFeedId, limit);
+                break;
+        }
+
+        return null;
+    }
+
+    private Slice<Feed> findBestFeeds(Long lastFeedId, int limit) {
+        return feedRepository.findBestFeeds(lastFeedId, BusinessLogicConstants.BEST_FEED_MIN_LIKE_COUNT, limit);
+    }
+
+    private Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {
+        return feedRepository.findRecentFeeds(lastFeedId, limit);
+    }
+
+    private Slice<Feed> findRecentBestFeeds(Long lastFeedId, int limit) {
+        String earliestDate = LocalDateTime.now()
+                .minusDays(BusinessLogicConstants.RECENT_BEST_FEED_DAY_LIMIT)
+                .format(dateTimeFormatter);
+        return feedRepository.findRecentBestFeeds(lastFeedId, earliestDate, limit);
     }
 }

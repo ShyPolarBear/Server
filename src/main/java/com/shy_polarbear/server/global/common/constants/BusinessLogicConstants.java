@@ -11,5 +11,7 @@ public abstract class BusinessLogicConstants {
     /** 피드 **/
     public static final int MAX_IMAGES_COUNT = 5;
     public static final int BEST_FEED_MIN_LIKE_COUNT = 50;
+    public static final String FEED_LIMIT_PARAM_DEFAULT_VALUE = "10";
+    public static final int RECENT_BEST_FEED_DAY_LIMIT = 7;
 
 }
