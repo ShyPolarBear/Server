@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.domain.feed.service;
 
+import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.dto.request.CreateFeedRequest;
 import com.shy_polarbear.server.domain.feed.dto.request.UpdateFeedRequest;
 import com.shy_polarbear.server.domain.feed.dto.response.*;
@@ -19,10 +20,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -33,6 +32,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final ImageService imageService;
     private final FeedLikeRepository feedLikeRepository;
+    private final CommentRepository commentRepository;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest, User user) {
@@ -99,21 +99,25 @@ public class FeedService {
         }
     }
 
-    public PageResponse<FeedCardResponse> findAllFeeds(String sort, Long lastFeedId, int limit) {
+    public PageResponse<FeedCardResponse> findAllFeeds(String sort, Long lastFeedId, int limit, User user) {
+        //정렬 기준에 따라 피드 엔티티 가져오기
         FeedSort feedSort = FeedSort.toEnum(sort);
-
+        Slice<Feed> feeds;
         switch (feedSort) {
             case BEST:
-                findBestFeeds(lastFeedId, limit);
+                feeds = findBestFeeds(lastFeedId, limit);
                 break;
             case RECENT:
-                findRecentFeeds(lastFeedId, limit);
+                feeds = findRecentFeeds(lastFeedId, limit);
                 break;
             case RECENT_BEST:
-                findRecentBestFeeds(lastFeedId, limit);
+                feeds = findRecentBestFeeds(lastFeedId, limit);
                 break;
         }
 
+        // 베스트 댓글 or 최신 댓글 가져오기
+
+        //DTO로 반환
         return null;
     }
 

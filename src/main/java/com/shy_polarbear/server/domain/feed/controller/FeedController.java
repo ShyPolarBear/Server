@@ -30,8 +30,9 @@ public class FeedController {
     @GetMapping
     public ApiResponse<?> findAllFeeds(@RequestParam String sort,
                                       @RequestParam(required = false) Long lastFeedId,
-                                      @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) int limit) {
-        return ApiResponse.success(feedService.findAllFeeds(sort, lastFeedId, limit));
+                                      @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) int limit,
+                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.success(feedService.findAllFeeds(sort, lastFeedId, limit, principalDetails.getUser()));
     }
 
     @GetMapping("/{feedId}")

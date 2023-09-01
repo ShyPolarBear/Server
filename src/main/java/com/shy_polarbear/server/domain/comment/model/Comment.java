@@ -77,4 +77,8 @@ public class Comment extends BaseEntity {
         this.parent = comment;
     }
 
+    public boolean isAuthor(User user) {
+        return this.author.getId().equals(user.getId());
+    }
+    
 }
