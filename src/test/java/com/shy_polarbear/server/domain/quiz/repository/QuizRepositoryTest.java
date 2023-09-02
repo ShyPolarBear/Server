@@ -1,25 +1,31 @@
 package com.shy_polarbear.server.domain.quiz.repository;
 
 import com.shy_polarbear.server.config.TestJpaConfig;
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
-import com.shy_polarbear.server.domain.quiz.model.OXChoice;
-import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
+import com.shy_polarbear.server.domain.quiz.exception.QuizException;
+import com.shy_polarbear.server.domain.quiz.model.*;
+import com.shy_polarbear.server.domain.user.model.ProviderType;
+import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.global.exception.ExceptionStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Slice;
 
-import javax.validation.ConstraintViolationException;
-
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 @Import(TestJpaConfig.class)
 public class QuizRepositoryTest {
+    private User dummyUser;
+    private OXQuiz dummyOXQuiz;
+    private final int DUMMY_SUBMITTED_QUIZ_SIZE = 100;
+
     @Autowired
     private QuizRepository quizRepository;
 
@@ -28,6 +34,41 @@ public class QuizRepositoryTest {
 
     @Autowired
     private MultipleChoiceQuizRepository multipleChoiceQuizRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserQuizRepository userQuizRepository;
+
+    @BeforeEach
+    void setUp() {
+        this.dummyUser = userRepository.save(User.builder()
+                .nickName("ws")
+                .email("ws@naver.com")
+                .profileImage(null)
+                .phoneNumber("010558820")
+                .role(UserRole.ROLE_USR)
+                .provider(ProviderType.KAKAO)
+                .providerId("1")
+                .password("1@password")
+                .build());
+
+        this.dummyOXQuiz = quizRepository.save(OXQuiz.builder() // 제출되지 않을 퀴즈
+                .question("질문 2")
+                .explanation("설명 2")
+                .answer(OXChoice.O)
+                .build());
+
+        for (int i = 0; i < DUMMY_SUBMITTED_QUIZ_SIZE; i++) {// 제출된 퀴즈 100개
+            OXQuiz oxQuiz = quizRepository.save(OXQuiz.builder()
+                    .question("질문" + i)
+                    .explanation("설명" + i)
+                    .answer(OXChoice.O)
+                    .build());
+            userQuizRepository.save(UserQuiz.createUserOXQuiz(dummyUser, oxQuiz, false, OXChoice.X)); // 제출 처리. 정답이 아니더라도 제출한 것
+        }
+    }
 
     @Test
     @DisplayName("OXQuiz INSERT 성공")
@@ -108,8 +149,43 @@ public class QuizRepositoryTest {
         // when & then
         assertThatThrownBy(() -> multipleChoiceQuizRepository.save(quiz))
                 .isInstanceOf(DataIntegrityViolationException.class)
-                .hasStackTraceContaining("NULL not allowed for column \"IS_ANSWER\"")
-        ;
+                .hasStackTraceContaining("NULL not allowed for column \"IS_ANSWER\"");
     }
 
+    @Test
+    @DisplayName("findRecentQuizNotYetSolvedByUser 성공")
+    public void findRecentQuizNotYetSolvedByUserSuccess() {
+        // given
+
+        // when & then
+        assertThat(quizRepository.findRecentQuizNotYetSolvedByUser(dummyUser.getId())
+                .orElseThrow(() -> new QuizException(ExceptionStatus.NO_MORE_DAILY_QUIZ)))
+                .isEqualTo(dummyOXQuiz);
+    }
+
+    @Test
+    @DisplayName("findRecentQuizzesAlreadySolvedByUser 성공")
+    public void findRecentQuizzesAlreadySolvedByUserSuccess() {
+        // given
+        final int limit = 10;
+
+        // when
+        Slice<Quiz> queryResult = quizRepository.findRecentQuizzesAlreadySolvedByUser(dummyUser.getId(), limit);
+
+        // then
+        assertThat(queryResult.hasContent()).isEqualTo(true);
+        assertThat(queryResult.toList().size()).isEqualTo(limit);
+    }
+
+    @Test
+    @DisplayName("countAllRecentQuizzesAlreadySolvedByUser 성공")
+    public void countAllRecentQuizzesAlreadySolvedByUserSuccess() {
+        // given
+
+        // when
+        Long count = quizRepository.countAllRecentQuizzesAlreadySolvedByUser(dummyUser.getId());
+
+        // then
+        assertThat(count).isEqualTo(DUMMY_SUBMITTED_QUIZ_SIZE);
+    }
 }
