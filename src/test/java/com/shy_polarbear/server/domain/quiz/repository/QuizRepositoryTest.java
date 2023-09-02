@@ -153,7 +153,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("findRecentQuizNotYetSolvedByUser 성공")
+    @DisplayName("findRecentQuizNotYetSolvedByUser 성공: 아직 제출하지 않은 퀴즈만 조회한다")
     public void findRecentQuizNotYetSolvedByUserSuccess() {
         // given
 
@@ -164,7 +164,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("findRecentQuizzesAlreadySolvedByUser 성공")
+    @DisplayName("findRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈만 조회한다")
     public void findRecentQuizzesAlreadySolvedByUserSuccess() {
         // given
         final int limit = 10;
@@ -178,7 +178,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("countAllRecentQuizzesAlreadySolvedByUser 성공")
+    @DisplayName("countAllRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈의 카운트를 조회한다")
     public void countAllRecentQuizzesAlreadySolvedByUserSuccess() {
         // given
 
