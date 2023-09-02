@@ -8,9 +8,7 @@ import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -19,6 +17,7 @@ import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 @DataJpaTest
 @Import(TestJpaConfig.class)
 public class QuizRepositoryTest {
@@ -71,7 +70,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("OXQuiz INSERT 성공")
+    @DisplayName("INSERT OXQuiz 성공")
     public void OXQuizInsertSuccess() {
         // given
         OXQuiz oxQuiz = OXQuiz.builder().question("질문").explanation("설명").answer(OXChoice.O).build();
@@ -81,7 +80,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("MultipleChoiceQuiz INSERT 성공")
+    @DisplayName("INSERT MultipleChoiceQuiz 성공")
     public void MultipleChoiceQuizInsertSuccess() {
         // given
         MultipleChoiceQuiz quiz = MultipleChoiceQuiz.builder().question("질문").explanation("설명").build();
@@ -95,7 +94,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("Quiz INSERT 실패: question 필드 NOT NULL 제약 조건 위배")
+    @DisplayName("INSERT Quiz 실패: question 필드 NOT NULL 제약 조건 위배")
     public void OXQuizInsertFailByQuestionFieldConstraintViolation() {
         // given
         OXQuiz invalidOXQuiz = OXQuiz.builder().question(null).explanation("설명").answer(OXChoice.O).build();
@@ -111,7 +110,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("Quiz INSERT 실패: explanation 필드 NOT NULL 제약 조건 위배")
+    @DisplayName("INSERT Quiz 실패: explanation 필드 NOT NULL 제약 조건 위배")
     public void OXQuizInsertFailByExplanationFieldConstraintViolation() {
         // given
         OXQuiz invalidOXQuiz = OXQuiz.builder().question("질문").explanation(null).answer(OXChoice.O).build();
@@ -127,7 +126,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("MultipleChoice INSERT 실패: MultipleChoice.content NOT NULL 제약 조건 위배")
+    @DisplayName("INSERT MultipleChoice 실패: MultipleChoice.content NOT NULL 제약 조건 위배")
     public void MultipleChoiceInsertFailByContentConstraintViolation() {
         // given
         MultipleChoiceQuiz quiz = MultipleChoiceQuiz.builder().question("질문").explanation("설명").build();
@@ -140,7 +139,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("MultipleChoice INSERT 실패: MultipleChoice.isAnswer NOT NULL 제약 조건 위배")
+    @DisplayName("INSERT MultipleChoice 실패: MultipleChoice.isAnswer NOT NULL 제약 조건 위배")
     public void MultipleChoiceInsertFailByIsAnswerConstraintViolation() {
         // given
         MultipleChoiceQuiz quiz = MultipleChoiceQuiz.builder().question("질문").explanation("설명").build();
@@ -153,7 +152,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("findRecentQuizNotYetSolvedByUser 성공: 아직 제출하지 않은 퀴즈만 조회한다")
+    @DisplayName("SELECT findRecentQuizNotYetSolvedByUser 성공: 아직 제출하지 않은 퀴즈만 조회한다")
     public void findRecentQuizNotYetSolvedByUserSuccess() {
         // given
 
@@ -164,7 +163,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("findRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈만 조회한다")
+    @DisplayName("SELECT findRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈만 조회한다")
     public void findRecentQuizzesAlreadySolvedByUserSuccess() {
         // given
         final int limit = 10;
@@ -178,7 +177,7 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("countAllRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈의 카운트를 조회한다")
+    @DisplayName("SELECT countAllRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈의 카운트를 조회한다")
     public void countAllRecentQuizzesAlreadySolvedByUserSuccess() {
         // given
 
