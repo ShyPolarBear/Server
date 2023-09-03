@@ -43,8 +43,7 @@ public class FeedCardResponse {
         private String createdDate;
     }
 
-    public static FeedCardResponse of(Feed feed, Boolean isFeedAuthor, Boolean isFeedLike,
-                                      int commentCount, Comment comment, Boolean isCommentAuthor, Boolean isCommentLike) {
+    public static FeedCardResponse of(Feed feed, Comment comment, User user) {
         User commentAuthor = comment.getAuthor();
         FeedCommentResponse feedCommentResponse = FeedCommentResponse.builder()
                 .commentId(comment.getId())
@@ -52,8 +51,8 @@ public class FeedCardResponse {
                 .authorProfileImage((commentAuthor.getProfileImage() == null) ? "" : commentAuthor.getProfileImage())
                 .content(comment.getContent())
                 .likeCount(comment.getCommentLikes().size())
-                .isAuthor(isCommentAuthor)
-                .isLike(isCommentLike)
+                .isAuthor(comment.isAuthor(user))
+                .isLike(comment.isLike(user))
                 .createdDate(comment.getCreatedDate())
                 .build();
 
@@ -67,9 +66,9 @@ public class FeedCardResponse {
                 .author(feedAuthor.getNickName())
                 .authorProfileImage((feedAuthor.getProfileImage() == null) ? "" : feedAuthor.getProfileImage())
                 .createdDate(feed.getCreatedDate())
-                .isLike(isFeedLike)
-                .isAuthor(isFeedAuthor)
-                .commentCount(commentCount)
+                .isLike(feed.isLike(user))
+                .isAuthor(feed.isAuthor(user))
+                .commentCount(feed.getComments().size())
                 .comment(feedCommentResponse)
                 .build();
         return feedCardResponse;

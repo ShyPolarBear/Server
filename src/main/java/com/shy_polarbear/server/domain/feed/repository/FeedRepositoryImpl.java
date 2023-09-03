@@ -1,22 +1,15 @@
 package com.shy_polarbear.server.domain.feed.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
 
 import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
 

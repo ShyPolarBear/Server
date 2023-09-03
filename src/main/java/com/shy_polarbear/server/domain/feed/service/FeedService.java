@@ -102,7 +102,7 @@ public class FeedService {
     public PageResponse<FeedCardResponse> findAllFeeds(String sort, Long lastFeedId, int limit, User user) {
         //정렬 기준에 따라 피드 엔티티 가져오기
         FeedSort feedSort = FeedSort.toEnum(sort);
-        Slice<Feed> feeds;
+        Slice<Feed> feeds = null;
         switch (feedSort) {
             case BEST:
                 feeds = findBestFeeds(lastFeedId, limit);
@@ -115,10 +115,10 @@ public class FeedService {
                 break;
         }
 
-        // 베스트 댓글 or 최신 댓글 가져오기
-
-        //DTO로 반환
-        return null;
+        // 베스트 댓글 or 최신 댓글 가져오기, DTO로 반환
+        Slice<FeedCardResponse> feedCardResponse = (Slice<FeedCardResponse>) feeds.stream()
+                .map(feed -> FeedCardResponse.of(feed, commentRepository.findBestComment(feed), user));
+        return PageResponse.of(feedCardResponse, feedCardResponse.stream().count());
     }
 
     private Slice<Feed> findBestFeeds(Long lastFeedId, int limit) {
