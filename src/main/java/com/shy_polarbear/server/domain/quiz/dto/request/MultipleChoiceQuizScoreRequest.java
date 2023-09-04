@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MultipleChoiceQuizScoreRequest {
-        @NotNull
         private Long answerId;
+
+        @NotNull
+        private Boolean isTimeout;
 }

@@ -29,5 +29,20 @@ public record MultipleChoiceQuizScoreResponse(
                 .point(pointValue)
                 .build();
     }
+
+    public static MultipleChoiceQuizScoreResponse ofTimeout(
+            MultipleChoiceQuiz quiz,
+            int sequence,
+            MultipleChoice answer,
+            int pointValue
+    ) {
+        return MultipleChoiceQuizScoreResponse.builder()
+                .quizId(quiz.getId())
+                .correctAnswer(String.format(ANSWER_FORMAT, sequence, answer.getContent()))
+                .explanation(quiz.getExplanation())
+                .isCorrect(false)
+                .point(pointValue)
+                .build();
+    }
 }
 
