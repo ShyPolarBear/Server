@@ -24,9 +24,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .orderBy(
                         comment.commentLikes.size().desc(),
                         comment.createdDate.desc()
-                )
-                .limit(1);
-        return Optional.ofNullable(query.fetchOne());
+                );
+        return Optional.ofNullable(query.fetchFirst());
     }
 
     private static BooleanExpression checkFeed(Feed feed) {

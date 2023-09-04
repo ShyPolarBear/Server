@@ -9,16 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import java.time.format.DateTimeFormatter;
-
 import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
 
 @Repository
 @RequiredArgsConstructor
 public class FeedRepositoryImpl implements FeedRepositoryCustom {
     private final JPAQueryFactory queryFactory;
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
 
     @Override
     public Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {

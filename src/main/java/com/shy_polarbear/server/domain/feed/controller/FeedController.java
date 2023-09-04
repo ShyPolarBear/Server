@@ -28,7 +28,7 @@ public class FeedController {
     }
 
     @GetMapping
-    public ApiResponse<?> findAllFeeds(@RequestParam String sort,
+    public ApiResponse<PageResponse<FeedCardResponse>> findAllFeeds(@RequestParam String sort,
                                       @RequestParam(required = false) Long lastFeedId,
                                       @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) int limit,
                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
