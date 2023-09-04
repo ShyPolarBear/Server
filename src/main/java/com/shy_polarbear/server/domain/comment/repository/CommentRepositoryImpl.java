@@ -4,10 +4,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.comment.model.QComment;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 import static com.shy_polarbear.server.domain.comment.model.QComment.*;
 
@@ -16,7 +17,7 @@ import static com.shy_polarbear.server.domain.comment.model.QComment.*;
 public class CommentRepositoryImpl implements CommentRepositoryCustom{
     private final JPAQueryFactory queryFactory;
     @Override
-    public Comment findBestComment(Feed feed) {
+    public Optional<Comment> findBestComment(Feed feed) {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
                 .where(checkFeed(feed))
@@ -25,7 +26,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                         comment.createdDate.desc()
                 )
                 .limit(1);
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
     }
 
     private static BooleanExpression checkFeed(Feed feed) {

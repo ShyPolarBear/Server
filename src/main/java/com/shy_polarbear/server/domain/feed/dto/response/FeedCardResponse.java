@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,18 +44,24 @@ public class FeedCardResponse {
         private String createdDate;
     }
 
-    public static FeedCardResponse of(Feed feed, Comment comment, User user) {
-        User commentAuthor = comment.getAuthor();
-        FeedCommentResponse feedCommentResponse = FeedCommentResponse.builder()
-                .commentId(comment.getId())
-                .author(commentAuthor.getNickName())
-                .authorProfileImage((commentAuthor.getProfileImage() == null) ? "" : commentAuthor.getProfileImage())
-                .content(comment.getContent())
-                .likeCount(comment.getCommentLikes().size())
-                .isAuthor(comment.isAuthor(user))
-                .isLike(comment.isLike(user))
-                .createdDate(comment.getCreatedDate())
-                .build();
+    public static FeedCardResponse of(Feed feed, Optional<Comment> commentOptional, User user) {
+        FeedCommentResponse feedCommentResponse;
+        if (commentOptional.isPresent()) {
+            Comment comment = commentOptional.get();
+            User commentAuthor = comment.getAuthor();
+            feedCommentResponse = FeedCommentResponse.builder()
+                    .commentId(comment.getId())
+                    .author(commentAuthor.getNickName())
+                    .authorProfileImage((commentAuthor.getProfileImage() == null) ? "" : commentAuthor.getProfileImage())
+                    .content(comment.getContent())
+                    .likeCount(comment.getCommentLikes().size())
+                    .isAuthor(comment.isAuthor(user))
+                    .isLike(comment.isLike(user))
+                    .createdDate(comment.getCreatedDate())
+                    .build();
+        } else {
+            feedCommentResponse = FeedCommentResponse.builder().build();
+        }
 
         User feedAuthor = feed.getAuthor();
         FeedCardResponse feedCardResponse = FeedCardResponse.builder()

@@ -23,14 +23,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     @Override
     public Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {
         //최신순
-        //SELECT f
-        //FROM feed
-        //where id<lastFeedId
-        //ORDER BY id DESC
-        //LIMIT ?
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
-                .where(checkLastFeedId(lastFeedId))
+                .where(lessThanLastFeedId(lastFeedId))
                 .orderBy(feed.id.desc())
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
@@ -38,18 +33,11 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
 
     @Override
     public Slice<Feed> findBestFeeds(Long lastFeedId, int minFeedLikeCount, int limit) {
-        //베스트 (전체 기간 중 좋아요 개수가 50개 이상인 피드를 보여준다)
-        //SELECT f
-        //FROM feed
-        //where id<lastFeedId
-        //and 좋아요개수 >= 50
-        //ORDER BY 좋아요개수 DESC
-        //LIMIT ?
-
+        //베스트 : 전체 기간 중 좋아요 개수가 50개 이상인 피드를 보여준다
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
                 .where(
-                        checkLastFeedId(lastFeedId),
+                        lessThanLastFeedId(lastFeedId),
                         feed.feedLikes.size().goe(minFeedLikeCount)
                 )
                 .orderBy(feed.feedLikes.size().desc())
@@ -59,17 +47,11 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
 
     @Override
     public Slice<Feed> findRecentBestFeeds(Long lastFeedId, String earliestDate, int limit) {
-        //SELECT f
-        //FROM feed
-        //where id<lastFeedId
-        //and 작성시점>=현재-7일전
-        //ORDER BY 좋아요개수 DESC
-        //LIMIT ?
-
+        //최근 인기순 : 7일 내 작성된 피드를 좋아요 순으로 보여준다.
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
                 .where(
-                        checkLastFeedId(lastFeedId),
+                        lessThanLastFeedId(lastFeedId),
                         feed.createdDate.goe(earliestDate)
                 )
                 .orderBy(feed.feedLikes.size().desc())
@@ -78,7 +60,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
 
-    private BooleanExpression checkLastFeedId(Long lastFeedId) {
+    private BooleanExpression lessThanLastFeedId(Long lastFeedId) {
         if (lastFeedId == null || lastFeedId == 0) return null;
         else return feed.id.lt(lastFeedId);
     }

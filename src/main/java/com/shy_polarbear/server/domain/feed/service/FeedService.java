@@ -116,9 +116,8 @@ public class FeedService {
         }
 
         // 베스트 댓글 or 최신 댓글 가져오기, DTO로 반환
-        Slice<FeedCardResponse> feedCardResponse = (Slice<FeedCardResponse>) feeds.stream()
-                .map(feed -> FeedCardResponse.of(feed, commentRepository.findBestComment(feed), user));
-        return PageResponse.of(feedCardResponse, feedCardResponse.stream().count());
+        Slice<FeedCardResponse> feedCardResponses = feeds.map(feed -> FeedCardResponse.of(feed, commentRepository.findBestComment(feed), user));
+        return PageResponse.of(feedCardResponses, feedCardResponses.stream().count());
     }
 
     private Slice<Feed> findBestFeeds(Long lastFeedId, int limit) {
