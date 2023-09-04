@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     void deleteByUserAndFeed(User user, Feed feed);
-
     boolean existsByUserAndFeed(User user, Feed feed);
 }

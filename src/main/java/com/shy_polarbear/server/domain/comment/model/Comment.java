@@ -77,4 +77,12 @@ public class Comment extends BaseEntity {
         this.parent = comment;
     }
 
+    public boolean isAuthor(User user) {
+        return this.author.getId().equals(user.getId());
+    }
+
+    public boolean isLike(User user) {
+        return commentLikes.stream()
+                .anyMatch(commentLike -> commentLike.isAuthor(user));
+    }
 }
