@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -121,7 +122,7 @@ public class FeedService {
     }
 
     private Slice<Feed> findBestFeeds(Long lastFeedId, int limit) {
-        return feedRepository.findBestFeeds(lastFeedId, BusinessLogicConstants.BEST_FEED_MIN_LIKE_COUNT, limit);
+        return feedRepository.findBestFeeds(generateCursor(lastFeedId), BusinessLogicConstants.BEST_FEED_MIN_LIKE_COUNT, limit);
     }
 
     private Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {
@@ -132,6 +133,14 @@ public class FeedService {
         String earliestDate = LocalDateTime.now()
                 .minusDays(BusinessLogicConstants.RECENT_BEST_FEED_DAY_LIMIT)
                 .format(dateTimeFormatter);
-        return feedRepository.findRecentBestFeeds(lastFeedId, earliestDate, limit);
+        return feedRepository.findRecentBestFeeds(generateCursor(lastFeedId), earliestDate, limit);
+    }
+
+    private String generateCursor(Long lastFeedId){
+        if (lastFeedId == null) {
+            return null;
+        }
+        Long feedLikesCount = feedLikeRepository.countFeedLikes(lastFeedId);
+        return String.format("%010d", feedLikesCount) + String.format("%019d", lastFeedId);
     }
 }

@@ -7,8 +7,8 @@ public interface FeedRepositoryCustom {
 
     Slice<Feed> findRecentFeeds(Long lastFeedId, int limit);
 
-    Slice<Feed> findBestFeeds(Long lastFeedId, int minFeedLikeCount, int limit);
+    Slice<Feed> findBestFeeds(String cursor, int minFeedLikeCount, int limit);
 
-    Slice<Feed> findRecentBestFeeds(Long lastFeedId, String earliestDate, int limit);
+    Slice<Feed> findRecentBestFeeds(String cursor, String earliestDate, int limit);
 
 }
