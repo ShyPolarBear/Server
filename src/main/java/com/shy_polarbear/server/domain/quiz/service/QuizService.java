@@ -48,10 +48,10 @@ public class QuizService {
         return buildQuizCardResponseFromQuiz(quiz);
     }
 
-    // 복습 퀴즈 조회 : 최신순으로 5개
-    public PageResponse<QuizCardResponse> getReviewQuizzes(Long currentUserId, int limit) {
+    // 복습 퀴즈 조회 : 랜덤으로 5개
+    public PageResponse<QuizCardResponse> getRandomReviewQuizzes(Long currentUserId, int limit) {
         Slice<QuizCardResponse> result = quizRepository
-                .findRecentQuizzesAlreadySolvedByUser(currentUserId, limit)
+                .findRandomQuizzesAlreadySolvedByUser(currentUserId, limit)
                 .map(this::buildQuizCardResponseFromQuiz);
 
         Long count = quizRepository.countAllRecentQuizzesAlreadySolvedByUser(currentUserId);
