@@ -48,7 +48,7 @@ public class QuizController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam(required = false, defaultValue = BusinessLogicConstants.REVIEW_QUIZ_LIMIT_PARAM_DEFAULT_VALUE) int limit
     ) {
-        PageResponse<QuizCardResponse> pageResponse = quizService.getReviewQuizzes(principalDetails.getUser().getId(), limit);
+        PageResponse<QuizCardResponse> pageResponse = quizService.getRandomReviewQuizzes(principalDetails.getUser().getId(), limit);
         return success(pageResponse);
     }
 
