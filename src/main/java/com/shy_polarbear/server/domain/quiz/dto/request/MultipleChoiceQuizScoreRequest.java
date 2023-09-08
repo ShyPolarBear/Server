@@ -1,9 +1,18 @@
 package com.shy_polarbear.server.domain.quiz.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotNull;
 
-public record MultipleChoiceQuizScoreRequest(
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MultipleChoiceQuizScoreRequest {
+        private Long answerId;
+
         @NotNull
-        Long answerId
-) {
+        private Boolean isTimeout;
 }

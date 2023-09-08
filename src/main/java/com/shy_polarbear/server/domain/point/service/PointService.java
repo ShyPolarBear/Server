@@ -28,4 +28,8 @@ public class PointService {
             return PointType.NOT_SOLVE_QUIZ.getValue();
         }
     }
+
+    public int calculateQuizSubmissionTimeout() {
+        return PointType.NOT_SOLVE_QUIZ.getValue();
+    }
 }

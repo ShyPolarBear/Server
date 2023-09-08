@@ -6,8 +6,8 @@ import com.shy_polarbear.server.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
+public interface FeedLikeRepository extends JpaRepository<FeedLike, Long>, FeedLikeRepositoryCustom {
     void deleteByUserAndFeed(User user, Feed feed);
-
     boolean existsByUserAndFeed(User user, Feed feed);
+
 }

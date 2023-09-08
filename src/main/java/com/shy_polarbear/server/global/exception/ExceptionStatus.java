@@ -38,6 +38,7 @@ public enum ExceptionStatus {
     NOT_FOUND_QUIZ(404, 3001, "존재하지 않는 퀴즈입니다."),
     NOT_FOUND_CHOICE(404, 3010, "존재하지 않는 선택지입니다."),
     NO_MORE_DAILY_QUIZ(404,3002,"데일리 퀴즈가 더 이상 존재하지 않습니다."),
+    QUIZ_SUBMISSION_NULL_CLIENT_ERROR(400,3003,"클라이언트 오류: 제출된 선택지가 NULL 입니다."),
     ;
 
 

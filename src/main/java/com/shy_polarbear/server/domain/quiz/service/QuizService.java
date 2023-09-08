@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -47,10 +48,10 @@ public class QuizService {
         return buildQuizCardResponseFromQuiz(quiz);
     }
 
-    // 복습 퀴즈 조회 : 최신순으로 5개
-    public PageResponse<QuizCardResponse> getReviewQuizzes(Long currentUserId, int limit) {
+    // 복습 퀴즈 조회 : 랜덤으로 5개
+    public PageResponse<QuizCardResponse> getRandomReviewQuizzes(Long currentUserId, int limit) {
         Slice<QuizCardResponse> result = quizRepository
-                .findRecentQuizzesAlreadySolvedByUser(currentUserId, limit)
+                .findRandomQuizzesAlreadySolvedByUser(currentUserId, limit)
                 .map(this::buildQuizCardResponseFromQuiz);
 
         Long count = quizRepository.countAllRecentQuizzesAlreadySolvedByUser(currentUserId);
@@ -76,13 +77,20 @@ public class QuizService {
         OXQuiz oxQuiz = oxQuizRepository.findById(quizId)
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
 
-        OXChoice submittedChoice = OXChoice.toEnum(request.answer());
-        boolean isCorrect = submittedChoice.equals(oxQuiz.getAnswer()); // 제출된 답안과 실제 답 비교
-        userQuizRepository.save(UserQuiz.createUserOXQuiz(user, oxQuiz, isCorrect, submittedChoice));
+        if (request.getIsTimeout()) {   // 시간초과: 오답 처리
+            int pointValue = pointService.calculateQuizSubmissionTimeout();
+            return OXQuizScoreResponse.ofTimeout(oxQuiz, pointValue);
+        } else if (Objects.isNull(request.getAnswer())) { // 시간초과되지 않았는데 선택지가 null: 클라이언트 에러
+            throw new QuizException(ExceptionStatus.QUIZ_SUBMISSION_NULL_CLIENT_ERROR);
+        } else {
+            OXChoice submittedChoice = OXChoice.toEnum(request.getAnswer());
+            boolean isCorrect = submittedChoice.equals(oxQuiz.getAnswer()); // 제출된 답안과 실제 답 비교
 
-        int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
+            userQuizRepository.save(UserQuiz.createUserOXQuiz(user, oxQuiz, isCorrect, submittedChoice));
 
-        return OXQuizScoreResponse.of(oxQuiz, isCorrect, pointValue);
+            int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
+            return OXQuizScoreResponse.of(oxQuiz, isCorrect, pointValue);
+        }
     }
 
     // 객관식 퀴즈 제출 채점
@@ -93,18 +101,25 @@ public class QuizService {
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
         List<MultipleChoice> multipleChoiceList = multipleChoiceRepository.findAllByMultipleChoiceQuizId(quizId);
 
-        MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.answerId())).findFirst()
-                .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
-        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::getIsAnswer).findFirst()
+        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::isAnswer).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.SERVER_ERROR));    // 답이 없는 퀴즈는 서버쪽 오류
-
-        boolean isCorrect = submittedChoice.equals(answer); // 제출된 답안과 실제 답 비교
-        userQuizRepository.save(UserQuiz.createUserMultipleChoiceQuiz(user, multipleChoiceQuiz, isCorrect, submittedChoice));
-
-        int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
         int sequence = multipleChoiceList.indexOf(answer) + 1;// 정답 선택지의 순서
 
-        return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, sequence, answer, isCorrect, pointValue);
+        if (request.getIsTimeout()) {   // 시간초과: 오답 처리
+            int pointValue = pointService.calculateQuizSubmissionTimeout();
+            return MultipleChoiceQuizScoreResponse.ofTimeout(multipleChoiceQuiz, sequence, answer, pointValue);
+        } else if (Objects.isNull(request.getAnswerId())) { // 시간초과되지 않았는데 선택지가 null: 클라이언트 에러
+            throw new QuizException(ExceptionStatus.QUIZ_SUBMISSION_NULL_CLIENT_ERROR);
+        } else {
+            MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.getAnswerId())).findFirst()
+                    .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
+
+            boolean isCorrect = submittedChoice.equals(answer); // 제출된 답안과 실제 답 비교
+            userQuizRepository.save(UserQuiz.createUserMultipleChoiceQuiz(user, multipleChoiceQuiz, isCorrect, submittedChoice));
+
+            int pointValue = pointService.calculateQuizSubmissionPoint(isCorrect, user);    // 포인트 처리
+            return MultipleChoiceQuizScoreResponse.of(multipleChoiceQuiz, sequence, answer, isCorrect, pointValue);
+        }
     }
 
     // 퀴즈 유형에 따른 분기처리

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface QuizRepositoryCustom {
     Optional<Quiz> findRecentQuizNotYetSolvedByUser(Long userId);
 
-    Slice<Quiz> findRecentQuizzesAlreadySolvedByUser(Long userId, int limit);
+    Slice<Quiz> findRandomQuizzesAlreadySolvedByUser(Long userId, int limit);
 
     Long countAllRecentQuizzesAlreadySolvedByUser(Long userId);
 }
