@@ -22,8 +22,9 @@ import static org.assertj.core.api.Assertions.*;
 @Import(TestJpaConfig.class)
 public class QuizRepositoryTest {
     private User dummyUser;
-    private OXQuiz dummyOXQuiz;
+    private OXQuiz dummyMostRecentNotSubmittedOXQuiz;
     private final int DUMMY_SUBMITTED_QUIZ_SIZE = 100;
+    private final int DUMMY_NOT_SUBMITTED_QUIZ_SIZE = 100;
 
     @Autowired
     private QuizRepository quizRepository;
@@ -53,19 +54,22 @@ public class QuizRepositoryTest {
                 .password("1@password")
                 .build());
 
-        this.dummyOXQuiz = quizRepository.save(OXQuiz.builder() // 제출되지 않을 퀴즈
-                .question("질문 2")
-                .explanation("설명 2")
-                .answer(OXChoice.O)
-                .build());
-
-        for (int i = 0; i < DUMMY_SUBMITTED_QUIZ_SIZE; i++) {// 제출된 퀴즈 100개
+        for (int i = 0; i < DUMMY_SUBMITTED_QUIZ_SIZE; i++) {// 제출된 퀴즈
             OXQuiz oxQuiz = quizRepository.save(OXQuiz.builder()
                     .question("질문" + i)
                     .explanation("설명" + i)
                     .answer(OXChoice.O)
                     .build());
             userQuizRepository.save(UserQuiz.createUserOXQuiz(dummyUser, oxQuiz, false, OXChoice.X)); // 제출 처리. 정답이 아니더라도 제출한 것
+        }
+
+        for (int i = 0; i < DUMMY_NOT_SUBMITTED_QUIZ_SIZE; i++) {// 제출되지 않은 퀴즈
+            OXQuiz oxQuiz = quizRepository.save(OXQuiz.builder()
+                    .question("질문" + i)
+                    .explanation("설명" + i)
+                    .answer(OXChoice.O)
+                    .build());
+            if (i == DUMMY_NOT_SUBMITTED_QUIZ_SIZE - 1) dummyMostRecentNotSubmittedOXQuiz = oxQuiz; // 가장 최근 퀴즈
         }
     }
 
@@ -152,14 +156,24 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("SELECT findRecentQuizNotYetSolvedByUser 성공: 아직 제출하지 않은 퀴즈만 조회한다")
+    @DisplayName("SELECT findAll 성공")
+    public void findAllSuccess() {
+        // given
+
+        // when & then
+        assertThat(quizRepository.findAll().size())
+                .isEqualTo(DUMMY_SUBMITTED_QUIZ_SIZE + DUMMY_NOT_SUBMITTED_QUIZ_SIZE);
+    }
+
+    @Test
+    @DisplayName("SELECT findRecentQuizNotYetSolvedByUser 성공: 아직 제출하지 않은 퀴즈중 가장 최근의 퀴즈만 조회한다")
     public void findRecentQuizNotYetSolvedByUserSuccess() {
         // given
 
         // when & then
         assertThat(quizRepository.findRecentQuizNotYetSolvedByUser(dummyUser.getId())
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NO_MORE_DAILY_QUIZ)))
-                .isEqualTo(dummyOXQuiz);
+                .isEqualTo(dummyMostRecentNotSubmittedOXQuiz);
     }
 
     @Test
