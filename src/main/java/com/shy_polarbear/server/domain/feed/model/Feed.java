@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,7 +32,7 @@ public class Feed extends BaseEntity {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeedImage> feedImages = new ArrayList<>();
+    private List<FeedImage> feedImages;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
@@ -39,10 +41,11 @@ public class Feed extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    private Feed(String title, String content, User author) {
+    private Feed(String title, String content, User author, List<FeedImage> feedImages) {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.feedImages = Objects.isNull(feedImages) ? new ArrayList<>() : feedImages;
     }
 
     public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
@@ -50,19 +53,17 @@ public class Feed extends BaseEntity {
                 .title(title)
                 .content(content)
                 .author(author)
+                .feedImages(feedImages)
                 .build();
-        if (feedImages == null) {
-            return feed;
-        } else {
-            assignFeedToFeedImages(feedImages, feed);
-            return feed;
-        }
+        assignFeedToFeedImages(feed);
+        return feed;
     }
 
-    private static void assignFeedToFeedImages(List<FeedImage> feedImages, Feed feed) {
-        feed.feedImages.addAll(feedImages);
-        feedImages.stream()
-                .forEach(feedImage -> feedImage.assignFeed(feed));
+    private static void assignFeedToFeedImages(Feed feed) {
+        if (!feed.feedImages.isEmpty()) {
+            feed.feedImages.stream()
+                    .forEach(feedImage -> feedImage.assignFeed(feed));
+        }
     }
 
     public void addLike(FeedLike feedLike) {
@@ -74,7 +75,8 @@ public class Feed extends BaseEntity {
         this.content = content;
         this.feedImages.clear();
         if (feedImages != null) {
-            assignFeedToFeedImages(feedImages, this);
+            this.feedImages.addAll(feedImages);
+            assignFeedToFeedImages(this);
         }
     }
 
