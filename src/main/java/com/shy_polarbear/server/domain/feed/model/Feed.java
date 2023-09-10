@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Feed extends BaseEntity {
 
     @Id
@@ -37,33 +39,28 @@ public class Feed extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    private Feed(String title, String content, List<FeedImage> feedImages, User author) {
+    private Feed(String title, String content, User author) {
         this.title = title;
         this.content = content;
-        this.feedImages.addAll(feedImages);
         this.author = author;
     }
 
     public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
+        Feed feed = Feed.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build();
         if (feedImages == null) {
-            return Feed.builder()
-                    .title(title)
-                    .content(content)
-                    .author(author)
-                    .build();
+            return feed;
         } else {
-            Feed feed = Feed.builder()
-                    .title(title)
-                    .content(content)
-                    .feedImages(feedImages)
-                    .author(author)
-                    .build();
             assignFeedToFeedImages(feedImages, feed);
             return feed;
         }
     }
 
     private static void assignFeedToFeedImages(List<FeedImage> feedImages, Feed feed) {
+        feed.feedImages.addAll(feedImages);
         feedImages.stream()
                 .forEach(feedImage -> feedImage.assignFeed(feed));
     }
@@ -78,7 +75,6 @@ public class Feed extends BaseEntity {
         this.feedImages.clear();
         if (feedImages != null) {
             assignFeedToFeedImages(feedImages, this);
-            this.feedImages.addAll(feedImages);
         }
     }
 

@@ -13,6 +13,7 @@ import com.shy_polarbear.server.domain.images.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class FeedService {
 
     private final FeedRepository feedRepository;
