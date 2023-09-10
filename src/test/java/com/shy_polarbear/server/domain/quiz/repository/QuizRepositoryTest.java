@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
@@ -177,17 +179,24 @@ public class QuizRepositoryTest {
     }
 
     @Test
-    @DisplayName("SELECT findRecentQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈만 조회한다")
-    public void findRecentQuizzesAlreadySolvedByUserSuccess() {
+    @DisplayName("SELECT findRandomQuizzesAlreadySolvedByUser 성공: 제출한 퀴즈만 조회한다 && 결과가 랜덤해야 한다")
+    public void findRandomQuizzesAlreadySolvedByUserSuccess() {
         // given
         final int limit = 10;
 
         // when
-        Slice<Quiz> queryResult = quizRepository.findRecentQuizzesAlreadySolvedByUser(dummyUser.getId(), limit);
+        Slice<Quiz> queryResult = quizRepository.findRandomQuizzesAlreadySolvedByUser(dummyUser.getId(), limit);
+        List<Quiz> queryResultA = quizRepository.findRandomQuizzesAlreadySolvedByUser(dummyUser.getId(), limit).toList();
+        List<Quiz> queryResultB = quizRepository.findRandomQuizzesAlreadySolvedByUser(dummyUser.getId(), limit).toList();
+        List<Quiz> queryResultC = quizRepository.findRandomQuizzesAlreadySolvedByUser(dummyUser.getId(), limit).toList();
 
         // then
         assertThat(queryResult.hasContent()).isEqualTo(true);
         assertThat(queryResult.toList().size()).isEqualTo(limit);
+
+        assertThat(queryResultA.containsAll(queryResultB)).isFalse();   // 결과가 매번 달라야 함
+        assertThat(queryResultA.containsAll(queryResultC)).isFalse();
+        assertThat(queryResultB.containsAll(queryResultC)).isFalse();
     }
 
     @Test
@@ -196,7 +205,7 @@ public class QuizRepositoryTest {
         // given
 
         // when
-        Long count = quizRepository.countAllRecentQuizzesAlreadySolvedByUser(dummyUser.getId());
+        Long count = quizRepository.countAllQuizzesAlreadySolvedByUser(dummyUser.getId());
 
         // then
         assertThat(count).isEqualTo(DUMMY_SUBMITTED_QUIZ_SIZE);
