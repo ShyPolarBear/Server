@@ -84,7 +84,7 @@ public class Feed extends BaseEntity {
 
     public boolean isLike(User user) {
         return feedLikes.stream()
-                .anyMatch(feedLike -> feedLike.isUser(user));
+                .anyMatch(feedLike -> feedLike.isAuthor(user));
     }
 
     public List<String> getFeedImageUrls() {

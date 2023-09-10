@@ -41,4 +41,8 @@ public class CommentLike extends BaseEntity {
         return commentLike;
     }
 
+    public boolean isAuthor(User user) {
+        return this.user.getId().equals(user.getId());
+
+    }
 }

@@ -5,7 +5,9 @@ import com.shy_polarbear.server.domain.feed.dto.request.UpdateFeedRequest;
 import com.shy_polarbear.server.domain.feed.dto.response.*;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
+import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
+import com.shy_polarbear.server.global.common.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +28,11 @@ public class FeedController {
     }
 
     @GetMapping
-    public ApiResponse<?> findAllFeeds(@RequestParam String sort,
+    public ApiResponse<PageResponse<FeedCardResponse>> findAllFeeds(@RequestParam String sort,
                                       @RequestParam(required = false) Long lastFeedId,
-                                      @RequestParam(required = false) String limit) {
-        return null;
+                                      @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) int limit,
+                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.success(feedService.findAllFeeds(sort, lastFeedId, limit, principalDetails.getUser()));
     }
 
     @GetMapping("/{feedId}")

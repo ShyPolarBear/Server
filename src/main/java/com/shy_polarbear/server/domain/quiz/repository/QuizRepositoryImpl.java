@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.quiz.model.Quiz;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
+import com.shy_polarbear.server.global.common.util.query.CustomOrderSpecifierUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
@@ -30,10 +31,10 @@ public class QuizRepositoryImpl implements QuizRepositoryCustom {
     }
 
     @Override
-    public Slice<Quiz> findRecentQuizzesAlreadySolvedByUser(Long userId, int limit) {
+    public Slice<Quiz> findRandomQuizzesAlreadySolvedByUser(Long userId, int limit) {
         JPAQuery<Quiz> query = queryFactory.selectFrom(quiz)
                 .where(quiz.id.in(findSolvedQuizIdsSubQuery(userId)))
-                .orderBy(quiz.id.desc())   // 최신순
+                .orderBy(CustomOrderSpecifierUtils.makeRandom())   // 랜덤 정렬
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
 
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);

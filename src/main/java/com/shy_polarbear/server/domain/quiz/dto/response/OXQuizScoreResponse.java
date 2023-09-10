@@ -20,4 +20,13 @@ public record OXQuizScoreResponse(
                 .point(pointValue)
                 .build();
     }
-}
+
+    public static OXQuizScoreResponse ofTimeout(OXQuiz oxQuiz, int pointValue) {
+        return OXQuizScoreResponse.builder()
+                .quizId(oxQuiz.getId())
+                .correctAnswer(oxQuiz.getAnswer().getValue())
+                .explanation(oxQuiz.getExplanation())
+                .isCorrect(false)
+                .point(pointValue)
+                .build();
+    }}
