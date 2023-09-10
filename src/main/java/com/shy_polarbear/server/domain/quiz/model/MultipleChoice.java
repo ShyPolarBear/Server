@@ -44,4 +44,9 @@ public class MultipleChoice extends BaseEntity {
         this.multipleChoiceQuiz = multipleChoiceQuiz;
         multipleChoiceQuiz.getMultipleChoiceList().add(this);
     }
+
+    // test
+    public void setIdForMockTest(Long mockId) {
+        this.id = mockId;
+    }
 }

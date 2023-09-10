@@ -28,4 +28,9 @@ public abstract class Quiz extends BaseEntity {
         this.question = question;
         this.explanation = explanation;
     }
+
+    // test
+    public void setIdForMockTest(Long mockId) {
+        this.id = mockId;
+    }
 }
