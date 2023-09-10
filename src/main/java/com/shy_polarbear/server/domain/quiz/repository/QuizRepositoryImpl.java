@@ -44,7 +44,7 @@ public class QuizRepositoryImpl implements QuizRepositoryCustom {
      * Count Query
      **/
     @Override
-    public Long countAllRecentQuizzesAlreadySolvedByUser(Long userId) {
+    public Long countAllQuizzesAlreadySolvedByUser(Long userId) {
         JPAQuery<Long> query = queryFactory.select(quiz.count()).from(quiz)
                 .where(quiz.id.in(findSolvedQuizIdsSubQuery(userId)));
 
