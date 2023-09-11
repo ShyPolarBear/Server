@@ -3,10 +3,9 @@ package com.shy_polarbear.server.domain.quiz.repository;
 import com.shy_polarbear.server.config.TestJpaConfig;
 import com.shy_polarbear.server.domain.quiz.exception.QuizException;
 import com.shy_polarbear.server.domain.quiz.model.*;
-import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.domain.user.template.UserTemplate;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 @DataJpaTest
 @Import(TestJpaConfig.class)
 public class QuizRepositoryTest {
-    private User dummyUser;
+    private User dummyUser = UserTemplate.createDummyUser();
     private OXQuiz dummyMostRecentNotSubmittedOXQuiz;
     private final int DUMMY_SUBMITTED_QUIZ_SIZE = 100;
     private final int DUMMY_NOT_SUBMITTED_QUIZ_SIZE = 100;
@@ -45,16 +44,7 @@ public class QuizRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        this.dummyUser = userRepository.save(User.builder()
-                .nickName("ws")
-                .email("ws@naver.com")
-                .profileImage(null)
-                .phoneNumber("010558820")
-                .role(UserRole.ROLE_USR)
-                .provider(ProviderType.KAKAO)
-                .providerId("1")
-                .password("1@password")
-                .build());
+        this.dummyUser = userRepository.save(UserTemplate.createDummyUser());
 
         for (int i = 0; i < DUMMY_SUBMITTED_QUIZ_SIZE; i++) {// 제출된 퀴즈
             OXQuiz oxQuiz = quizRepository.save(OXQuiz.builder()
