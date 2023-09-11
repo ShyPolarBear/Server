@@ -6,6 +6,7 @@ import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile({"local", "dev"})
+@Profile({ProfileConstants.LOCAL, ProfileConstants.DEV})
 public class LoginUserInitializer {
     private User user;
     private String nickName = "노을";

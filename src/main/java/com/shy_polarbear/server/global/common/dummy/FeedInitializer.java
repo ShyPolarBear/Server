@@ -7,6 +7,7 @@ import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import static com.shy_polarbear.server.global.common.dummy.LoginUserInitializer.
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile({"local", "dev"})
+@Profile({ProfileConstants.LOCAL, ProfileConstants.DEV})
 public class FeedInitializer {
 
     private final FeedRepository feedRepository;
