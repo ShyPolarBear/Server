@@ -36,7 +36,6 @@ public class S3FileService {
 
     void delete(String s3DeleteFilePath) {
         try {
-            System.out.println("s3DeleteFilePath = " + s3DeleteFilePath);
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3DeleteFilePath));
         } catch (Exception e) {
             throw new ImageException(ExceptionStatus.FAIL_DELETE_IMAGES);
