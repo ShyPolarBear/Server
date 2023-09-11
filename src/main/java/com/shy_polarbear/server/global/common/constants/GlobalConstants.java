@@ -12,4 +12,7 @@ public class GlobalConstants {
             "/api/health"
     };
 
+    public static String[] permittedUrlsWithPostMethod = {
+            "/api/images"
+    };
 }
