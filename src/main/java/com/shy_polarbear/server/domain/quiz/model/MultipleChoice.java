@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.quiz.model;
 
 import com.shy_polarbear.server.domain.quiz.exception.QuizException;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
+import com.shy_polarbear.server.global.common.util.profiles.CustomProfileUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,6 +48,8 @@ public class MultipleChoice extends BaseEntity {
 
     // test
     public void setIdForMockTest(Long mockId) {
+        CustomProfileUtils.validateIsProfileNullOrTest();
+
         this.id = mockId;
     }
 }

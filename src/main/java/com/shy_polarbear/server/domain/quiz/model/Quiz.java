@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.quiz.model;
 
 import com.shy_polarbear.server.global.common.model.BaseEntity;
+import com.shy_polarbear.server.global.common.util.profiles.CustomProfileUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,8 @@ public abstract class Quiz extends BaseEntity {
 
     // test
     public void setIdForMockTest(Long mockId) {
+        CustomProfileUtils.validateIsProfileNullOrTest();
+
         this.id = mockId;
     }
 }
