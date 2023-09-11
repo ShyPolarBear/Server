@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 @DataJpaTest
 @Import(TestJpaConfig.class)
 public class QuizRepositoryTest {
-    private User dummyUser = UserTemplate.createDummyUser();
+    private User dummyUser;
     private OXQuiz dummyMostRecentNotSubmittedOXQuiz;
     private final int DUMMY_SUBMITTED_QUIZ_SIZE = 100;
     private final int DUMMY_NOT_SUBMITTED_QUIZ_SIZE = 100;
