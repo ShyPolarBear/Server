@@ -10,5 +10,5 @@ public interface QuizRepositoryCustom {
 
     Slice<Quiz> findRandomQuizzesAlreadySolvedByUser(Long userId, int limit);
 
-    Long countAllRecentQuizzesAlreadySolvedByUser(Long userId);
+    Long countAllQuizzesAlreadySolvedByUser(Long userId);
 }
