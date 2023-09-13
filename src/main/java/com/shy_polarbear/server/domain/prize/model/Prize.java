@@ -25,11 +25,4 @@ public class Prize {
         this.name = name;
         this.prizeImage = prizeImage;
     }
-
-    public static Prize createPrize(String name, String prizeImage) {
-        return Prize.builder()
-                .name(name)
-                .prizeImage(prizeImage)
-                .build();
-    }
 }
