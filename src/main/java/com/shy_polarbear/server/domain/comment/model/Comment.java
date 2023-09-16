@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.comment.model;
 
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -21,22 +23,32 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User author;
+
+    @Column(nullable = false, length = BusinessLogicConstants.COMMENT_CONTENT_MAX_LENGTH)
     private String content;
-    @OneToMany(mappedBy = "comment")
-    private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Boolean visibility = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feed_id", nullable = false)
+    private Feed feed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
+
     @OneToMany(mappedBy = "parent",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Comment> childComments = new ArrayList<>();
+    private final List<Comment> childComments = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
+    @OneToMany(mappedBy = "comment")
+    private final List<CommentLike> commentLikes = new ArrayList<>();
+
 
     @Builder
     private Comment(User author, String content, Feed feed) {
@@ -85,4 +97,20 @@ public class Comment extends BaseEntity {
         return commentLikes.stream()
                 .anyMatch(commentLike -> commentLike.isAuthor(user));
     }
+
+    public boolean isParent() {
+        return Objects.isNull(this.parent);
+    }
+    public boolean isChild() {
+        return Objects.nonNull(this.parent);
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
+    public void softDelete() {  // 논리적 삭제(소프트 딜리트와 유사)
+        this.visibility = false;
+    }
+
 }

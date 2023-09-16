@@ -14,4 +14,9 @@ public abstract class BusinessLogicConstants {
     public static final String FEED_LIMIT_PARAM_DEFAULT_VALUE = "10";
     public static final int RECENT_BEST_FEED_DAY_LIMIT = 7;
 
+    /**
+     * 댓글, 대댓글
+     **/
+    public static final int COMMENT_CONTENT_MAX_LENGTH = 300;
+
 }
