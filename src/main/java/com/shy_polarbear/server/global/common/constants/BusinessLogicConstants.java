@@ -18,5 +18,6 @@ public abstract class BusinessLogicConstants {
      * 댓글, 대댓글
      **/
     public static final int COMMENT_CONTENT_MAX_LENGTH = 300;
+    public static final String COMMENT_LIMIT_PARAM_DEFAULT_VALUE = "10";
 
 }

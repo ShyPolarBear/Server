@@ -8,13 +8,13 @@ import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
-import org.h2.jdbc.JdbcSQLDataException;
 import org.hibernate.exception.DataException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Slice;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -30,7 +30,8 @@ public class CommentRepositoryTest {
     private Feed dummyFeed;
 
     private final int DUMMY_FEED_SIZE = 10;
-    private final int DUMMY_COMMENT_PER_FEED_SIZE = 20;
+    private final int DUMMY_COMMENT_PER_FEED_SIZE = 25;
+    private final int DUMMY_CHILD_PER_PARENT_SIZE = 5;
 
     @Autowired
     CommentRepository commentRepository;
@@ -56,6 +57,14 @@ public class CommentRepositoryTest {
                     dummyUser
             ));
             if (i == 0) dummyFeed = saved;
+        }
+
+        for (int i = 0; i < DUMMY_COMMENT_PER_FEED_SIZE; i++) {
+            Comment parent = commentRepository.save(Comment.createComment(dummyUser, "부모 댓글" + i, dummyFeed));
+            for (int j = 0; j < DUMMY_CHILD_PER_PARENT_SIZE; j++) {
+                commentRepository.save(Comment.createChildComment(dummyUser, "자식 댓글" + i, dummyFeed, parent));
+            }
+
         }
     }
 
@@ -131,5 +140,28 @@ public class CommentRepositoryTest {
         assertThatNoException().isThrownBy(commentAble::get);
         assertThat(commentAble.isPresent()).isTrue();
         assertThat(commentAble.get().getVisibility()).isFalse();
+    }
+
+    @Test
+    @DisplayName("findAllParentComment 성공")
+    public void findAllParentCommentSuccess() {
+        // given
+        int limit = 10;
+        long userId = UserTemplate.ID, cursorId = 25;
+
+        // when
+        Slice<Comment> parentCommentList = commentRepository.findAllParentComment(userId, dummyFeed.getId(), cursorId, limit);
+
+        boolean isCorrectParent = true;
+        boolean isCorrectFeed = true;
+        for (Comment comment : parentCommentList) {
+            if (!comment.isParent()) isCorrectParent = false;
+            if (!comment.getFeed().getId().equals(dummyFeed.getId())) isCorrectFeed = false;
+        }
+
+        // then
+        assertThat(parentCommentList.getSize()).isEqualTo(limit);
+        assertThat(isCorrectParent).isTrue();
+        assertThat(isCorrectFeed).isTrue();
     }
 }

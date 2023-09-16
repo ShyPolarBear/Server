@@ -85,8 +85,8 @@ public class Comment extends BaseEntity {
     }
 
 
-    public boolean isAuthor(User user) {
-        return this.author.getId().equals(user.getId());
+    public boolean isAuthor(Long userId) {
+        return this.author.getId().equals(userId);
     }
 
     public void addChildComment(Comment comment) {
@@ -110,9 +110,9 @@ public class Comment extends BaseEntity {
         this.commentLikes.add(commentLike);
     }
 
-    public boolean isLike(User user) {
+    public boolean isLike(Long userId) {
         return commentLikes.stream()
-                .anyMatch(commentLike -> commentLike.isAuthor(user));
+                .anyMatch(commentLike -> commentLike.isAuthor(userId));
     }
 
 }
