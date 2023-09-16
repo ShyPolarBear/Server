@@ -125,11 +125,11 @@ public class CommentRepositoryTest {
 
         em.flush(); // DB에 영속성 반영 및 1차 캐시 삭제
         em.clear();
-        Optional<Comment> foundComment = commentRepository.findById(comment.getId());
+        Optional<Comment> commentAble = commentRepository.findById(comment.getId());
 
         // then
-        assertThatNoException().isThrownBy(foundComment::get);
-        assertThat(foundComment.isPresent()).isTrue();
-        assertThat(foundComment.get().getVisibility()).isFalse();
+        assertThatNoException().isThrownBy(commentAble::get);
+        assertThat(commentAble.isPresent()).isTrue();
+        assertThat(commentAble.get().getVisibility()).isFalse();
     }
 }

@@ -46,7 +46,7 @@ public class Comment extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Comment> childComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private final List<CommentLike> commentLikes = new ArrayList<>();
 
 
