@@ -76,8 +76,17 @@ public class Comment extends BaseEntity {
     }
 
 
-    public void addLike(CommentLike commentLike) {
-        this.commentLikes.add(commentLike);
+    public void update(String content) {
+        this.content = content;
+    }
+
+    public void softDelete() {  // 논리적 삭제(소프트 딜리트와 유사)
+        this.visibility = false;
+    }
+
+
+    public boolean isAuthor(User user) {
+        return this.author.getId().equals(user.getId());
     }
 
     public void addChildComment(Comment comment) {
@@ -89,28 +98,21 @@ public class Comment extends BaseEntity {
         this.parent = comment;
     }
 
-    public boolean isAuthor(User user) {
-        return this.author.getId().equals(user.getId());
+    public boolean isParent() {
+        return Objects.isNull(this.parent);
+    }
+
+    public boolean isChild() {
+        return Objects.nonNull(this.parent);
+    }
+
+    public void addLike(CommentLike commentLike) {
+        this.commentLikes.add(commentLike);
     }
 
     public boolean isLike(User user) {
         return commentLikes.stream()
                 .anyMatch(commentLike -> commentLike.isAuthor(user));
-    }
-
-    public boolean isParent() {
-        return Objects.isNull(this.parent);
-    }
-    public boolean isChild() {
-        return Objects.nonNull(this.parent);
-    }
-
-    public void update(String content) {
-        this.content = content;
-    }
-
-    public void softDelete() {  // 논리적 삭제(소프트 딜리트와 유사)
-        this.visibility = false;
     }
 
 }
