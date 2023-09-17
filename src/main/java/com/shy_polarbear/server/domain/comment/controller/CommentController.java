@@ -2,10 +2,7 @@ package com.shy_polarbear.server.domain.comment.controller;
 
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.*;
 import com.shy_polarbear.server.domain.comment.service.CommentService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
@@ -61,7 +58,6 @@ public class CommentController {
         return success(response);
     }
 
-
     // 댓글 좋아요 혹은 좋아요 취소
     @PutMapping("/{commentId}/like")
     public ApiResponse<CommentLikeResponse> likeComment(
@@ -72,6 +68,13 @@ public class CommentController {
         return success(response);
     }
 
-
     // 댓글 삭제
+    @DeleteMapping("/{commentId}")
+    public ApiResponse<CommentDeleteResponse> deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        CommentDeleteResponse response = commentService.deleteComment(principalDetails.getUser().getId(), commentId);
+        return success(response);
+    }
 }

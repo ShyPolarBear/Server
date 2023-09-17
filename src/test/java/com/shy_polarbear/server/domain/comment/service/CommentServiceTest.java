@@ -3,6 +3,7 @@ package com.shy_polarbear.server.domain.comment.service;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentDeleteResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
 import com.shy_polarbear.server.domain.comment.exception.CommentException;
@@ -56,6 +57,7 @@ public class CommentServiceTest {
     private final Feed dummyFeed = FeedTemplate.createDummyFeed();
     private final Comment dummyParentComment = CommentTemplate.createDummyParentComment();
     private final Comment dummyChildComment = CommentTemplate.createDummyChildComment(dummyParentComment);
+    private final Comment dummySoftDeletedComment = CommentTemplate.createDummySoftDeletedComment();
 
 
     @Test
@@ -122,7 +124,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    @DisplayName("updateComment 실패: 작성자와 유저가 일치하지 않음")
+    @DisplayName("updateComment 실패: 작성자만 수정 권한을 가짐")
     public void updateCommentNotAuthorFail() {
         // given
         given(userService.getUser(anyLong())).willReturn(dummyOtherUserA);  // 예외 발생: dummyParentComment.User 와 다른 유저
@@ -174,13 +176,51 @@ public class CommentServiceTest {
         given(commentRepository.findById(anyLong())).willReturn(Optional.empty());  // 예외 발생
 
         // when & then
-        assertThatThrownBy(()-> commentService.likeComment(UserTemplate.ID, CommentTemplate.PARENT_ID))
+        assertThatThrownBy(() -> commentService.likeComment(UserTemplate.ID, CommentTemplate.PARENT_ID))
                 .isInstanceOf(CommentException.class)
                 .hasMessage(ExceptionStatus.NOT_FOUND_COMMENT.getMessage());
     }
 
     // 삭제 성공: 소프트 딜리트
-    // 삭제 실패: 존재하지 않는 댓글, 작성자가 아닌 경우
+    @Test
+    @DisplayName("deleteComment 성공")
+    public void deleteCommentSuccess() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyUser);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(dummyParentComment));
+
+        // when
+        CommentDeleteResponse response = commentService.deleteComment(UserTemplate.ID, CommentTemplate.PARENT_ID);
+
+        // then
+        assertThat(response.commentId()).isEqualTo(dummyParentComment.getId());
+    }
+
+    @Test
+    @DisplayName("deleteComment 실패: 이미 소프트 딜리트된 경우")
+    public void deleteCommentNotFoundFail() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyUser);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(dummySoftDeletedComment));  // 예외 발생
+
+        // when & then
+        assertThatThrownBy(() -> commentService.deleteComment(UserTemplate.ID, CommentTemplate.DELETED_ID))
+                .isInstanceOf(CommentException.class)
+                .hasMessage(ExceptionStatus.NOT_FOUND_COMMENT.getMessage());
+    }
+
+    @Test
+    @DisplayName("deleteComment 실패: 작성자만 삭제 권한을 가짐")
+    public void deleteCommentNotAuthorFail() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyOtherUserA);  // 예외 발생
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(dummyParentComment));
+
+        // when & then
+        assertThatThrownBy(() -> commentService.deleteComment(UserTemplate.ID, dummyParentComment.getId()))
+                .isInstanceOf(CommentException.class)
+                .hasMessage(ExceptionStatus.NOT_MY_COMMENT.getMessage());
+    }
 
 
 }

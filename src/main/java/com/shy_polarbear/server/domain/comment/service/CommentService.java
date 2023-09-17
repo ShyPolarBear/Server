@@ -2,10 +2,7 @@ package com.shy_polarbear.server.domain.comment.service;
 
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentResponse;
-import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.*;
 import com.shy_polarbear.server.domain.comment.exception.CommentException;
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.comment.model.CommentLike;
@@ -85,8 +82,6 @@ public class CommentService {
                 .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
         Optional<CommentLike> commentLikeAble = commentLikeRepository.findByUserAndComment(user, comment);
 
-        System.out.println("commentLikeAble.isPresent() = " + commentLikeAble.isPresent());
-
         boolean isLiked;
         if (commentLikeAble.isEmpty()) {
             CommentLike commentLike = CommentLike.createCommentLike(comment, user);
@@ -102,6 +97,19 @@ public class CommentService {
 
 
     // 댓글 삭제
+    @Transactional
+    public CommentDeleteResponse deleteComment(Long currentUserId, Long commentId) {
+        User user = userService.getUser(currentUserId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+        if (!comment.getVisibility()) throw new CommentException(ExceptionStatus.NOT_FOUND_COMMENT);
+
+        checkIsAuthor(user, comment);
+
+        comment.softDelete();   // 논리적 삭제
+
+        return CommentDeleteResponse.of(comment.getId());
+    }
 
 
     private static void checkIsAuthor(User user, Comment comment) {

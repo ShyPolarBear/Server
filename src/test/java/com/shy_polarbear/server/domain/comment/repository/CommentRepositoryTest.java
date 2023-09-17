@@ -124,7 +124,7 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("SOFT DELETE 댓글 성공 : 엔티티가 존재 && presence == false")
+    @DisplayName("SOFT DELETE 댓글 성공 : 엔티티가 존재 && visibility == false")
     public void softDeleteComment() {
         // given
         Comment comment = commentRepository.save(Comment.createComment(dummyUser, "댓글", dummyFeed));
@@ -137,13 +137,12 @@ public class CommentRepositoryTest {
         Optional<Comment> commentAble = commentRepository.findById(comment.getId());
 
         // then
-        assertThatNoException().isThrownBy(commentAble::get);
         assertThat(commentAble.isPresent()).isTrue();
         assertThat(commentAble.get().getVisibility()).isFalse();
     }
 
     @Test
-    @DisplayName("findAllParentComment 성공")
+    @DisplayName("SELECT findAllParentComment 성공")
     public void findAllParentCommentSuccess() {
         // given
         int limit = 10;
