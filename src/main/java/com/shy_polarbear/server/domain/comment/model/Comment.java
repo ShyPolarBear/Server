@@ -115,4 +115,8 @@ public class Comment extends BaseEntity {
                 .anyMatch(commentLike -> commentLike.isAuthor(userId));
     }
 
+    // test
+    public void setIdForTest(Long mockId) {
+        this.id = mockId;
+    }
 }

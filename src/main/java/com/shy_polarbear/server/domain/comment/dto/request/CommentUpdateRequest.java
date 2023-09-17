@@ -11,9 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentCreateRequest {
+public class CommentUpdateRequest {
     @NotNull
-    private String content;
-
-    private Long parentId;   // nullable
+    String content;
 }

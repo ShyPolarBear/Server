@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record CommentCreateResponse(
-        Long commentId,
+        long commentId,
         Long parentId  // nullable
 ) {
     public static CommentCreateResponse ofChild(Comment comment) {

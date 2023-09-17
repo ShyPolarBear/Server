@@ -1,13 +1,14 @@
 package com.shy_polarbear.server.domain.comment.service;
 
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
+import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
 import com.shy_polarbear.server.domain.comment.exception.CommentException;
 import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
@@ -59,10 +60,26 @@ public class CommentService {
     }
 
     // 댓글 수정
+    @Transactional
+    public CommentUpdateResponse updateComment(Long currentUserId, Long commentId, CommentUpdateRequest request) {
+        User user = userService.getUser(currentUserId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
+        checkIsAuthor(user, comment);
 
+        comment.update(request.getContent());
+
+        return CommentUpdateResponse.of(comment);
+    }
 
     // 댓글 좋아요 혹은 좋아요 취소
 
 
     // 댓글 삭제
+
+
+    private static void checkIsAuthor(User user, Comment comment) {
+        if (!comment.isAuthor(user.getId()))
+            throw new CommentException(ExceptionStatus.NOT_MY_COMMENT);
+    }
 }
