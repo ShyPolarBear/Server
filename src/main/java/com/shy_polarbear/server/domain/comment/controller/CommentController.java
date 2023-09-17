@@ -3,6 +3,7 @@ package com.shy_polarbear.server.domain.comment.controller;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
 import com.shy_polarbear.server.domain.comment.service.CommentService;
@@ -62,6 +63,14 @@ public class CommentController {
 
 
     // 댓글 좋아요 혹은 좋아요 취소
+    @PutMapping("/{commentId}/like")
+    public ApiResponse<CommentLikeResponse> likeComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        CommentLikeResponse response = commentService.likeComment(principalDetails.getUser().getId(), commentId);
+        return success(response);
+    }
 
 
     // 댓글 삭제

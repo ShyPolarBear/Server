@@ -3,9 +3,12 @@ package com.shy_polarbear.server.domain.comment.service;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentCreateRequest;
 import com.shy_polarbear.server.domain.comment.dto.request.CommentUpdateRequest;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentCreateResponse;
+import com.shy_polarbear.server.domain.comment.dto.response.CommentLikeResponse;
 import com.shy_polarbear.server.domain.comment.dto.response.CommentUpdateResponse;
 import com.shy_polarbear.server.domain.comment.exception.CommentException;
 import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.model.CommentLike;
+import com.shy_polarbear.server.domain.comment.repository.CommentLikeRepository;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.comment.template.CommentTemplate;
 import com.shy_polarbear.server.domain.feed.model.Feed;
@@ -44,6 +47,9 @@ public class CommentServiceTest {
     FeedService feedService;
     @Mock
     CommentRepository commentRepository;
+    @Mock
+    CommentLikeRepository commentLikeRepository;
+
 
     private final User dummyUser = UserTemplate.createDummyUser();
     private final User dummyOtherUserA = UserTemplate.createDummyOtherUserA();
@@ -129,9 +135,52 @@ public class CommentServiceTest {
                 .hasMessage(ExceptionStatus.NOT_MY_COMMENT.getMessage());
     }
 
+    @Test
+    @DisplayName("likeComment 성공: 좋아요")
+    public void likeCommentMakeLikeSuccess() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyUser);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(dummyParentComment));
+        given(commentLikeRepository.findByUserAndComment(dummyUser, dummyParentComment)).willReturn(Optional.empty());
+
+        // when
+        CommentLikeResponse response = commentService.likeComment(UserTemplate.ID, CommentTemplate.PARENT_ID);
+
+        // then
+        assertThat(response.isLiked()).isTrue();
+    }
+
+    @Test
+    @DisplayName("likeComment 성공: 좋아요 취소")
+    public void likeCommentCancelLikeSuccess() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyUser);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(dummyParentComment));
+        CommentLike commentLike = CommentLike.createCommentLike(dummyParentComment, dummyUser);
+        given(commentLikeRepository.findByUserAndComment(dummyUser, dummyParentComment)).willReturn(Optional.of(commentLike));
+
+        // when
+        CommentLikeResponse response = commentService.likeComment(UserTemplate.ID, CommentTemplate.PARENT_ID);
+
+        // then
+        assertThat(response.isLiked()).isFalse();
+    }
+
+    @Test
+    @DisplayName("likeComment 실패: 존재하지 않는 댓글")
+    public void likeCommentNotFoundFail() {
+        // given
+        given(userService.getUser(anyLong())).willReturn(dummyUser);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.empty());  // 예외 발생
+
+        // when & then
+        assertThatThrownBy(()-> commentService.likeComment(UserTemplate.ID, CommentTemplate.PARENT_ID))
+                .isInstanceOf(CommentException.class)
+                .hasMessage(ExceptionStatus.NOT_FOUND_COMMENT.getMessage());
+    }
+
     // 삭제 성공: 소프트 딜리트
     // 삭제 실패: 존재하지 않는 댓글, 작성자가 아닌 경우
 
-    // 좋아요 성공: 좋아요, 좋아요 취소
-    // 좋아요 실패: 존재하지 않는 댓글
+
 }
