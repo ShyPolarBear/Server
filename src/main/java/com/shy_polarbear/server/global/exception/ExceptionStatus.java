@@ -33,6 +33,11 @@ public enum ExceptionStatus {
     NOT_FOUND_FEED(404, 2001, "존재하지 않는 피드입니다."),
     NOT_MY_FEED(400, 2002, "본인의 피드가 아닙니다."),
 
+    //댓글
+    NOT_FOUND_COMMENT(404, 2100, "존재하지 않는 댓글입니다."),
+    NOT_MY_COMMENT(404, 2104, "본인의 댓글이 아닙니다."),
+
+
     // 퀴즈
     ALREADY_SOLVED_DAILY_QUIZ(400, 3000, "이미 오늘 데일리 퀴즈를 풀었습니다."),
     NOT_FOUND_QUIZ(404, 3001, "존재하지 않는 퀴즈입니다."),
