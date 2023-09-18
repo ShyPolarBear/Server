@@ -55,8 +55,8 @@ public class FeedCardResponse {
                     .authorProfileImage((commentAuthor.getProfileImage() == null) ? "" : commentAuthor.getProfileImage())
                     .content(comment.getContent())
                     .likeCount(comment.getCommentLikes().size())
-                    .isAuthor(comment.isAuthor(user))
-                    .isLike(comment.isLike(user))
+                    .isAuthor(comment.isAuthor(user.getId()))
+                    .isLike(comment.isLike(user.getId()))
                     .createdDate(comment.getCreatedDate())
                     .build();
         } else {

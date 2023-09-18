@@ -117,4 +117,9 @@ public class User extends BaseEntity {
     public boolean isSameNickName(String nickName) {
         return Objects.equals(this.nickName, nickName);
     }
+
+    // test
+    public void setIdForTest(Long mockId) {
+        this.id = mockId;
+    }
 }

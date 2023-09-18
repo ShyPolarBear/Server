@@ -22,7 +22,7 @@ import java.util.List;
 
 import static com.shy_polarbear.server.global.common.dummy.LoginUserInitializer.LOGIN_USER_PROVIDER_ID;
 
-@Component
+@Component("FeedInitializer")
 @DependsOn("LoginUserInitializer")
 @RequiredArgsConstructor
 @Slf4j
