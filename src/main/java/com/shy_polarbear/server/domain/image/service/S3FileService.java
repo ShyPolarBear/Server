@@ -1,10 +1,10 @@
-package com.shy_polarbear.server.domain.images.service;
+package com.shy_polarbear.server.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.shy_polarbear.server.domain.images.exception.ImageException;
+import com.shy_polarbear.server.domain.image.exception.ImageException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

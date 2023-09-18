@@ -10,7 +10,7 @@ import com.shy_polarbear.server.domain.feed.model.FeedImage;
 import com.shy_polarbear.server.domain.feed.model.FeedLike;
 import com.shy_polarbear.server.domain.feed.repository.FeedLikeRepository;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
-import com.shy_polarbear.server.domain.images.service.ImageService;
+import com.shy_polarbear.server.domain.image.service.ImageService;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.dto.PageResponse;

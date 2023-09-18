@@ -1,25 +1,19 @@
-package com.shy_polarbear.server.domain.images.service;
+package com.shy_polarbear.server.domain.image.service;
 
-import com.shy_polarbear.server.domain.images.dto.request.DeleteImageRequest;
-import com.shy_polarbear.server.domain.images.dto.request.UpdateImageRequest;
-import com.shy_polarbear.server.domain.images.dto.request.UploadImageRequest;
-import com.shy_polarbear.server.domain.images.dto.response.DeleteImageResponse;
-import com.shy_polarbear.server.domain.images.dto.response.UpdateImageResponse;
-import com.shy_polarbear.server.domain.images.dto.response.UploadImageResponse;
-import com.shy_polarbear.server.domain.images.exception.ImageException;
+import com.shy_polarbear.server.domain.image.dto.request.DeleteImageRequest;
+import com.shy_polarbear.server.domain.image.dto.request.UpdateImageRequest;
+import com.shy_polarbear.server.domain.image.dto.request.UploadImageRequest;
+import com.shy_polarbear.server.domain.image.dto.response.DeleteImageResponse;
+import com.shy_polarbear.server.domain.image.dto.response.UpdateImageResponse;
+import com.shy_polarbear.server.domain.image.dto.response.UploadImageResponse;
+import com.shy_polarbear.server.domain.image.exception.ImageException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
 import java.util.List;
-import java.util.UUID;
-
-import static java.text.MessageFormat.format;
 
 @Service
 @Transactional

@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.images;
+package com.shy_polarbear.server.domain.image;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
