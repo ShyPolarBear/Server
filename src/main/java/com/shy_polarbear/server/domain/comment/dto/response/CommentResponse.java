@@ -30,8 +30,6 @@ public record CommentResponse(
                 .isAuthor(isAuthor)
                 .isLike(isLike)
                 .likeCount(comment.getCommentLikes().size())
-                .createdDate(comment.getCreatedDate())
-                .isDeleted(comment.getVisibility())
                 .childComments(childCommentList.stream().map(it -> ChildCommentResponse.of(it, it.isAuthor(userId), it.isLike(userId))).toList())
                 .build();
     }

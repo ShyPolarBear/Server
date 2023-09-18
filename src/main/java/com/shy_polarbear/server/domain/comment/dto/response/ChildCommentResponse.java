@@ -20,7 +20,7 @@ public record ChildCommentResponse(
                 .commentId(comment.getId())
                 .content(comment.getContent())
                 .createdDate(comment.getCreatedDate())
-                .isDeleted(comment.getVisibility())
+                .isDeleted(!comment.getVisibility())
                 .authorNickname(comment.getAuthor().getNickName())
                 .authorProfileImage(comment.getAuthor().getProfileImage())
                 .isAuthor(isAuthor)
