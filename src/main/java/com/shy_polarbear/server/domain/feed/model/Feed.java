@@ -32,7 +32,7 @@ public class Feed extends BaseEntity {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeedImage> feedImages;
+    private List<FeedImage> feedImages = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
@@ -45,7 +45,9 @@ public class Feed extends BaseEntity {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.feedImages = Objects.isNull(feedImages) ? new ArrayList<>() : feedImages;
+        if (!Objects.isNull(feedImages)) {
+            this.feedImages.addAll(feedImages);
+        }
     }
 
     public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
