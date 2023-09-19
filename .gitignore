@@ -44,6 +44,9 @@ application-prod.yml
 application.properties
 /src/main/resources/firebase-private-key.json
 
+### not used ###
+spy.log
+
 
 ### just memo
 memo.md
