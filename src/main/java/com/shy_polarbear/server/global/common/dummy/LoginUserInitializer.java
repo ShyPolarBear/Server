@@ -1,11 +1,12 @@
 package com.shy_polarbear.server.global.common.dummy;
 
+import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -20,15 +21,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile({"local", "dev"})
+@Profile({ProfileConstants.LOCAL, ProfileConstants.DEV})
 public class LoginUserInitializer {
     private User user;
-    private String nickName = "노을";
-    private String email = "chi6465618@naver.com";
-    private String profileImage = "";
-    private String phoneNumber = "01093926465";
-    private UserRole userRole = UserRole.ROLE_USR;
-    private ProviderType provider = ProviderType.KAKAO;
+    private final String nickName = "노을";
+    private final String email = "chi6465618@naver.com";
+    private final String profileImage = "";
+    private final String phoneNumber = "01093926465";
+    private final UserRole userRole = UserRole.ROLE_USR;
+    private final ProviderType provider = ProviderType.KAKAO;
     static String LOGIN_USER_PROVIDER_ID = "0000";
 
     private final PasswordEncoder passwordEncoder;
@@ -49,6 +50,19 @@ public class LoginUserInitializer {
         } else {
             user = User.createUser(nickName, email, profileImage, phoneNumber, userRole, LOGIN_USER_PROVIDER_ID, provider, passwordEncoder);
             userRepository.save(user);
+
+            for (int i = 0; i < 10; i++) {
+                userRepository.save(User.createUser(
+                        "유저" + i,
+                        email + i,
+                        profileImage,
+                        phoneNumber + i,
+                        userRole,
+                        LOGIN_USER_PROVIDER_ID + i,
+                        provider,
+                        passwordEncoder
+                ));
+            }
         }
         JwtDto issue = jwtProvider.issue(user);
         log.info("더미 유저 access token : {}", issue.getAccessToken());

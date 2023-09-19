@@ -5,13 +5,11 @@ import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,6 +50,7 @@ public class ControllerAdvice {
         String message = ExceptionStatus.SERVER_ERROR.getMessage();
 
         log.warn("{}({}) - {}", ex.getClass().getSimpleName(), code, ex.getMessage());
+        ex.printStackTrace();
         return ResponseEntity.status(httpCode)
                 .body(ApiResponse.error(code, message));
     }

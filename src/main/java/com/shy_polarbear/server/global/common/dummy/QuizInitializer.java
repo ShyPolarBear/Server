@@ -5,6 +5,7 @@ import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
 import com.shy_polarbear.server.domain.quiz.model.OXChoice;
 import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
 import com.shy_polarbear.server.domain.quiz.repository.QuizRepository;
+import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
@@ -19,7 +20,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile({"local", "dev"})
+@Profile({ProfileConstants.LOCAL, ProfileConstants.DEV})
 public class QuizInitializer {  // TODO: 지금 로직은 지속가능하지 않음. 퀴즈 업데이트를 한다면..?
     private final QuizRepository quizRepository;
 

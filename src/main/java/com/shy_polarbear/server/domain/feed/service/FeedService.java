@@ -65,7 +65,7 @@ public class FeedService {
         return new UpdateFeedResponse(feedId);
     }
 
-    private Feed findFeedById(Long feedId) {
+    public Feed findFeedById(Long feedId) {
         Feed findFeed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new FeedException(ExceptionStatus.NOT_FOUND_FEED));
         return findFeed;

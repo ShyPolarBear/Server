@@ -9,6 +9,7 @@ import com.shy_polarbear.server.global.common.constants.GlobalConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                             .antMatchers(GlobalConstants.permittedUrls).permitAll()
+                            .antMatchers(HttpMethod.POST, GlobalConstants.permittedUrlsWithPostMethod).permitAll()
                         .anyRequest().authenticated()
                 .and()
                     .logout()

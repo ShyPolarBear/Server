@@ -54,7 +54,7 @@ public class QuizService {
                 .findRandomQuizzesAlreadySolvedByUser(currentUserId, limit)
                 .map(this::buildQuizCardResponseFromQuiz);
 
-        Long count = quizRepository.countAllRecentQuizzesAlreadySolvedByUser(currentUserId);
+        Long count = quizRepository.countAllQuizzesAlreadySolvedByUser(currentUserId);
         return PageResponse.of(result, count);
     }
 
@@ -101,7 +101,7 @@ public class QuizService {
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_QUIZ));
         List<MultipleChoice> multipleChoiceList = multipleChoiceRepository.findAllByMultipleChoiceQuizId(quizId);
 
-        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::isAnswer).findFirst()
+        MultipleChoice answer = multipleChoiceList.stream().filter(MultipleChoice::getIsAnswer).findFirst()
                 .orElseThrow(() -> new QuizException(ExceptionStatus.SERVER_ERROR));    // 답이 없는 퀴즈는 서버쪽 오류
         int sequence = multipleChoiceList.indexOf(answer) + 1;// 정답 선택지의 순서
 

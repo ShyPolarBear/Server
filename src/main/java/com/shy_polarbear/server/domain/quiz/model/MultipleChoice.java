@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.quiz.model;
 
 import com.shy_polarbear.server.domain.quiz.exception.QuizException;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
+import com.shy_polarbear.server.global.common.util.profiles.CustomProfileUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,14 +24,14 @@ public class MultipleChoice extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private boolean isAnswer;
+    private Boolean isAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
     private MultipleChoiceQuiz multipleChoiceQuiz;
 
     @Builder
-    public MultipleChoice(String content, boolean isAnswer, MultipleChoiceQuiz multipleChoiceQuiz) {
+    public MultipleChoice(String content, Boolean isAnswer, MultipleChoiceQuiz multipleChoiceQuiz) {
         this.content = content;
         this.isAnswer = isAnswer;
         setInitialMultipleChoiceQuiz(multipleChoiceQuiz);
@@ -43,5 +44,12 @@ public class MultipleChoice extends BaseEntity {
 
         this.multipleChoiceQuiz = multipleChoiceQuiz;
         multipleChoiceQuiz.getMultipleChoiceList().add(this);
+    }
+
+    // test
+    public void setIdForMockTest(Long mockId) {
+        CustomProfileUtils.validateIsProfileNullOrTest();
+
+        this.id = mockId;
     }
 }

@@ -25,7 +25,7 @@ public class UpdateUserInfoResponse {
     public static UpdateUserInfoResponse from(User user) {
         return UpdateUserInfoResponse.builder()
                 .id(user.getId())
-                .nickName(user.getEmail())
+                .nickName(user.getNickName())
                 .profileImage(user.getProfileImage() == null ? "" : user.getProfileImage())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
