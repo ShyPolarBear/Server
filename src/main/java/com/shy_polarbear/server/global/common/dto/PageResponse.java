@@ -11,13 +11,13 @@ import java.util.List;
 @Getter
 public class PageResponse<T> {  // 총 개수가 필요한 클라이언트에 대한 응답 DTO
     long count;
-    boolean isLast;
+    boolean last;
     List<T> content;
 
     public static <T> PageResponse<T> of(Page<T> page) {
         return PageResponse.<T>builder()
                 .count(page.getTotalElements())
-                .isLast(page.isLast())
+                .last(page.isLast())
                 .content(page.getContent())
                 .build();
     }
@@ -25,7 +25,7 @@ public class PageResponse<T> {  // 총 개수가 필요한 클라이언트에 �
     public static <T> PageResponse<T> of(Slice<T> slice, long totalElements) {  // Slice + 카운트 쿼리
         return PageResponse.<T>builder()
                 .count(totalElements)
-                .isLast(slice.isLast())
+                .last(slice.isLast())
                 .content(slice.getContent())
                 .build();
     }
