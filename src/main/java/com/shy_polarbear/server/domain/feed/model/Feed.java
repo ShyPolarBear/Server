@@ -82,13 +82,13 @@ public class Feed extends BaseEntity {
         }
     }
 
-    public boolean isAuthor(User user) {
-        return this.author.getId().equals(user.getId());
+    public boolean isAuthor(Long userId) {
+        return this.author.getId().equals(userId);
     }
 
-    public boolean isLike(User user) {
+    public boolean isLike(Long userId) {
         return feedLikes.stream()
-                .anyMatch(feedLike -> feedLike.isAuthor(user));
+                .anyMatch(feedLike -> feedLike.isAuthor(userId));
     }
 
     public List<String> getFeedImageUrls() {

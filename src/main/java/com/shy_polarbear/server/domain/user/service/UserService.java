@@ -44,11 +44,13 @@ public class UserService {
         return user.getId();
     }
 
-    public UserInfoResponse findUserInfo(User user) {
+    public UserInfoResponse findUserInfo(Long userId) {
+        User user = getUser(userId);
         return UserInfoResponse.from(user);
     }
 
-    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest, User user) {
+    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest, Long userId) {
+        User user = getUser(userId);
         if (!user.isSameNickName(userInfoRequest.getNickName())) {
             checkDuplicateNickName(userInfoRequest.getNickName());
         }
@@ -60,36 +62,36 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
     }
 
-    public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByIdLessThanAndAuthorOrderByIdDesc(lastFeedId, user, PageRequest.of(0, limit));
+    public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit, Long userId) {
+        Slice<Feed> findFeedList = feedRepository.findByIdLessThanAndAuthorIdOrderByIdDesc(lastFeedId, userId, PageRequest.of(0, limit));
         return getUserFeedsResponse(findFeedList);
     }
 
-    public UserFeedsResponse findUserFeeds(Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByAuthorOrderByIdDesc(user, PageRequest.of(0, limit));
+    public UserFeedsResponse findUserFeeds(Integer limit, Long userId) {
+        Slice<Feed> findFeedList = feedRepository.findByAuthorIdOrderByIdDesc(userId, PageRequest.of(0, limit));
         return getUserFeedsResponse(findFeedList);
     }
 
-    public UserCommentFeedsResponse findUserCommentFeedsByCursorId(Long lastCommentId, Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorAndCommentsIdLessThanOrderByCommentsIdDesc(user, lastCommentId, PageRequest.of(0, limit));
+    public UserCommentFeedsResponse findUserCommentFeedsByCursorId(Long lastCommentId, Integer limit, Long userId) {
+        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorIdAndCommentsIdLessThanOrderByCommentsIdDesc(userId, lastCommentId, PageRequest.of(0, limit));
         return getUserCommentFeedsResponse(findFeedList);
     }
 
-    public UserCommentFeedsResponse findUserCommentFeeds(Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorOrderByCommentsIdDesc(user, PageRequest.of(0, limit));
+    public UserCommentFeedsResponse findUserCommentFeeds(Integer limit, Long userId) {
+        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorIdOrderByCommentsIdDesc(userId, PageRequest.of(0, limit));
         return getUserCommentFeedsResponse(findFeedList);
     }
 
     private static UserFeedsResponse getUserFeedsResponse(Slice<Feed> findFeedList) {
         return UserFeedsResponse.builder()
-                .isLast(findFeedList.isLast())
+                .last(findFeedList.isLast())
                 .feedList(findFeedList.stream().toList())
                 .build();
     }
 
     private static UserCommentFeedsResponse getUserCommentFeedsResponse(Slice<Feed> findFeedList) {
         return UserCommentFeedsResponse.builder()
-                .isLast(findFeedList.isLast())
+                .last(findFeedList.isLast())
                 .feedList(findFeedList.stream().toList())
                 .build();
     }

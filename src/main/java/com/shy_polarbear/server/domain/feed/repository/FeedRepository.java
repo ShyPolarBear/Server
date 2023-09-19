@@ -12,12 +12,12 @@ import java.util.List;
 
 
 public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryCustom {
-    Slice<Feed> findByIdLessThanAndAuthorOrderByIdDesc(Long id, User author, Pageable pageable);
+    Slice<Feed> findByIdLessThanAndAuthorIdOrderByIdDesc(Long id, Long userId, Pageable pageable);
 
-    Slice<Feed> findByCommentsAuthorAndCommentsIdLessThanOrderByCommentsIdDesc(User author, Long commentId, Pageable pageable);
+    Slice<Feed> findByCommentsAuthorIdAndCommentsIdLessThanOrderByCommentsIdDesc(Long userId, Long commentId, Pageable pageable);
 
-    Slice<Feed> findByAuthorOrderByIdDesc(User author, PageRequest pageable);
+    Slice<Feed> findByAuthorIdOrderByIdDesc(Long userId, PageRequest pageable);
 
-    Slice<Feed> findByCommentsAuthorOrderByCommentsIdDesc(User user, PageRequest pageable);
+    Slice<Feed> findByCommentsAuthorIdOrderByCommentsIdDesc(Long userId, PageRequest pageable);
 
 }
