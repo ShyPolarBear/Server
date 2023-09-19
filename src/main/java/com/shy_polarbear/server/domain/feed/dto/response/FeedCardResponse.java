@@ -44,7 +44,7 @@ public class FeedCardResponse {
         private String createdDate;
     }
 
-    public static FeedCardResponse of(Feed feed, Optional<Comment> commentOptional, User user) {
+    public static FeedCardResponse of(Feed feed, Optional<Comment> commentOptional, Long userId) {
         FeedCommentResponse feedCommentResponse;
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
@@ -55,8 +55,8 @@ public class FeedCardResponse {
                     .authorProfileImage((commentAuthor.getProfileImage() == null) ? "" : commentAuthor.getProfileImage())
                     .content(comment.getContent())
                     .likeCount(comment.getCommentLikes().size())
-                    .isAuthor(comment.isAuthor(user.getId()))
-                    .isLike(comment.isLike(user.getId()))
+                    .isAuthor(comment.isAuthor(userId))
+                    .isLike(comment.isLike(userId))
                     .createdDate(comment.getCreatedDate())
                     .build();
         } else {
@@ -73,8 +73,8 @@ public class FeedCardResponse {
                 .author(feedAuthor.getNickName())
                 .authorProfileImage((feedAuthor.getProfileImage() == null) ? "" : feedAuthor.getProfileImage())
                 .createdDate(feed.getCreatedDate())
-                .isLike(feed.isLike(user))
-                .isAuthor(feed.isAuthor(user))
+                .isLike(feed.isLike(userId))
+                .isAuthor(feed.isAuthor(userId))
                 .commentCount(feed.getComments().size())
                 .comment(feedCommentResponse)
                 .build();

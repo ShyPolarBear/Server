@@ -116,7 +116,7 @@ public class JwtProvider {
     public JwtDto issue(User user) {
         String accessToken = createAccessToken(user);
         String refreshToken = createRefreshToken(user);
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUser(user);
+        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUserId(user.getId());
         if (findRefreshToken.isPresent()) {
             findRefreshToken.get().replace(refreshToken);
         } else {

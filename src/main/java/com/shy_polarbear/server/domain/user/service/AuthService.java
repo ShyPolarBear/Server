@@ -92,8 +92,8 @@ public class AuthService {
     }
 
     // refresh token 삭제하는 방식 사용
-    public LogoutResponse logOut(User user) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+    public LogoutResponse logOut(Long userId) {
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
                 .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
         refreshTokenRepository.delete(refreshToken);
         refreshTokenRepository.flush();
