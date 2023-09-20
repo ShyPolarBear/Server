@@ -19,4 +19,7 @@ public class JoinRequest {
     @NotBlank
     private String email;
     private String profileImage;
+
+    @NotBlank
+    private String fcmToken;
 }

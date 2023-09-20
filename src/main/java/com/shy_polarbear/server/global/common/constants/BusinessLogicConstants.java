@@ -20,4 +20,9 @@ public abstract class BusinessLogicConstants {
     public static final int COMMENT_CONTENT_MAX_LENGTH = 300;
     public static final String COMMENT_LIMIT_PARAM_DEFAULT_VALUE = "10";
 
+    /**
+     * FCM 푸시 알림
+     **/
+    public static final int RECENT_NOTIFICATION_LIMIT = 30;
+
 }

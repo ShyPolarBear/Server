@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.user.model;
 
 
+import com.shy_polarbear.server.domain.notification.model.Notification;
 import com.shy_polarbear.server.domain.quiz.model.UserQuiz;
 import com.shy_polarbear.server.domain.point.model.Point;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
@@ -55,6 +56,10 @@ public class User extends BaseEntity {
     private ProviderType provider;
     @Column(nullable = false, unique = true)
     private String password;
+    @Column(unique = true)
+    private String fcmToken;
+    @OneToMany(mappedBy = "receiver")
+    private List<Notification> notificationList = new ArrayList<>();
 
     public void addUserQuiz(UserQuiz userQuiz) {
         this.userQuiz.add(userQuiz);
@@ -116,6 +121,21 @@ public class User extends BaseEntity {
 
     public boolean isSameNickName(String nickName) {
         return Objects.equals(this.nickName, nickName);
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public void removeFcmToken() {
+        this.fcmToken = null;
+    }
+
+    public void addNotification(Notification notification) {
+        System.out.println("this.notificationList = " + this.notificationList);
+        System.out.println("this.notificationList.isEmpty() = " + this.notificationList.isEmpty());
+
+        this.notificationList.add(notification);
     }
 
     // test
