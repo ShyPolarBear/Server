@@ -61,6 +61,10 @@ dependencies {
 	//p6spy
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 
+	// FCM
+	implementation("com.google.firebase:firebase-admin:6.8.1")
+	implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
