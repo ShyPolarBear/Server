@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class UserFeedsResponse {
     private Integer count;
-    private Boolean isLast;
+    private Boolean last;
     private List<UserFeedResponse> content;
 
     @AllArgsConstructor
@@ -33,9 +33,9 @@ public class UserFeedsResponse {
     }
 
     @Builder
-    public UserFeedsResponse(Boolean isLast, List<Feed> feedList) {
+    public UserFeedsResponse(Boolean last, List<Feed> feedList) {
         this.count = feedList.size();
-        this.isLast = isLast;
+        this.last = last;
         this.content = feedList.stream()
                 .map((feed -> UserFeedResponse.from(feed)))
                 .collect(Collectors.toList());

@@ -25,13 +25,13 @@ public class UserController {
 
     @GetMapping("/me")
     public ApiResponse<UserInfoResponse> findUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(userService.findUserInfo(principalDetails.getUser()));
+        return ApiResponse.success(userService.findUserInfo(principalDetails.getUser().getId()));
     }
 
     @PutMapping("/me")
     public ApiResponse<UpdateUserInfoResponse> updateUserInfo(@Valid @RequestBody UpdateUserInfoRequest userInfoRequest,
                                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(userService.updateUserInfo(userInfoRequest, principalDetails.getUser()));
+        return ApiResponse.success(userService.updateUserInfo(userInfoRequest, principalDetails.getUser().getId()));
     }
 
     @GetMapping("/duplicate-nickname")
@@ -45,9 +45,9 @@ public class UserController {
                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         limit = (limit == null) ? 10 : limit;
         if (lastFeedId == null) {
-            return ApiResponse.success(userService.findUserFeeds(limit, principalDetails.getUser()));
+            return ApiResponse.success(userService.findUserFeeds(limit, principalDetails.getUser().getId()));
         }
-        return ApiResponse.success(userService.findUserFeedsByCursorId(lastFeedId, limit, principalDetails.getUser()));
+        return ApiResponse.success(userService.findUserFeedsByCursorId(lastFeedId, limit, principalDetails.getUser().getId()));
     }
 
     @GetMapping("/comments/feeds")
@@ -56,8 +56,8 @@ public class UserController {
                                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         limit = (limit == null) ? 10 : limit;
         if (lastCommentId == null) {
-            return ApiResponse.success(userService.findUserCommentFeeds(limit, principalDetails.getUser()));
+            return ApiResponse.success(userService.findUserCommentFeeds(limit, principalDetails.getUser().getId()));
         }
-        return ApiResponse.success(userService.findUserCommentFeedsByCursorId(lastCommentId, limit, principalDetails.getUser()));
+        return ApiResponse.success(userService.findUserCommentFeedsByCursorId(lastCommentId, limit, principalDetails.getUser().getId()));
     }
 }
