@@ -18,6 +18,12 @@ public abstract class BusinessLogicConstants {
      * 이미지
      **/
     public static final int MIN_IMAGE_COUNT = 1;
-    public static final int MAX_IMAGE_COUNT = 5;
+
+
+    /**
+     * 랭킹
+     */
+    public static final String RANKING_LIMIT_PARAM_DEFAULT_VALUE = "10";
+
 
 }
