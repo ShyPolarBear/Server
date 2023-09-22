@@ -28,6 +28,6 @@ public class RankingController {
 
     @GetMapping("/me")
     public ApiResponse<RankingResponse> findMyRanking(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(rankingService.findMyRanking());
+        return ApiResponse.success(rankingService.findMyRanking(principalDetails.getUser().getId()));
     }
 }

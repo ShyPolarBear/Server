@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.ranking.redis.config;
+package com.shy_polarbear.server.domain.ranking.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
