@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
 import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
+import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
 
 @Repository
 @RequiredArgsConstructor
@@ -70,6 +71,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     public Slice<Feed> findUserFeeds(Long lastFeedId, int limit, Long userId) {
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
+                .leftJoin(feed.feedImages, feedImage).fetchJoin()
                 .where(
                         feed.author.id.eq(userId),
                         lessThanLastFeedId(lastFeedId)
@@ -77,11 +79,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .orderBy(feed.id.desc())
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
-    }
-
-    private BooleanExpression lessThanLastCommentId(Long lastCommentId) {
-        if (lastCommentId == null || lastCommentId == 0) return null;
-        else return comment.id.lt(lastCommentId);
     }
 
     private BooleanExpression lessThanLastFeedId(Long lastFeedId) {

@@ -17,6 +17,7 @@ import java.util.Optional;
 import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
 import static com.shy_polarbear.server.domain.comment.model.QCommentLike.commentLike;
 import static com.shy_polarbear.server.domain.feed.model.QFeed.feed;
+import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
 import static com.shy_polarbear.server.domain.user.model.QUser.user;
 
 @Repository
@@ -57,6 +58,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
                 .join(comment.feed, feed).fetchJoin()
+                .join(feed.author, user)
+                .leftJoin(feed.feedImages, feedImage)
                 .where(
                         findRecentUserCommentIdsInFeed(lastCommentId, userId)
                 )
