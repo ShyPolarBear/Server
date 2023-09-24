@@ -15,14 +15,15 @@ public class UserCommentFeedResponse {
     private String feedImage;
     private String author;
     private String authorProfileImage;
+    private Long commentId;
 
-    public static UserCommentFeedResponse from(Feed feed) {
+    public static UserCommentFeedResponse from(Feed feed, Long commentId) {
         Long feedId = feed.getId();
         String title = feed.getTitle();
         String author = feed.getAuthor().getNickName();
         String profileImageNullable = feed.getAuthor().getProfileImage();
         String authorProfileImage = (profileImageNullable == null) ? "" : profileImageNullable;
         String feedImage = feed.getFeedImages().size() == 0 ? "" : feed.getFeedImages().get(0).getUrl();
-        return new UserCommentFeedResponse(feedId, title, feedImage, author, authorProfileImage);
+        return new UserCommentFeedResponse(feedId, title, feedImage, author, authorProfileImage, commentId);
     }
 }
