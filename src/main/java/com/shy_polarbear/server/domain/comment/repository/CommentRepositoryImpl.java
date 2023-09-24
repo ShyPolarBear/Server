@@ -58,8 +58,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
                 .join(comment.feed, feed).fetchJoin()
-                .join(feed.author, user)
-                .leftJoin(feed.feedImages, feedImage)
+                .join(feed.author, user).fetchJoin()
+                .leftJoin(feed.feedImages, feedImage).fetchJoin()
                 .where(
                         findRecentUserCommentIdsInFeed(lastCommentId, userId)
                 )
