@@ -1,7 +1,10 @@
 package com.shy_polarbear.server.domain.feed.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.feed.model.Feed;
@@ -9,9 +12,6 @@ import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
 import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
@@ -67,27 +67,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     }
 
     @Override
-    public Slice<Feed> findAllFeedsByUserComment(Long lastCommentId, int limit, long userId) {
-        JPAQuery<Feed> query = queryFactory
-                .selectFrom(feed)
-                .join(feed.comments, comment)
-                .where(
-                        comment.author.id.eq(userId),
-                        lessThanLastCommentId(lastCommentId)
-                )
-                .orderBy(
-                        comment.id.desc()
-                );
-
-        //피드 리스트를 순회하면서 새로운 리스트에 같은 id가 없다면 해당 피드를 넣는다.
-        List<Feed> feedsByUserComment = new ArrayList<>();
-        query.fetch().stream()
-                .filter(feed -> removeDuplicateFeeds(feedsByUserComment, feed, limit))
-                .forEach(feedsByUserComment::add);
-        return CustomSliceExecutionUtils.getSlice(feedsByUserComment, limit);
-    }
-
-    @Override
     public Slice<Feed> findUserFeeds(Long lastFeedId, int limit, Long userId) {
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
@@ -98,15 +77,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .orderBy(feed.id.desc())
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
-    }
-
-    private static boolean removeDuplicateFeeds(List<Feed> feedsByUserComment, Feed feed, int limit) {
-        //만약 feedsByUserComment가 limit만큼 채워졌다면 더이상 채울 수 없다.
-        if (feedsByUserComment.size() < limit) {
-            return !feedsByUserComment.stream()
-                    .anyMatch(existFeed  -> existFeed.getId() == feed.getId());
-        }
-        return false;
     }
 
     private BooleanExpression lessThanLastCommentId(Long lastCommentId) {

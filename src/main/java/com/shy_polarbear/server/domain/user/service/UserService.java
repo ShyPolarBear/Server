@@ -1,5 +1,7 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
@@ -23,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private final CommentRepository commentRepository;
 
     //닉네임 중복 검증
     public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
@@ -69,9 +72,9 @@ public class UserService {
     }
 
     public PageResponse<UserCommentFeedResponse> findAllFeedsByUserComment(Long lastCommentId, Integer limit, Long userId) {
-        Slice<Feed> userCommentFeeds = feedRepository.findAllFeedsByUserComment(lastCommentId, limit, userId);
-        Slice<UserCommentFeedResponse> userCommentFeedResponses = userCommentFeeds.map(feed -> UserCommentFeedResponse.from(feed));
+        Slice<Comment> userCommentsInFeed = commentRepository.findRecentUserCommentsInFeed(lastCommentId, limit, userId);
+        Slice<UserCommentFeedResponse> userCommentFeedResponses = userCommentsInFeed
+                .map(comment -> UserCommentFeedResponse.from(comment.getFeed(), comment.getId()));
         return PageResponse.of(userCommentFeedResponses, userCommentFeedResponses.stream().count());
     }
-
 }
