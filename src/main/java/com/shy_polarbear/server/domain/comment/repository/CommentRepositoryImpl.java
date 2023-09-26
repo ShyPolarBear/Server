@@ -1,6 +1,7 @@
 package com.shy_polarbear.server.domain.comment.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.comment.model.Comment;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
 import static com.shy_polarbear.server.domain.comment.model.QCommentLike.commentLike;
 import static com.shy_polarbear.server.domain.feed.model.QFeed.feed;
+import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
 import static com.shy_polarbear.server.domain.user.model.QUser.user;
 
 @Repository
@@ -49,6 +51,38 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
 
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
+    }
+
+    @Override
+    public Slice<Comment> findRecentUserCommentsInFeed(Long lastCommentId, Integer limit, Long userId) {
+        JPAQuery<Comment> query = queryFactory
+                .selectFrom(comment)
+                .join(comment.feed, feed).fetchJoin()
+                .join(feed.author, user).fetchJoin()
+                .leftJoin(feed.feedImages, feedImage).fetchJoin()
+                .where(
+                        findRecentUserCommentIdsInFeed(lastCommentId, userId)
+                )
+                .orderBy(comment.id.desc())
+                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));//fetch join -> 애플리케이션 단에서 limit
+
+        return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
+    }
+
+    private static BooleanExpression findRecentUserCommentIdsInFeed(Long lastCommentId, Long userId) {
+        return comment.id.in(JPAExpressions
+                .select(comment.id.max())
+                .from(comment)
+                .where(
+                        comment.author.id.eq(userId),
+                        ltCursorId(lastCommentId)
+                )
+                .groupBy(comment.feed.id));
+    }
+
+    private static BooleanExpression ltCursorId(Long lastCommentId) {
+        if (lastCommentId == null || lastCommentId == 0) return null;
+        else return comment.id.lt(lastCommentId);
     }
 
     private static BooleanExpression checkFeed(Feed feed) {
