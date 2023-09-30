@@ -42,9 +42,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     public Slice<Comment> findAllParentComment(long currentUserId, long feedId, Long cursorId, int limit) {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
-                .leftJoin(comment.author, user).fetchJoin()
-                .leftJoin(comment.feed, feed).fetchJoin()
-                .join(comment.commentLikes, commentLike).fetchJoin()
+                .join(comment.author, user).fetchJoin()
+                .join(comment.feed, feed).fetchJoin()
+                .leftJoin(comment.commentLikes, commentLike)
                 .where(eqFeedId(feedId).and(gtCursorId(cursorId))
                         .and(comment.parent.isNull()))
                 .orderBy(comment.id.asc())  // 오래된 순
