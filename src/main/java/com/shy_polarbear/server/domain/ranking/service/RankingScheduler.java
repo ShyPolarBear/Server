@@ -27,7 +27,7 @@ public class RankingScheduler {
 
     // 매일 8시 랭킹의 포인트 합계 업데이트
     // 유저의 이번달 1일 8시 이후 포인트 합계 == 랭킹의 포인트 합계
-    // 유저 생성 시 랭킹 생성된다고 가정...!!!!
+    // 유저 생성 시 랭킹 생성됨.
     @Scheduled(cron = RANKING_UPDATE_DATE)
     public void updateRanking() {
         rankingRepository.findAll().stream()

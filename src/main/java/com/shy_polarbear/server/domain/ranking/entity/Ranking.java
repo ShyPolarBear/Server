@@ -4,6 +4,7 @@ import com.shy_polarbear.server.domain.user.model.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -19,9 +20,24 @@ public class Ranking {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ColumnDefault("0")
     private Integer totalRankingPoint;
+
+    public static Ranking createRanking(User user) {
+        return new Ranking(user);
+    }
+
+    public Ranking(User user) {
+        this.user = user;
+    }
+
     public void updateTotalRankingPoint(int totalRankingPoint) {
         this.totalRankingPoint = totalRankingPoint;
+    }
+
+    public int calculateWinningPercent() {
+        return 0;
     }
 
 }

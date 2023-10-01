@@ -2,6 +2,7 @@ package com.shy_polarbear.server.domain.user.service;
 
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
+import com.shy_polarbear.server.domain.ranking.service.RankingService;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
 import com.shy_polarbear.server.domain.user.dto.user.response.*;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
@@ -23,6 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private final RankingService rankingService;
 
     //닉네임 중복 검증
     public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
@@ -41,6 +43,7 @@ public class UserService {
 
     public Long saveUser(User user) {
         userRepository.save(user);
+        rankingService.saveRanking(user);
         return user.getId();
     }
 
