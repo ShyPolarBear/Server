@@ -15,6 +15,7 @@ import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.dto.PageResponse;
+import com.shy_polarbear.server.global.common.util.LocalDateTimeUtils;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -36,7 +36,6 @@ public class FeedService {
     private final FeedLikeRepository feedLikeRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
-    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public CreateFeedResponse createFeed(CreateFeedRequest createFeedRequest, Long userId) {
         User user = userService.getUser(userId);
@@ -134,9 +133,9 @@ public class FeedService {
     }
 
     private Slice<Feed> findRecentBestFeeds(Long lastFeedId, int limit) {
-        String earliestDate = LocalDateTime.now()
-                .minusDays(BusinessLogicConstants.RECENT_BEST_FEED_DAY_LIMIT)
-                .format(dateTimeFormatter);
+        LocalDateTime earliestLocalDate = LocalDateTime.now()
+                .minusDays(BusinessLogicConstants.RECENT_BEST_FEED_DAY_LIMIT);
+        String earliestDate = LocalDateTimeUtils.convertToString(earliestLocalDate);
         return feedRepository.findRecentBestFeeds(generateCursor(lastFeedId), earliestDate, limit);
     }
 

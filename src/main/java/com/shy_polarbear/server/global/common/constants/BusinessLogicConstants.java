@@ -24,6 +24,7 @@ public abstract class BusinessLogicConstants {
      * 랭킹
      */
     public static final String RANKING_LIMIT_PARAM_DEFAULT_VALUE = "10";
+    public static final String RANKING_UPDATE_DATE = "0 0 8 * * *";
 
 
 }
