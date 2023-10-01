@@ -16,8 +16,12 @@ public class Ranking {
     @Column(name = "ranking_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     private Integer totalRankingPoint;
+    public void updateTotalRankingPoint(int totalRankingPoint) {
+        this.totalRankingPoint = totalRankingPoint;
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.shy_polarbear.server.global.common.constants;
 
+import javax.swing.plaf.PanelUI;
+
 public abstract class BusinessLogicConstants {
 
     /** 퀴즈 **/
@@ -25,6 +27,8 @@ public abstract class BusinessLogicConstants {
      */
     public static final String RANKING_LIMIT_PARAM_DEFAULT_VALUE = "10";
     public static final String RANKING_UPDATE_DATE = "0 0 8 * * *";
+    public static final int RANKING_POINT_RESET_DAY = 1;
+    public static final int RANKING_POINT_RESET_HOUR = 8;
 
 
 }
