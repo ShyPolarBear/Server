@@ -29,6 +29,20 @@ public abstract class BusinessLogicConstants {
      */
     public static final String USER_FEED_LIMIT_PARAM_DEFAULT_VALUE = "10";
 
+    /**
+     * 이미지
+     **/
+    public static final int MIN_IMAGE_COUNT = 1;
+    public static final int MAX_FEED_IMAGE_COUNT = 5;
+
+
+    /**
+     * 랭킹
+     */
+    public static final String RANKING_LIMIT_PARAM_DEFAULT_VALUE = "10";
+    public static final String RANKING_UPDATE_DATE = "0 0 8 * * *";
+    public static final int RANKING_POINT_RESET_DAY = 1;
+    public static final int RANKING_POINT_RESET_HOUR = 8;
 
 
 }

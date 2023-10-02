@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.MAX_FEED_IMAGES_COUNT;
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.MAX_FEED_IMAGE_COUNT;
 import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.MIN_IMAGE_COUNT;
 
 @NoArgsConstructor
@@ -16,6 +16,6 @@ import static com.shy_polarbear.server.global.common.constants.BusinessLogicCons
 @Getter
 public class DeleteImageRequest {
     @NotNull
-    @Size(min = MIN_IMAGE_COUNT, max = MAX_FEED_IMAGES_COUNT)
+    @Size(min = MIN_IMAGE_COUNT, max = MAX_FEED_IMAGE_COUNT)
     private List<String> imageUrls;
 }
