@@ -1,7 +1,10 @@
 package com.shy_polarbear.server.domain.feed.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringExpressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.feed.model.Feed;
@@ -10,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
+import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
 import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
+import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,7 +23,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {
+    public Slice<Feed> findRecentFeeds(long lastFeedId, int limit) {
         //최신순
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
@@ -58,6 +63,20 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                         feed.feedLikes.size().desc(),
                         feed.id.desc()
                 )
+                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
+        return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
+    }
+
+    @Override
+    public Slice<Feed> findUserFeeds(Long lastFeedId, int limit, Long userId) {
+        JPAQuery<Feed> query = queryFactory
+                .selectFrom(feed)
+                .leftJoin(feed.feedImages, feedImage).fetchJoin()
+                .where(
+                        feed.author.id.eq(userId),
+                        lessThanLastFeedId(lastFeedId)
+                )
+                .orderBy(feed.id.desc())
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
