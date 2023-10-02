@@ -23,7 +23,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Feed> findRecentFeeds(long lastFeedId, int limit) {
+    public Slice<Feed> findRecentFeeds(Long lastFeedId, int limit) {
         //최신순
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)

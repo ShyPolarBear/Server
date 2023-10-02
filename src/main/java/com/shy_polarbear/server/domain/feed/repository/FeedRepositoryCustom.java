@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 
 public interface FeedRepositoryCustom {
 
-    Slice<Feed> findRecentFeeds(long lastFeedId, int limit);
+    Slice<Feed> findRecentFeeds(Long lastFeedId, int limit);
 
     Slice<Feed> findBestFeeds(String cursor, int minFeedLikeCount, int limit);
 
