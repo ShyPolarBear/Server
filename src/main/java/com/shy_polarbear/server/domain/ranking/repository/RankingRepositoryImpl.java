@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
+import com.shy_polarbear.server.domain.user.model.QUser;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.shy_polarbear.server.domain.ranking.entity.QRanking.ranking;
+import static com.shy_polarbear.server.domain.user.model.QUser.*;
 import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.WINNABLE_RANKING_LIMIT;
 
 @Repository
@@ -59,6 +62,17 @@ public class RankingRepositoryImpl implements RankingRepositoryCustom{
                         ranking.id.desc()
                 );
         return query.fetch();
+    }
+
+    @Override
+    public Optional<Ranking> findUserRanking(Long userId) {
+        JPAQuery<Ranking> query = queryFactory
+                .selectFrom(ranking)
+                .join(ranking.user, user).fetchJoin()
+                .where(
+                        user.id.eq(userId)
+                );
+        return Optional.ofNullable(query.fetchOne());
     }
 
     private String generateCursor(Long lastRankingId, Integer lastRankingScore){
