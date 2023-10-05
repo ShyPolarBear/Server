@@ -43,6 +43,6 @@ public abstract class BusinessLogicConstants {
     public static final String RANKING_UPDATE_DATE = "0 0 8 * * *";
     public static final int RANKING_POINT_RESET_DAY = 1;
     public static final int RANKING_POINT_RESET_HOUR = 8;
-
+    public static final int WINNABLE_RANKING_LIMIT = 5;
 
 }
