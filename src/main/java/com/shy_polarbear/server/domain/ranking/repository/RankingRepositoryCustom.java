@@ -9,5 +9,7 @@ public interface RankingRepositoryCustom {
 
     Slice<Ranking> findRankingList(Long lastRankingId, Integer lastRankingScore, Integer limit);
 
-    List<Ranking> findRankingListWinnable();
+    List<Ranking> findWinnableRankingList();
+
+    List<Ranking> findRankValueNullableRankingList();
 }

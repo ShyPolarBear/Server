@@ -15,7 +15,7 @@ public class RankingResponse {
     private String profileImage;
     private String nickName;
     private Integer point;
-    private Double winningPercent;
+    private Integer winningPercent;
     private Long rankingId;
 
     public static RankingResponse of(Ranking ranking) {
@@ -25,6 +25,7 @@ public class RankingResponse {
                 .point(ranking.getRankingPoint())
                 .winningPercent(ranking.getWinningPercent())
                 .rankingId(ranking.getId())
+                .rank(ranking.getRankValue())
                 .build();
     }
 }

@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -28,7 +28,7 @@ public class Ranking {
     private Integer rankingPoint;
 
     @ColumnDefault("0")
-    private Double winningPercent;
+    private Integer winningPercent;
 
     private Integer rankValue;
 
@@ -53,6 +53,9 @@ public class Ranking {
     }
 
     public void calculateWinningPercent(double totalPoint) {
-        this.winningPercent = rankingPoint / totalPoint * 100;
+        this.winningPercent = (int) (rankingPoint / totalPoint * 100);
+    }
+    public boolean isSameRankingPoint(int point) {
+        return Objects.equals(this.rankingPoint, point);
     }
 }

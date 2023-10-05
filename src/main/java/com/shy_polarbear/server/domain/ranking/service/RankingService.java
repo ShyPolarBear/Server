@@ -12,7 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -22,7 +21,7 @@ public class RankingService {
 
     public PageResponse<RankingResponse> findRankingList(Long lastRankingId, Integer limit) {
         Integer lastRankingPoint = null;
-        if (!Objects.isNull(lastRankingId)) {
+        if (lastRankingId != null) {
             Ranking lastRanking = rankingRepository.findById(lastRankingId)
                     .orElseThrow(() -> new RankingException(ExceptionStatus.NOT_FOUND_RANKING));
             lastRankingPoint = lastRanking.getRankingPoint();

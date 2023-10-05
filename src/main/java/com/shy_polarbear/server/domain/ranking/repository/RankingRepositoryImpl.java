@@ -39,7 +39,7 @@ public class RankingRepositoryImpl implements RankingRepositoryCustom{
     }
 
     @Override
-    public List<Ranking> findRankingListWinnable() {
+    public List<Ranking> findWinnableRankingList() {
         JPAQuery<Ranking> query = queryFactory
                 .selectFrom(ranking)
                 .where(
@@ -47,6 +47,17 @@ public class RankingRepositoryImpl implements RankingRepositoryCustom{
                 )
                 .orderBy(ranking.rankingPoint.desc());
 
+        return query.fetch();
+    }
+
+    @Override
+    public List<Ranking> findRankValueNullableRankingList() {
+        JPAQuery<Ranking> query = queryFactory
+                .selectFrom(ranking)
+                .orderBy(
+                        ranking.rankingPoint.desc(),
+                        ranking.id.desc()
+                );
         return query.fetch();
     }
 
