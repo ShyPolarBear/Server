@@ -29,7 +29,10 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     public Optional<Comment> findBestComment(Feed feed) {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
-                .where(checkFeed(feed))
+                .where(
+                        checkFeed(feed),
+                        comment.visibility.eq(true)
+                )
                 .orderBy(
                         comment.commentLikes.size().desc(),
                         comment.createdDate.desc()
@@ -75,6 +78,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(comment)
                 .where(
                         comment.author.id.eq(userId),
+                        comment.visibility.eq(true),
                         ltCursorId(lastCommentId)
                 )
                 .groupBy(comment.feed.id));
