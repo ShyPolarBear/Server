@@ -1,6 +1,6 @@
-package com.shy_polarbear.server.domain.images.service;
+package com.shy_polarbear.server.domain.image.service;
 
-import com.shy_polarbear.server.domain.images.exception.ImageException;
+import com.shy_polarbear.server.domain.image.exception.ImageException;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

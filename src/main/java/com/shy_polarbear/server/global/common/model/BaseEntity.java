@@ -1,5 +1,6 @@
 package com.shy_polarbear.server.global.common.model;
 
+import com.shy_polarbear.server.global.common.util.LocalDateTimeUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,15 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void onPrePersist(){
-        this.createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTimeUtils.convertToString(now);
+        this.createdDate = LocalDateTimeUtils.convertToString(now);
         this.modifiedDate = this.createdDate;
     }
 
     @PreUpdate
     public void onPreUpdate(){
-        this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime now = LocalDateTime.now();
+        this.modifiedDate = LocalDateTimeUtils.convertToString(now);
     }
 }
