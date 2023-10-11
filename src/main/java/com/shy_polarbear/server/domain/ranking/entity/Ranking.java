@@ -43,7 +43,7 @@ public class Ranking {
         this.user = user;
     }
 
-    public void updateTotalRankingPoint(int rankingPoint) {
+    public void updateRankingPoint(int rankingPoint) {
         this.rankingPoint = rankingPoint;
         this.visibility = true;
     }
