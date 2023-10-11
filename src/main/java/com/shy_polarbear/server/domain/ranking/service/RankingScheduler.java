@@ -66,7 +66,7 @@ public class RankingScheduler {
     private void updateTotalRankingPoint(Ranking ranking) {
         Integer rankingPoint = pointRepository.findUserPointsSumAfterResetDate(ranking.getUser().getId(), getRankingPointResetDate());
         rankingPoint = (rankingPoint == null) ? 0 : rankingPoint;
-        ranking.updateTotalRankingPoint(rankingPoint);
+        ranking.updateRankingPoint(rankingPoint);
     }
 
     private String getRankingPointResetDate() {

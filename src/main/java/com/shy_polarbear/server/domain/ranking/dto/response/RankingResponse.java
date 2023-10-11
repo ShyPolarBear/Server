@@ -25,7 +25,7 @@ public class RankingResponse {
                 .point(ranking.getRankingPoint())
                 .winningPercent(ranking.getWinningPercent())
                 .rankingId(ranking.getId())
-                .rank(ranking.getRankValue())
+                .rank(ranking.getVisibility() ? ranking.getRankValue() : -1)
                 .build();
     }
 }
