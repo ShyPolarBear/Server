@@ -12,8 +12,8 @@ public enum PointType {
     NOT_SOLVE_QUIZ(0), //환경 문제를 못 맞춘 경우
     DELETE_FEED(-500), //환경 피드 삭제
     LIKE_RECEIVED_CANCEL(-10), //내가 쓴 환경 피드에 좋아요가 취소된 경우
-    DELETE_BEST_FEED(2000), //베스트 피드를 삭제한 경우 (베스트 피드 == 좋아요 50개 이상)
-    REPORT_RECEIVED(500); //각종 신고를 당한 경우
+    DELETE_BEST_FEED(-2000), //베스트 피드를 삭제한 경우 (베스트 피드 == 좋아요 50개 이상)
+    REPORT_RECEIVED(-500); //각종 신고를 당한 경우
 
     private final int value;
 

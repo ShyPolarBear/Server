@@ -24,39 +24,39 @@ public class FeedController {
     @PostMapping
     public ApiResponse<CreateFeedResponse> createFeed(@Valid @RequestBody CreateFeedRequest createFeedRequest,
                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.createFeed(createFeedRequest, principalDetails.getUser()));
+        return ApiResponse.success(feedService.createFeed(createFeedRequest, principalDetails.getUser().getId()));
     }
 
     @GetMapping
     public ApiResponse<PageResponse<FeedCardResponse>> findAllFeeds(@RequestParam String sort,
                                       @RequestParam(required = false) Long lastFeedId,
-                                      @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) int limit,
+                                      @RequestParam(required = false, defaultValue = BusinessLogicConstants.FEED_LIMIT_PARAM_DEFAULT_VALUE) Integer limit,
                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.findAllFeeds(sort, lastFeedId, limit, principalDetails.getUser()));
+        return ApiResponse.success(feedService.findAllFeeds(sort, lastFeedId, limit, principalDetails.getUser().getId()));
     }
 
     @GetMapping("/{feedId}")
     public ApiResponse<FeedResponse> findOneFeed(@PathVariable Long feedId,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.findFeed(feedId, principalDetails.getUser()));
+        return ApiResponse.success(feedService.findFeed(feedId, principalDetails.getUser().getId()));
     }
 
     @PutMapping("/{feedId}")
     public ApiResponse<UpdateFeedResponse> updateFeed(@PathVariable Long feedId,
                                                       @Valid @RequestBody UpdateFeedRequest updateFeedRequest,
                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.updateFeed(feedId, updateFeedRequest, principalDetails.getUser()));
+        return ApiResponse.success(feedService.updateFeed(feedId, updateFeedRequest, principalDetails.getUser().getId()));
     }
 
     @DeleteMapping("/{feedId}")
     public ApiResponse<DeleteFeedResponse> deleteFeed(@PathVariable Long feedId,
                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.deleteFeed(feedId, principalDetails.getUser()));
+        return ApiResponse.success(feedService.deleteFeed(feedId, principalDetails.getUser().getId()));
     }
 
     @PutMapping("/{feedId}/like")
     public ApiResponse<LikeFeedResponse> switchFeedLike(@PathVariable Long feedId,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.success(feedService.switchFeedLike(feedId, principalDetails.getUser()));
+        return ApiResponse.success(feedService.switchFeedLike(feedId, principalDetails.getUser().getId()));
     }
 }

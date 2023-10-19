@@ -80,7 +80,7 @@ class UserServiceTest {
     @DisplayName("findUserInfo() 메서드는 유저의 정보를 반환한다.")
     @Test
     void findUserInfo() {
-        UserInfoResponse userInfo = userService.findUserInfo(user1);
+        UserInfoResponse userInfo = userService.findUserInfo(user1.getId());
         Assertions.assertThat(userInfo.getEmail()).isEqualTo(user1.getEmail());
         Assertions.assertThat(userInfo.getNickName()).isEqualTo(user1.getNickName());
         Assertions.assertThat(userInfo.getPhoneNumber()).isEqualTo(user1.getPhoneNumber());

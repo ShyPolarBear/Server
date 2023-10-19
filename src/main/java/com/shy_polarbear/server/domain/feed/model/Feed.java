@@ -32,7 +32,7 @@ public class Feed extends BaseEntity {
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeedImage> feedImages;
+    private List<FeedImage> feedImages = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
@@ -45,7 +45,9 @@ public class Feed extends BaseEntity {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.feedImages = Objects.isNull(feedImages) ? new ArrayList<>() : feedImages;
+        if (!Objects.isNull(feedImages)) {
+            this.feedImages.addAll(feedImages);
+        }
     }
 
     public static Feed createFeed(String title, String content, List<FeedImage> feedImages, User author) {
@@ -80,13 +82,13 @@ public class Feed extends BaseEntity {
         }
     }
 
-    public boolean isAuthor(User user) {
-        return this.author.getId().equals(user.getId());
+    public boolean isAuthor(Long userId) {
+        return this.author.getId().equals(userId);
     }
 
-    public boolean isLike(User user) {
+    public boolean isLike(Long userId) {
         return feedLikes.stream()
-                .anyMatch(feedLike -> feedLike.isAuthor(user));
+                .anyMatch(feedLike -> feedLike.isAuthor(userId));
     }
 
     public List<String> getFeedImageUrls() {

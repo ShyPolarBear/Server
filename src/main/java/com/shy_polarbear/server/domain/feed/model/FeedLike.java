@@ -40,7 +40,7 @@ public class FeedLike extends BaseEntity {
         return feedLike;
     }
 
-    public boolean isAuthor(User user) {
-        return this.user.getId().equals(user.getId());
+    public boolean isAuthor(Long userId) {
+        return this.user.getId().equals(userId);
     }
 }

@@ -1,16 +1,20 @@
 package com.shy_polarbear.server.domain.user.service;
 
+import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
+import com.shy_polarbear.server.domain.ranking.repository.RankingRepository;
+import com.shy_polarbear.server.domain.ranking.service.RankingService;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
 import com.shy_polarbear.server.domain.user.dto.user.response.*;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private final CommentRepository commentRepository;
+    private final RankingService rankingService;
 
     //닉네임 중복 검증
     public DuplicateNicknameResponse checkDuplicateNickName(String nickName) {
@@ -41,14 +47,17 @@ public class UserService {
 
     public Long saveUser(User user) {
         userRepository.save(user);
+        rankingService.saveRanking(user);
         return user.getId();
     }
 
-    public UserInfoResponse findUserInfo(User user) {
+    public UserInfoResponse findUserInfo(Long userId) {
+        User user = getUser(userId);
         return UserInfoResponse.from(user);
     }
 
-    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest, User user) {
+    public UpdateUserInfoResponse updateUserInfo(UpdateUserInfoRequest userInfoRequest, Long userId) {
+        User user = getUser(userId);
         if (!user.isSameNickName(userInfoRequest.getNickName())) {
             checkDuplicateNickName(userInfoRequest.getNickName());
         }
@@ -60,37 +69,16 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
     }
 
-    public UserFeedsResponse findUserFeedsByCursorId(Long lastFeedId, Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByIdLessThanAndAuthorOrderByIdDesc(lastFeedId, user, PageRequest.of(0, limit));
-        return getUserFeedsResponse(findFeedList);
+    public PageResponse<UserFeedResponse> findUserFeeds(Long lastFeedId, Integer limit, Long userId) {
+        Slice<Feed> userFeeds = feedRepository.findUserFeeds(lastFeedId, limit, userId);
+        Slice<UserFeedResponse> userFeedResponses = userFeeds.map(feed -> UserFeedResponse.from(feed));
+        return PageResponse.of(userFeedResponses, userFeedResponses.stream().count());
     }
 
-    public UserFeedsResponse findUserFeeds(Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByAuthorOrderByIdDesc(user, PageRequest.of(0, limit));
-        return getUserFeedsResponse(findFeedList);
-    }
-
-    public UserCommentFeedsResponse findUserCommentFeedsByCursorId(Long lastCommentId, Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorAndCommentsIdLessThanOrderByCommentsIdDesc(user, lastCommentId, PageRequest.of(0, limit));
-        return getUserCommentFeedsResponse(findFeedList);
-    }
-
-    public UserCommentFeedsResponse findUserCommentFeeds(Integer limit, User user) {
-        Slice<Feed> findFeedList = feedRepository.findByCommentsAuthorOrderByCommentsIdDesc(user, PageRequest.of(0, limit));
-        return getUserCommentFeedsResponse(findFeedList);
-    }
-
-    private static UserFeedsResponse getUserFeedsResponse(Slice<Feed> findFeedList) {
-        return UserFeedsResponse.builder()
-                .isLast(findFeedList.isLast())
-                .feedList(findFeedList.stream().toList())
-                .build();
-    }
-
-    private static UserCommentFeedsResponse getUserCommentFeedsResponse(Slice<Feed> findFeedList) {
-        return UserCommentFeedsResponse.builder()
-                .isLast(findFeedList.isLast())
-                .feedList(findFeedList.stream().toList())
-                .build();
+    public PageResponse<UserCommentFeedResponse> findAllFeedsByUserComment(Long lastCommentId, Integer limit, Long userId) {
+        Slice<Comment> userCommentsInFeed = commentRepository.findRecentUserCommentsInFeed(lastCommentId, limit, userId);
+        Slice<UserCommentFeedResponse> userCommentFeedResponses = userCommentsInFeed
+                .map(comment -> UserCommentFeedResponse.from(comment.getFeed(), comment.getId()));
+        return PageResponse.of(userCommentFeedResponses, userCommentFeedResponses.stream().count());
     }
 }
