@@ -27,7 +27,7 @@ public class Feed extends BaseEntity {
     private Long id;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String content;
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();

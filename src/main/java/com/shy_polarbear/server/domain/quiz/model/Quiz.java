@@ -22,7 +22,7 @@ public abstract class Quiz extends BaseEntity {
     @Column(nullable = false)
     private String question;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String explanation;
 
     protected Quiz(String question, String explanation) {
