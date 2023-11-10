@@ -1,6 +1,4 @@
-package com.shy_polarbear.server.domain.images.service;
-
-import lombok.Getter;
+package com.shy_polarbear.server.domain.image.service;
 
 
 public enum S3FileDir {

@@ -1,11 +1,11 @@
-package com.shy_polarbear.server.domain.images.controller;
+package com.shy_polarbear.server.domain.image.controller;
 
 import com.nimbusds.jose.shaded.json.parser.JSONParser;
-import com.shy_polarbear.server.domain.images.dto.request.DeleteImageRequest;
-import com.shy_polarbear.server.domain.images.dto.request.UpdateImageRequest;
-import com.shy_polarbear.server.domain.images.dto.response.DeleteImageResponse;
-import com.shy_polarbear.server.domain.images.dto.request.UploadImageRequest;
-import com.shy_polarbear.server.domain.images.exception.ImageException;
+import com.shy_polarbear.server.domain.image.dto.request.DeleteImageRequest;
+import com.shy_polarbear.server.domain.image.dto.request.UpdateImageRequest;
+import com.shy_polarbear.server.domain.image.dto.response.DeleteImageResponse;
+import com.shy_polarbear.server.domain.image.dto.request.UploadImageRequest;
+import com.shy_polarbear.server.domain.image.exception.ImageException;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.springframework.core.io.ClassPathResource;

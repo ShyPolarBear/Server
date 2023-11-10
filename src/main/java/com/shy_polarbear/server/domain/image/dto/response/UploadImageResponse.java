@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.images.dto.response;
+package com.shy_polarbear.server.domain.image.dto.response;
 
 
 import lombok.AllArgsConstructor;

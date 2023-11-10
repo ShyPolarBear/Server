@@ -1,9 +1,11 @@
 package com.shy_polarbear.server.global.common.dummy;
 
+import com.shy_polarbear.server.domain.ranking.dto.response.RankingResponse;
 import com.shy_polarbear.server.domain.user.model.ProviderType;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.model.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.auth.jwt.JwtDto;
 import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.global.common.constants.ProfileConstants;
