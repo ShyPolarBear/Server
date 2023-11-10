@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.notification.service;
 
-import com.google.api.gax.rpc.StatusCode;
 import com.shy_polarbear.server.domain.notification.dto.NotificationReadResponse;
 import com.shy_polarbear.server.domain.notification.dto.NotificationResponse;
 import com.shy_polarbear.server.domain.notification.exception.NotificationException;
