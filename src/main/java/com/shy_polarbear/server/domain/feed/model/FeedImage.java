@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.IMAGE_URL_MAX_LENGTH;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +22,7 @@ public class FeedImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
     private Feed feed;
+    @Column(length = IMAGE_URL_MAX_LENGTH)
     private String url;
 
     public FeedImage(String url) {
