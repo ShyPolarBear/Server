@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.FEED_CONTENT_MAX_LENGTH;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +29,7 @@ public class Feed extends BaseEntity {
     private Long id;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = FEED_CONTENT_MAX_LENGTH)
     private String content;
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<FeedLike> feedLikes = new ArrayList<>();

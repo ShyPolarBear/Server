@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.IMAGE_URL_MAX_LENGTH;
+
 @Getter
 @Entity
 @Table(name = "users")
@@ -30,7 +32,7 @@ public class User extends BaseEntity {
     private String nickName;
     @Column(nullable = false)
     private String email;
-    @Column(length = 500)
+    @Column(length = IMAGE_URL_MAX_LENGTH)
     private String profileImage;
     @Column(nullable = false)
     private String phoneNumber;
