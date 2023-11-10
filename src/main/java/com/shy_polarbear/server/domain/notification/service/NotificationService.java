@@ -1,11 +1,15 @@
 package com.shy_polarbear.server.domain.notification.service;
 
+import com.google.api.gax.rpc.StatusCode;
+import com.shy_polarbear.server.domain.notification.dto.NotificationReadResponse;
 import com.shy_polarbear.server.domain.notification.dto.NotificationResponse;
+import com.shy_polarbear.server.domain.notification.exception.NotificationException;
 import com.shy_polarbear.server.domain.notification.model.Notification;
 import com.shy_polarbear.server.domain.notification.repository.NotificationRepository;
 import com.shy_polarbear.server.domain.notification.vo.NotificationParams;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
+import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,5 +50,14 @@ public class NotificationService {
                 .toList();
     }
 
+    // 알림 읽음 처리
+    @Transactional
+    public NotificationReadResponse readNotification(Long notificationId, Long userId) {
+        Notification notification = notificationRepository.findByIdAndReceiverId(notificationId, userId)
+                .orElseThrow(() -> new NotificationException(ExceptionStatus.NOT_FOUND_NOTIFICATION));
+        notification.read();
+
+        return NotificationReadResponse.of(notification);
+    }
 
 }
