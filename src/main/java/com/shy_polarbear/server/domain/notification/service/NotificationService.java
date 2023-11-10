@@ -1,10 +1,12 @@
 package com.shy_polarbear.server.domain.notification.service;
 
+import com.shy_polarbear.server.domain.notification.dto.NotificationResponse;
 import com.shy_polarbear.server.domain.notification.model.Notification;
 import com.shy_polarbear.server.domain.notification.repository.NotificationRepository;
 import com.shy_polarbear.server.domain.notification.vo.NotificationParams;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,5 +37,14 @@ public class NotificationService {
         notificationRepository.save(notification);
         receiver.addNotification(notification);
     }
+
+    // 내 알림 리스트 조회
+    public List<NotificationResponse> getMyNotifications(Long userId) {
+        List<Notification> notificationList = notificationRepository.findAllByReceiverId(1L);
+        return notificationList.stream()
+                .map(NotificationResponse::of)
+                .toList();
+    }
+
 
 }

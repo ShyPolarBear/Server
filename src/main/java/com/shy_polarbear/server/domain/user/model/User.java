@@ -132,9 +132,6 @@ public class User extends BaseEntity {
     }
 
     public void addNotification(Notification notification) {
-        System.out.println("this.notificationList = " + this.notificationList);
-        System.out.println("this.notificationList.isEmpty() = " + this.notificationList.isEmpty());
-
         this.notificationList.add(notification);
     }
 

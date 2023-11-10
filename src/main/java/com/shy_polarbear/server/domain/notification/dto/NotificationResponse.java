@@ -8,7 +8,7 @@ import lombok.Builder;
 public record NotificationResponse (
         Long notificationId,
         NotificationType notificationType,
-        String target,
+        String redirectTarget,
         Long redirectTargetId,
         String title,
         String content,
@@ -22,11 +22,11 @@ public record NotificationResponse (
         return NotificationResponse.builder()
                 .notificationId(notification.getId())
                 .notificationType(notificationType)
-                .target(target)
+                .redirectTarget(target)
                 .redirectTargetId(notification.getRedirectTargetId())
                 .title(notification.getTitle())
                 .content(notification.getContent())
-                .createdDate(notification.getCreatedDate())   // TODO: 포맷 변경 YYYY-MM-DD HH:mm
+                .createdDate(notification.getCreatedDate())
                 .isRead(notification.isRead())
                 .build();
     }
