@@ -7,7 +7,6 @@ public abstract class BusinessLogicConstants {
      */
     public static final int OX_QUIZ_TIME_LIMIT = 17;
     public static final int MULTIPLE_CHOICE_QUIZ_TIME_LIMIT = 17;
-    public static final int REVIEW_QUIZ_AMOUNT_LIMIT = 5;
     public static final String REVIEW_QUIZ_LIMIT_PARAM_DEFAULT_VALUE = "5";
 
     /**
@@ -37,7 +36,7 @@ public abstract class BusinessLogicConstants {
     public static final int MIN_IMAGE_COUNT = 1;
     public static final int MAX_FEED_IMAGE_COUNT = 5;
 
-    public static final int IMAGE_URL_MAX_LENGTH = 500;
+    public static final int IMAGE_URL_MAX_LENGTH = 310;
 
 
     /**
