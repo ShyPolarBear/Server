@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.notification.model;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
@@ -30,10 +29,6 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User receiver;
-//
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "comment_id")
-//    private Comment comment;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
