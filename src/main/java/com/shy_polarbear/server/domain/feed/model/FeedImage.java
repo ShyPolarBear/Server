@@ -20,7 +20,7 @@ public class FeedImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
     private Feed feed;
-    @Column(length = 2000)
+    @Column(length = 500)
     private String url;
 
     public FeedImage(String url) {

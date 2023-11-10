@@ -30,6 +30,7 @@ public class User extends BaseEntity {
     private String nickName;
     @Column(nullable = false)
     private String email;
+    @Column(length = 500)
     private String profileImage;
     @Column(nullable = false)
     private String phoneNumber;
