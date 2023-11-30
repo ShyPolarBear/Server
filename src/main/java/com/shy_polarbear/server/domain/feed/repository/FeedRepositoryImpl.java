@@ -71,13 +71,14 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     public Slice<Feed> findUserFeeds(Long lastFeedId, int limit, Long userId) {
         JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
-                .leftJoin(feed.feedImages, feedImage).fetchJoin()
+                .leftJoin(feed.feedImages, feedImage)
                 .where(
                         feed.author.id.eq(userId),
                         lessThanLastFeedId(lastFeedId)
                 )
                 .orderBy(feed.id.desc())
-                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
+                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit))
+                .distinct();
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
 

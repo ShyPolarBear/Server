@@ -57,17 +57,19 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     }
 
     @Override
-    public Slice<Comment> findRecentUserCommentsInFeed(Long lastCommentId, Integer limit, Long userId) {
+    public Slice<Comment> findRecentAllUserCommentsInFeed(Long lastCommentId, Integer limit, Long userId) {
         JPAQuery<Comment> query = queryFactory
                 .selectFrom(comment)
                 .join(comment.feed, feed).fetchJoin()
                 .join(feed.author, user).fetchJoin()
-                .leftJoin(feed.feedImages, feedImage).fetchJoin()
+                .leftJoin(feed.feedImages, feedImage)
                 .where(
                         findRecentUserCommentIdsInFeed(lastCommentId, userId)
                 )
                 .orderBy(comment.id.desc())
-                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));//fetch join -> 애플리케이션 단에서 limit
+                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit)) //fetch join -> 애플리케이션 단에서 limit
+                .distinct();
+
 
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }

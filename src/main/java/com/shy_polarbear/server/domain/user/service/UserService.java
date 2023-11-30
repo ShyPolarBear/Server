@@ -76,7 +76,7 @@ public class UserService {
     }
 
     public PageResponse<UserCommentFeedResponse> findAllFeedsByUserComment(Long lastCommentId, Integer limit, Long userId) {
-        Slice<Comment> userCommentsInFeed = commentRepository.findRecentUserCommentsInFeed(lastCommentId, limit, userId);
+        Slice<Comment> userCommentsInFeed = commentRepository.findRecentAllUserCommentsInFeed(lastCommentId, limit, userId);
         Slice<UserCommentFeedResponse> userCommentFeedResponses = userCommentsInFeed
                 .map(comment -> UserCommentFeedResponse.from(comment.getFeed(), comment.getId()));
         return PageResponse.of(userCommentFeedResponses, userCommentFeedResponses.stream().count());
