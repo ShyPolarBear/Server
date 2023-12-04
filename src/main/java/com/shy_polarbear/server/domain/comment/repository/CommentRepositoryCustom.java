@@ -12,5 +12,5 @@ public interface CommentRepositoryCustom {
 
     Slice<Comment> findAllParentComment(long currentUserId, long feedId, Long cursorId, int limit);
 
-    Slice<Comment> findRecentUserCommentsInFeed(Long lastCommentId, Integer limit, Long userId);
+    Slice<Comment> findRecentAllUserCommentsInFeed(Long lastCommentId, Integer limit, Long userId);
 }
