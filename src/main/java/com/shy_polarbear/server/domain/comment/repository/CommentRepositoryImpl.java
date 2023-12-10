@@ -51,7 +51,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .where(eqFeedId(feedId).and(gtCursorId(cursorId))
                         .and(comment.parent.isNull()))
                 .orderBy(comment.id.asc())  // 오래된 순
-                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
+                .limit(CustomSliceExecutionUtils.buildSliceLimit(limit))
+                .distinct();
 
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
