@@ -40,8 +40,8 @@ jobs:
     - name: application.yml 생성
       run: |
         cd ./src/main/resources
-        touch ./application-dev.yml
-        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
+        touch ./application.yml
+        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
         cd ./src/test/resources
         touch ./application.yml
         echo "${{ secrets.APPLICATION_TEST_YML }}" > ./application.yml
