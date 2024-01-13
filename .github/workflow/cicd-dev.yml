@@ -46,9 +46,9 @@ jobs:
     - name: Gradle 빌드
       run: ./gradlew build
 
-    - name: application-dev.yml 생성
+    - name: application.yml 생성
       run: |
         cd ./src/main/resources
-        touch ./application-dev.yml
-        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
+        touch ./application.yml
+        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application.yml
       shell: bash
