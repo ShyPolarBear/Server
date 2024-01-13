@@ -46,3 +46,5 @@ application.properties
 memo.md
 
 *.log
+
+firebase-private-key.json
