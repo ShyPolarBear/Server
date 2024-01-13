@@ -34,3 +34,10 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
+
+    - name: application-dev.yml 생성
+      run: |
+        cd ./src/main/resources
+        touch ./application-dev.yml
+        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
+      shell: bash
