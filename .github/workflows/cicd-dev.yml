@@ -77,7 +77,7 @@ jobs:
         ECR_REPOSITORY: shypolarbear-server
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        cd ./Server
+        cd Server
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "IMAGE_NAME=$ECR_REGISTRY/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
