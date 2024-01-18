@@ -1,11 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: CI/CD 
+name: CI/CD
 
 on:
   push:
@@ -21,66 +14,80 @@ jobs:
 
     steps:
 
-    - name: Gradle 캐싱
-      uses: actions/cache@v3
-      with:
-        path: |  
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: ${{ runner.os }}-gradle-
-
-          
-    - uses: actions/checkout@v3
-    - name: java 코드 빌드 jdk 17 설정
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        
-    - name: application.yml 생성
-      run: |
-        cd ./src/main/resources
-        touch ./application-dev.yml
-        echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
-        cd ../../test
-        mkdir resources
-        cd ./resources
-        touch ./application.yml
-        echo "${{ secrets.APPLICATION_TEST_YML }}" > ./application.yml
-      shell: bash
-
-    - name: gradlew 권한 부여
-      run: chmod +x ./gradlew
-
-    - name: Gradle 셋업
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-    - name: Gradle 빌드
-      run: ./gradlew build
-
-    
-    - name: AWS Configure 설정
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
-
-    - name: ECR 로그인
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: docker 빌드 및 ECR push
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: shypolarbear-server
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "IMAGE_NAME=$ECR_REGISTRY/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
-        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
 
+      - uses: actions/checkout@v3
+      - name: java 코드 빌드 jdk 17 설정
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: application.yml 생성
+        run: |
+            cd ./src/main/resources
+            touch ./application-dev.yml
+            echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
+            cd ../../test
+            mkdir resources
+            cd ./resources
+            touch ./application.yml
+            echo "${{ secrets.APPLICATION_TEST_YML }}" > ./application.yml
+          shell: bash
 
+      - name: gradlew 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: Gradle 셋업
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      - name: Gradle 빌드
+        run: ./gradlew build
+
+      - name: AWS Configure 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: ECR 로그인
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: docker 빌드 및 ECR push
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: shypolarbear-server
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "IMAGE_NAME=$ECR_REGISTRY/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+
+      - name: ECR image pull & EC2 Server 실행
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE_NAME : ${{ steps.build-image.outputs.IMAGE_NAME}}
+          IMAGE_TAG : ${{ steps.build-image.outputs.IMAGE_TAG}}
+          AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
+        with:
+          host: ${{ secrets.EC2_DEV_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_DEV_KEY }}
+          envs: IMAGE_NAME, IMAGE_TAG, AWS_ACCOUNT
+          script: |
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT
+            docker pull $IMAGE_NAME:$IMAGE_TAG
+            docker image tag $IMAGE_NAME:$IMAGE_TAG shypolarbear-server
+            docker rm -f $(docker ps -qa)
+            docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
