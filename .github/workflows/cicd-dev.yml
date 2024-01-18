@@ -90,4 +90,4 @@ jobs:
             docker pull $IMAGE_NAME:$IMAGE_TAG
             docker image tag $IMAGE_NAME:$IMAGE_TAG shypolarbear-server
             docker rm -f $(docker ps -qa)
-            docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
+            # docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
