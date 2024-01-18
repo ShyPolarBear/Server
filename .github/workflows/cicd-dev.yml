@@ -73,6 +73,12 @@ jobs:
           echo "IMAGE_NAME=$ECR_REGISTRY/$ECR_REPOSITORY" >> $GITHUB_OUTPUT
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      - name: get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: ECR image pull & EC2 Server 실행
         uses: appleboy/ssh-action@master
@@ -90,4 +96,8 @@ jobs:
             docker pull $IMAGE_NAME:$IMAGE_TAG
             docker image tag $IMAGE_NAME:$IMAGE_TAG shypolarbear-server
             docker rm -f $(docker ps -qa)
-            # docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
+            docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
+
+      - name: Remove IP FROM security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
