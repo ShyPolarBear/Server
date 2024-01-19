@@ -108,14 +108,13 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.tosslab.jandi-v2+json" \
             -d '{
-              "body": "PR 빌드 및 테스트 결과: '${{ job.status }}'",
-              "connectColor": `${job.status === 'success' ? '#2ECC71' : '#FF6347'}`,
+              "body": "PR 빌드 및 테스트 결과: 'success'",
               "connectBlocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*CI/CD 결과: '"${{ job.status }}"'*"
+                    "text": "*CI/CD 결과: '${job.status}'*"
                   }
                 },
                 {
@@ -123,7 +122,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*PR 이름:*\n${{ github.event.pull_request.title }}"
+                      "text": "*PR 이름:*\n"
                     }
                   ]
                 }
