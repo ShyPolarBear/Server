@@ -106,7 +106,7 @@ jobs:
         run: |
           curl -X POST -H "Content-Type: application/json" -d '{
             "body": "PR 빌드 및 테스트 결과: '${{ job.status }}'",
-            "connectColor": "'${{ job.status == 'success' ? '#2ECC71' : '#FF6347' }}'",
+            "connectColor": `${job.status === 'success' ? '#2ECC71' : '#FF6347'}`,
             "connectBlocks": [
               {
                 "type": "section",
