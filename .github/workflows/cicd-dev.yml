@@ -104,7 +104,7 @@ jobs:
 
       - name: Send JANDI Notification
         run: |
-          curl -X POST \
+          curl -X POST https://wh.jandi.com/connect-api/webhook/${{ secrets.JANDI_TOKEN }} \
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.tosslab.jandi-v2+json" \
             -d '{
@@ -128,4 +128,4 @@ jobs:
                   ]
                 }
               ]
-            }' "https://wh.jandi.com/connect-api/webhook/${{ secrets.JANDI_TOKEN }}"
+            }' 
