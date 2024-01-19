@@ -94,9 +94,9 @@ jobs:
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT
             docker pull $IMAGE_NAME:$IMAGE_TAG
-            # docker image tag $IMAGE_NAME:$IMAGE_TAG shypolarbear-server
-            # docker rm -f $(docker ps -qa)
-            # docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
+            docker image tag $IMAGE_NAME:$IMAGE_TAG shypolarbear-server
+            docker rm -f $(docker ps -qa)
+            docker run -it -d -p 8080:8080 --name shypolarbear-server shypolarbear-server
 
       - name: Remove IP FROM security group
         run: |
