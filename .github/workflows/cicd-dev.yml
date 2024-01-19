@@ -109,13 +109,13 @@ jobs:
             -H "Accept: application/vnd.tosslab.jandi-v2+json" \
             -d '{
               "body": "PR 빌드 및 테스트 결과: '${{ job.status }}'",
-              "connectColor": `${job.status === 'success' ? '#2ECC71' : '#FF6347'}`,
+              "connectColor": "${{ job.status === 'success' ? '#2ECC71' : '#FF6347' }}",
               "connectBlocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*CI/CD 결과: '"${{ job.status }}"'*"
+                    "text": "*CI/CD 결과: '${{ job.status }}'*"
                   }
                 },
                 {
