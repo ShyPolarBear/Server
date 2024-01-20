@@ -22,8 +22,4 @@ public class MultipleChoiceQuiz extends Quiz {
         super(QuizType.MULTIPLE_CHOICE, question, explanation);
     }
 
-    @Override
-    public int getQuizTimeLimit() {
-        return QuizType.MULTIPLE_CHOICE.getTimeLimit();
-    }
 }

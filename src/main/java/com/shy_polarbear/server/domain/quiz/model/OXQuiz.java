@@ -22,8 +22,4 @@ public class OXQuiz extends Quiz {
         this.answer = answer;
     }
 
-    @Override
-    public int getQuizTimeLimit() {
-        return QuizType.OX.getTimeLimit();
-    }
 }

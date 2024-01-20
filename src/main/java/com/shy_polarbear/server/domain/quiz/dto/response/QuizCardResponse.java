@@ -18,7 +18,7 @@ public record QuizCardResponse(
                 .quizId(quiz.getId())
                 .type(quiz.getType().getValue())
                 .question(quiz.getQuestion())
-                .time(quiz.getQuizTimeLimit())
+                .time(quiz.getTimeLimit())
                 .choices(resolveChoicesFromDynamicQuizType(quiz))
                 .build();
     }
