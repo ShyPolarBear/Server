@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MultipleChoiceQuiz extends Quiz {
     @OneToMany(mappedBy = "multipleChoiceQuiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MultipleChoice> multipleChoiceList = new ArrayList<>();
+    private final List<MultipleChoice> multipleChoiceList = new ArrayList<>();
 
     @Builder
     public MultipleChoiceQuiz(String question, String explanation) {
