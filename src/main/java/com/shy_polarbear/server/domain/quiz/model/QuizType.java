@@ -8,10 +8,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum QuizType implements EnumModel<String> {
-    OX("OX"), MULTIPLE_CHOICE("MULTIPLE_CHOICE");
+    OX("OX", 17), MULTIPLE_CHOICE("MULTIPLE_CHOICE", 17);
 
     private final String value;
-
+    private final int timeLimit;
 
     public static QuizType of(String param) {
         return Arrays.stream(QuizType.values())
@@ -30,4 +30,7 @@ public enum QuizType implements EnumModel<String> {
         return this.value;
     }
 
+    public int getTimeLimit() {
+        return this.timeLimit;
+    }
 }

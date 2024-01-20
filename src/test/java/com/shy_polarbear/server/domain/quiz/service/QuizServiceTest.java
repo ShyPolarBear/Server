@@ -81,7 +81,7 @@ public class QuizServiceTest {
         // then
         assertThat(response.quizId()).isEqualTo(mockOXQuiz.getId());
         assertThat(response.type()).isEqualTo(QuizType.OX.getValue());
-        assertThat(response.time()).isEqualTo(BusinessLogicConstants.OX_QUIZ_TIME_LIMIT);
+        assertThat(response.time()).isEqualTo(QuizType.OX.getTimeLimit());
         assertThat(response.question()).isEqualTo(mockOXQuiz.getQuestion());
         assertThat(response.choices()).isNull();
     }

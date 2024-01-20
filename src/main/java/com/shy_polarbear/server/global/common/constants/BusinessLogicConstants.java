@@ -1,12 +1,11 @@
 package com.shy_polarbear.server.global.common.constants;
 
-public abstract class BusinessLogicConstants {
+public abstract class BusinessLogicConstants {  // TODO refactor: 각 객체로 책임 이동
 
     /**
      * 퀴즈
      */
-    public static final int OX_QUIZ_TIME_LIMIT = 17;
-    public static final int MULTIPLE_CHOICE_QUIZ_TIME_LIMIT = 17;
+
     public static final String REVIEW_QUIZ_LIMIT_PARAM_DEFAULT_VALUE = "5";
 
     /**

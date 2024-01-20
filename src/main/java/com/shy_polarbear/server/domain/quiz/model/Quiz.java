@@ -41,6 +41,9 @@ public abstract class Quiz extends BaseEntity {
         this.explanation = explanation;
     }
 
+    public abstract int getQuizTimeLimit();
+
+
     // TODO refactor: Mockito spy 대체
     // test
     public void setIdForMockTest(Long mockId) {

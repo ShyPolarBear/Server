@@ -19,7 +19,7 @@ public record QuizCardResponse(
                 .quizId(quiz.getId())
                 .type(quiz.getType().getValue())
                 .question(quiz.getQuestion())
-                .time(BusinessLogicConstants.MULTIPLE_CHOICE_QUIZ_TIME_LIMIT)
+                .time(quiz.getQuizTimeLimit())
                 .choices(resolveChoicesFromDynamicQuizType(quiz))
                 .build();
     }
@@ -34,13 +34,5 @@ public record QuizCardResponse(
         return null;
     }
 
-
-    private static int resolveTimeLimitFromDynamicQuizType(Quiz quiz) {
-        if (quiz.getClass().equals(MultipleChoiceQuiz.class)) {
-            return BusinessLogicConstants.MULTIPLE_CHOICE_QUIZ_TIME_LIMIT;
-        }
-
-        return BusinessLogicConstants.OX_QUIZ_TIME_LIMIT;
-    }
 }
 

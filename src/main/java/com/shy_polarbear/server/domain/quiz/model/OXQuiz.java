@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OXQuiz extends Quiz {
+
     @Enumerated(EnumType.STRING)
     private OXChoice answer;
 
@@ -19,5 +20,10 @@ public class OXQuiz extends Quiz {
     public OXQuiz(String question, String explanation, OXChoice answer) {
         super(QuizType.OX, question, explanation);
         this.answer = answer;
+    }
+
+    @Override
+    public int getQuizTimeLimit() {
+        return QuizType.OX.getTimeLimit();
     }
 }
