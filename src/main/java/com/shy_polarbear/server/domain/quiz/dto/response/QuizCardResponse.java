@@ -2,7 +2,6 @@ package com.shy_polarbear.server.domain.quiz.dto.response;
 
 import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
 import com.shy_polarbear.server.domain.quiz.model.Quiz;
-import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import java.util.List;
 import lombok.Builder;
 
@@ -14,7 +13,7 @@ public record QuizCardResponse(
         int time,
         List<MultipleChoiceResponse> choices    // nullable
 ) {
-    public static QuizCardResponse of(Quiz quiz) {
+    public static QuizCardResponse from(Quiz quiz) {
         return QuizCardResponse.builder()
                 .quizId(quiz.getId())
                 .type(quiz.getType().getValue())

@@ -16,7 +16,6 @@ import com.shy_polarbear.server.domain.quiz.template.QuizTemplate;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
-import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -110,7 +109,7 @@ public class QuizServiceTest {
         PageResponse<QuizCardResponse> response = quizService.getRandomReviewQuizzes(UserTemplate.ID, limit);
 
         // then
-        List<QuizCardResponse> mockResponse = mockOXQuizList.stream().map(it -> QuizCardResponse.of((OXQuiz) it)).toList();
+        List<QuizCardResponse> mockResponse = mockOXQuizList.stream().map(it -> QuizCardResponse.from((OXQuiz) it)).toList();
         assertThat(response.getContent()).isEqualTo(mockResponse);
     }
 

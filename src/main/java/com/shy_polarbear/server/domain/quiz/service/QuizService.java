@@ -45,14 +45,14 @@ public class QuizService {
         Quiz quiz = quizRepository.findRecentQuizNotYetSolvedByUser(currentUserId)
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NO_MORE_DAILY_QUIZ));
 
-        return QuizCardResponse.of(quiz);
+        return QuizCardResponse.from(quiz);
     }
 
     // 복습 퀴즈 조회 : 랜덤으로 5개
     public PageResponse<QuizCardResponse> getRandomReviewQuizzes(Long currentUserId, int limit) {
         Slice<QuizCardResponse> result = quizRepository
                 .findRandomQuizzesAlreadySolvedByUser(currentUserId, limit)
-                .map(QuizCardResponse::of);
+                .map(QuizCardResponse::from);
 
         Long count = quizRepository.countAllQuizzesAlreadySolvedByUser(currentUserId);
         return PageResponse.of(result, count);
