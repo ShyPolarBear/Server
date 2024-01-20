@@ -16,10 +16,10 @@ public record QuizCardResponse(
         int time,
         List<MultipleChoiceResponse> choices    // nullable
 ) {
-    public static QuizCardResponse of(MultipleChoiceQuiz quiz) {
+    public static QuizCardResponse of(Quiz quiz) {
         return QuizCardResponse.builder()
                 .quizId(quiz.getId())
-                .type(QuizType.MULTIPLE_CHOICE.getValue())
+                .type(quiz.getType().getValue())
                 .question(quiz.getQuestion())
                 .time(BusinessLogicConstants.MULTIPLE_CHOICE_QUIZ_TIME_LIMIT)
                 .choices(quiz.getMultipleChoiceList().stream().map(MultipleChoiceResponse::of).toList())
