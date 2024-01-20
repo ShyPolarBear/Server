@@ -2,7 +2,7 @@ package com.shy_polarbear.server.domain.quiz.service;
 
 import com.shy_polarbear.server.domain.point.model.PointType;
 import com.shy_polarbear.server.domain.point.service.PointService;
-import com.shy_polarbear.server.domain.quiz.dto.QuizType;
+import com.shy_polarbear.server.domain.quiz.model.QuizType;
 import com.shy_polarbear.server.domain.quiz.dto.request.MultipleChoiceQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.request.OXQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.response.MultipleChoiceQuizScoreResponse;
