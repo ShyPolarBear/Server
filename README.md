@@ -1,16 +1,29 @@
-# Server
+## ✏️ Main Feature
+  > [API 명세서 보러가기](https://alike-pump-ae3.notion.site/API-13fc4f00325e4bf1a0a713d91ce13427?pvs=4)
+- jwt/OAuth을 이용한 로그인
+- 매월 랭킹 초기화, 매일 랭킹 업데이트
+- 환경 퀴즈(OX/객관식) 제공
+- 퀴즈 정답 시 포인트 제공
+- 피드 crud, 피드 좋아요 (조회 시 조건에 따라 정렬)
+- 댓글 crud, 댓글 좋아요
+- 내 정보 조회
+  <br><br>
+    
 
-|태그|설명|   
-|--|--|   
-|feat:|	새로운 기능을 추가할 경우   |   
-|fix:	|버그를 고친 경우  |
-|!BREAKING CHANGE:	|커다란 API 변경의 경우   |   
-|!HOTFIX:	|급하게 치명적인 버그를 고쳐야하는 경우   |   
-|style:	|코드 포맷 변경, 세미 콜론 누락, 코드 수정이 없는 경우   |   
-|refactor:	|프로덕션 코드 리팩토링   |   
-|comment:	|필요한 주석 추가 및 변경   |   
-|docs:	|문서를 수정한 경우   |   
-|test:	|테스트 추가, 테스트 리팩토링(프로덕션 코드 변경 X) |     
-|chore:|빌드 태스트 업데이트, 패키지 매니저를 설정하는 경우(프로덕션 코드 변경 X)   |   
-|rename:	|파일 혹은 폴더명을 수정하거나 옮기는 작업만인 경우   |   
-|remove:	|파일을 삭제하는 작업만 수행한 경우   |   
+## 🔧 Stack
+
+- **Language** : java17
+- **Library & Framework** : Spring boot, Spring Security, Spring Data jpa, Querydsl
+- **Database** : MySQL
+- **ORM** : Jpa
+- **Deploy** : AWS(EC2, S3, RDS), Docker
+- **CI/CD** : Github Actions
+<br><br>
+## 💎 Architecture
+<img width="700" alt="architecture" src="https://github.com/ShyPolarBear/Server/assets/81086966/55ca637a-74ab-481b-a2c0-67947dd7dfb6">
+
+
+<br><br>
+## 🗓️ ERD
+
+![erd](https://github.com/ShyPolarBear/Server/assets/81086966/aa119578-66b4-4a8f-8471-a6abcf700ff0)
