@@ -2,7 +2,7 @@ package com.shy_polarbear.server.domain.quiz.service;
 
 import com.shy_polarbear.server.domain.point.model.PointType;
 import com.shy_polarbear.server.domain.point.service.PointService;
-import com.shy_polarbear.server.domain.quiz.dto.QuizType;
+import com.shy_polarbear.server.domain.quiz.model.QuizType;
 import com.shy_polarbear.server.domain.quiz.dto.request.MultipleChoiceQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.request.OXQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.response.MultipleChoiceQuizScoreResponse;
@@ -16,7 +16,6 @@ import com.shy_polarbear.server.domain.quiz.template.QuizTemplate;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
-import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
 import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -81,7 +80,7 @@ public class QuizServiceTest {
         // then
         assertThat(response.quizId()).isEqualTo(mockOXQuiz.getId());
         assertThat(response.type()).isEqualTo(QuizType.OX.getValue());
-        assertThat(response.time()).isEqualTo(BusinessLogicConstants.OX_QUIZ_TIME_LIMIT);
+        assertThat(response.time()).isEqualTo(QuizType.OX.getTimeLimit());
         assertThat(response.question()).isEqualTo(mockOXQuiz.getQuestion());
         assertThat(response.choices()).isNull();
     }
@@ -110,7 +109,7 @@ public class QuizServiceTest {
         PageResponse<QuizCardResponse> response = quizService.getRandomReviewQuizzes(UserTemplate.ID, limit);
 
         // then
-        List<QuizCardResponse> mockResponse = mockOXQuizList.stream().map(it -> QuizCardResponse.of((OXQuiz) it)).toList();
+        List<QuizCardResponse> mockResponse = mockOXQuizList.stream().map(it -> QuizCardResponse.from((OXQuiz) it)).toList();
         assertThat(response.getContent()).isEqualTo(mockResponse);
     }
 

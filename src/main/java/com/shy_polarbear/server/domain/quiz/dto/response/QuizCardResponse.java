@@ -1,12 +1,9 @@
 package com.shy_polarbear.server.domain.quiz.dto.response;
 
-import com.shy_polarbear.server.domain.quiz.dto.QuizType;
 import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
-import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
-import com.shy_polarbear.server.global.common.constants.BusinessLogicConstants;
-import lombok.Builder;
-
+import com.shy_polarbear.server.domain.quiz.model.Quiz;
 import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record QuizCardResponse(
@@ -16,23 +13,25 @@ public record QuizCardResponse(
         int time,
         List<MultipleChoiceResponse> choices    // nullable
 ) {
-    public static QuizCardResponse of(MultipleChoiceQuiz quiz) {
+    public static QuizCardResponse from(Quiz quiz) {
         return QuizCardResponse.builder()
                 .quizId(quiz.getId())
-                .type(QuizType.MULTIPLE_CHOICE.getValue())
+                .type(quiz.getType().getValue())
                 .question(quiz.getQuestion())
-                .time(BusinessLogicConstants.MULTIPLE_CHOICE_QUIZ_TIME_LIMIT)
-                .choices(quiz.getMultipleChoiceList().stream().map(MultipleChoiceResponse::of).toList())
+                .time(quiz.getTimeLimit())
+                .choices(resolveChoicesFromDynamicQuizType(quiz))
                 .build();
     }
 
-    public static QuizCardResponse of(OXQuiz quiz) {
-        return QuizCardResponse.builder()
-                .quizId(quiz.getId())
-                .type(QuizType.OX.getValue())
-                .question(quiz.getQuestion())
-                .time(BusinessLogicConstants.OX_QUIZ_TIME_LIMIT)
-                .build();
+    private static List<MultipleChoiceResponse> resolveChoicesFromDynamicQuizType(Quiz quiz) {
+        if (quiz.getClass().equals(MultipleChoiceQuiz.class)) {
+            return ((MultipleChoiceQuiz) quiz).getMultipleChoiceList().stream()
+                    .map(MultipleChoiceResponse::of)
+                    .toList();
+        }
+
+        return null;
     }
+
 }
 

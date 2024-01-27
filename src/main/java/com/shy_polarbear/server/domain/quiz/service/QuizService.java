@@ -45,14 +45,14 @@ public class QuizService {
         Quiz quiz = quizRepository.findRecentQuizNotYetSolvedByUser(currentUserId)
                 .orElseThrow(() -> new QuizException(ExceptionStatus.NO_MORE_DAILY_QUIZ));
 
-        return buildQuizCardResponseFromQuiz(quiz);
+        return QuizCardResponse.from(quiz);
     }
 
     // 복습 퀴즈 조회 : 랜덤으로 5개
     public PageResponse<QuizCardResponse> getRandomReviewQuizzes(Long currentUserId, int limit) {
         Slice<QuizCardResponse> result = quizRepository
                 .findRandomQuizzesAlreadySolvedByUser(currentUserId, limit)
-                .map(this::buildQuizCardResponseFromQuiz);
+                .map(QuizCardResponse::from);
 
         Long count = quizRepository.countAllQuizzesAlreadySolvedByUser(currentUserId);
         return PageResponse.of(result, count);
@@ -63,6 +63,7 @@ public class QuizService {
         LocalDate today = LocalDate.now();
         Optional<UserQuiz> optionalUserQuiz = userQuizRepository.findFirstSubmittedDailyQuizByUser(today.toString(), currentUserId);
 
+        // TODO refactor: UserQuiz 책임 이동
         boolean isSubmitted = optionalUserQuiz.isPresent();    // 레코드 존재 여부
         Long quizId = isSubmitted ? optionalUserQuiz.get().getQuiz().getId() : null; // 존재 여부에 따라 id값 할당
         boolean isSolved = isSubmitted && optionalUserQuiz.get().isCorrect();
@@ -83,6 +84,7 @@ public class QuizService {
         } else if (Objects.isNull(request.getAnswer())) { // 시간초과되지 않았는데 선택지가 null: 클라이언트 에러
             throw new QuizException(ExceptionStatus.QUIZ_SUBMISSION_NULL_CLIENT_ERROR);
         } else {
+            // TODO refactor: OXChoice 책임 이동
             OXChoice submittedChoice = OXChoice.toEnum(request.getAnswer());
             boolean isCorrect = submittedChoice.equals(oxQuiz.getAnswer()); // 제출된 답안과 실제 답 비교
 
@@ -111,6 +113,7 @@ public class QuizService {
         } else if (Objects.isNull(request.getAnswerId())) { // 시간초과되지 않았는데 선택지가 null: 클라이언트 에러
             throw new QuizException(ExceptionStatus.QUIZ_SUBMISSION_NULL_CLIENT_ERROR);
         } else {
+            // TODO refactor: MultipleChoiceQuiz 책임 이동
             MultipleChoice submittedChoice = multipleChoiceList.stream().filter(it -> it.getId().equals(request.getAnswerId())).findFirst()
                     .orElseThrow(() -> new QuizException(ExceptionStatus.NOT_FOUND_CHOICE));
 
@@ -122,12 +125,4 @@ public class QuizService {
         }
     }
 
-    // 퀴즈 유형에 따른 분기처리
-    private QuizCardResponse buildQuizCardResponseFromQuiz(Quiz quiz) {
-        if (quiz.getClass().equals(OXQuiz.class)) {
-            return QuizCardResponse.of((OXQuiz) quiz);
-        } else {
-            return QuizCardResponse.of((MultipleChoiceQuiz) quiz);
-        }
-    }
 }
