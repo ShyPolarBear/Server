@@ -46,8 +46,14 @@ public enum ExceptionStatus {
     QUIZ_SUBMISSION_NULL_CLIENT_ERROR(400, 3003, "클라이언트 오류: 제출된 선택지가 NULL 입니다."),
 
     //랭킹
-    NOT_FOUND_RANKING(400, 8001, "존재하지 않는 랭킹입니다."),;
+    NOT_FOUND_RANKING(400, 8001, "존재하지 않는 랭킹입니다."),
 
+    // 푸시 알림
+    GET_FCM_ACCESS_TOKEN_ERROR(400, 4000, "FCM 토큰을 받는데 실패했습니다."),
+    FCM_MESSAGE_JSON_PARSING_ERROR(400,4001,"FCM 토큰 JSON 파싱 과정에서 오류가 발생했습니다."),
+    SEND_FCM_PUSH_ERROR(400,4002,"FCM 푸시 알림을 전송하는데 실패했습니다."),
+    NOT_FOUND_NOTIFICATION(404, 4004, "존재하지 않는 알림입니다.");
+    ;
 
 
     private final int httpCode;

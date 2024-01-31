@@ -14,9 +14,11 @@ public class SocialLoginRequest {
     private String socialType;
     @NotBlank
     private String socialAccessToken;
+    @NotBlank
+    private String fcmToken;
 
-    public static SocialLoginRequest from(String socialType, String socialAccessToken) {
-        return new SocialLoginRequest(socialType, socialAccessToken);
+    public static SocialLoginRequest from(String socialType, String socialAccessToken, String fcmToken) {
+        return new SocialLoginRequest(socialType, socialAccessToken, fcmToken);
     }
 
 }

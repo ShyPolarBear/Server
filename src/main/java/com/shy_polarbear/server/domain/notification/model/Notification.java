@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.notification.model;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.global.common.model.BaseEntity;
 import lombok.AccessLevel;
@@ -17,47 +16,48 @@ public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notofocation_id")
+    @Column(name = "notification_id")
     private Long id;
+
+    @Column(nullable = false, updatable = false)
     private String title;
+    @Column(nullable = false, updatable = false)
     private String content;
+    @Column(nullable = false)
     private boolean isRead;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User receiver;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false)
     private NotificationType notificationType;
 
+    @Column(nullable = false, updatable = false)
+    private Long redirectTargetId;
+
+
     @Builder
-    private Notification(String title, String content, User user, NotificationType notificationType, Comment comment) {
+    private Notification(String title, String content, User receiver, NotificationType notificationType, Long redirectTargetId) {
         this.title = title;
         this.content = content;
-        this.user = user;
-        this.comment = comment;
+        this.receiver = receiver;
         this.notificationType = notificationType;
+        this.redirectTargetId = redirectTargetId;
     }
 
-    //알림타입이 댓글/대댓글일 경우
-    public static Notification createCommentNotification(String title, String content, User user, NotificationType notificationType, Comment comment) {
+    public static Notification createNotification(User receiver, String title, String content, NotificationType notificationType, Long redirectTargetId) {
         return Notification.builder()
+                .receiver(receiver)
                 .title(title)
                 .content(content)
-                .user(user)
                 .notificationType(notificationType)
-                .comment(comment)
+                .redirectTargetId(redirectTargetId)
                 .build();
     }
 
-    //알림 타입이 제한일 경우
-    public static Notification createLimitNotification(String title, String content, User user) {
-        return Notification.builder()
-                .title(title)
-                .content(content)
-                .user(user)
-                .notificationType(NotificationType.LIMIT)
-                .build();
+    public void read() {
+        this.isRead = true;
     }
 }

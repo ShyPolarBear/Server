@@ -25,6 +25,11 @@ public abstract class BusinessLogicConstants {  // TODO refactor: 각 객체로 
     public static final String COMMENT_LIMIT_PARAM_DEFAULT_VALUE = "10";
 
     /**
+     * FCM 푸시 알림
+     **/
+    public static final int RECENT_NOTIFICATION_LIMIT = 30;
+
+    /**
      * 유저
      */
     public static final String USER_FEED_LIMIT_PARAM_DEFAULT_VALUE = "10";

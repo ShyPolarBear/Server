@@ -10,6 +10,8 @@ import com.shy_polarbear.server.domain.comment.repository.CommentLikeRepository;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
 import com.shy_polarbear.server.domain.feed.model.Feed;
 import com.shy_polarbear.server.domain.feed.service.FeedService;
+import com.shy_polarbear.server.domain.notification.service.NotificationService;
+import com.shy_polarbear.server.domain.notification.vo.NotificationParams;
 import com.shy_polarbear.server.domain.user.model.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.global.common.dto.NoCountPageResponse;
@@ -31,6 +33,7 @@ import java.util.Optional;
 public class CommentService {
     private final UserService userService;
     private final FeedService feedService;
+    private final NotificationService notificationService;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
@@ -53,10 +56,16 @@ public class CommentService {
         Long parentId = request.getParentId();
         if (Objects.isNull(parentId)) {    // 부모 댓글
             Comment comment = commentRepository.save(Comment.createComment(user, request.getContent(), feed));
+            if (checkIsFeedAuthorNotificationReceiver(feed.getAuthor(), user)) {    // FCM 알림
+                notificationService.pushMessage(NotificationParams.ofNewFeedComment(feed.getAuthor(), feed, comment));
+            }
             return CommentCreateResponse.ofParent(comment);
         } else {    // 자식 댓글
             Comment parent = commentRepository.findById(parentId).orElseThrow(() -> new CommentException(ExceptionStatus.NOT_FOUND_COMMENT));
             Comment comment = commentRepository.save(Comment.createChildComment(user, request.getContent(), feed, parent));
+            if (checkIsCommentAuthorNotificationReceiver(parent.getAuthor(), user)) {
+                notificationService.pushMessage(NotificationParams.ofNewChildComment(feed.getAuthor(), feed, comment));
+            }
             return CommentCreateResponse.ofChild(comment);
         }
     }
@@ -115,5 +124,13 @@ public class CommentService {
     private static void checkIsAuthor(User user, Comment comment) {
         if (!comment.isAuthor(user.getId()))
             throw new CommentException(ExceptionStatus.NOT_MY_COMMENT);
+    }
+
+    private static boolean checkIsFeedAuthorNotificationReceiver(User feedAuthor, User commentAuthor) {
+        return !feedAuthor.getId().equals(commentAuthor.getId());
+    }
+
+    private static boolean checkIsCommentAuthorNotificationReceiver(User parentCommentAuthor, User childCommentAuthor) {
+        return !parentCommentAuthor.getId().equals(childCommentAuthor.getId());
     }
 }

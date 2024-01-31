@@ -36,11 +36,17 @@ out/
 ### VS Code ###
 .vscode/
 
+### SECRETS ###
 application.yml
 application-local.yml
 application-dev.yml
 application-prod.yml
 application.properties
+/src/main/resources/firebase-private-key.json
+
+### not used ###
+spy.log
+
 
 ### just memo
 memo.md
