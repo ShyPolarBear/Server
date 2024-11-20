@@ -1,21 +1,17 @@
 package com.shy_polarbear.server.domain.feed.repository;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringExpressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
-import static com.shy_polarbear.server.domain.feed.model.QFeed.*;
-import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
+import static com.shy_polarbear.server.domain.feed.entity.QFeed.*;
+import static com.shy_polarbear.server.domain.feed.entity.QFeedImage.feedImage;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,6 +28,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .limit(CustomSliceExecutionUtils.buildSliceLimit(limit));
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
+    
 
     @Override
     public Slice<Feed> findBestFeeds(String cursor, int minFeedLikeCount, int limit) {

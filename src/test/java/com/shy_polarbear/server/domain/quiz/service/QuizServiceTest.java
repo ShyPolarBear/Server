@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.quiz.service;
 
-import com.shy_polarbear.server.domain.point.model.PointType;
+import com.shy_polarbear.server.domain.point.entity.PointType;
 import com.shy_polarbear.server.domain.point.service.PointService;
-import com.shy_polarbear.server.domain.quiz.model.QuizType;
+import com.shy_polarbear.server.domain.quiz.entity.QuizType;
 import com.shy_polarbear.server.domain.quiz.dto.request.MultipleChoiceQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.request.OXQuizScoreRequest;
 import com.shy_polarbear.server.domain.quiz.dto.response.MultipleChoiceQuizScoreResponse;
@@ -10,10 +10,10 @@ import com.shy_polarbear.server.domain.quiz.dto.response.OXQuizScoreResponse;
 import com.shy_polarbear.server.domain.quiz.dto.response.QuizCardResponse;
 import com.shy_polarbear.server.domain.quiz.dto.response.WhetherDailyQuizSolvedResponse;
 import com.shy_polarbear.server.domain.quiz.exception.QuizException;
-import com.shy_polarbear.server.domain.quiz.model.*;
+import com.shy_polarbear.server.domain.quiz.entity.*;
 import com.shy_polarbear.server.domain.quiz.repository.*;
 import com.shy_polarbear.server.domain.quiz.template.QuizTemplate;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
 import com.shy_polarbear.server.global.common.dto.PageResponse;

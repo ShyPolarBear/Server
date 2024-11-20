@@ -1,9 +1,7 @@
 package com.shy_polarbear.server.domain.quiz.template;
 
-import com.shy_polarbear.server.domain.quiz.model.*;
-import com.shy_polarbear.server.domain.user.template.UserTemplate;
+import com.shy_polarbear.server.domain.quiz.entity.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

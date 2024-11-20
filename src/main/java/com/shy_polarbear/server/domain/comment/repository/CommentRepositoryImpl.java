@@ -4,8 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.shy_polarbear.server.domain.comment.model.QComment.comment;
-import static com.shy_polarbear.server.domain.comment.model.QCommentLike.commentLike;
-import static com.shy_polarbear.server.domain.feed.model.QFeed.feed;
-import static com.shy_polarbear.server.domain.feed.model.QFeedImage.feedImage;
-import static com.shy_polarbear.server.domain.user.model.QUser.user;
+import static com.shy_polarbear.server.domain.comment.entity.QComment.comment;
+import static com.shy_polarbear.server.domain.comment.entity.QCommentLike.commentLike;
+import static com.shy_polarbear.server.domain.feed.entity.QFeed.feed;
+import static com.shy_polarbear.server.domain.feed.entity.QFeedImage.feedImage;
+import static com.shy_polarbear.server.domain.user.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -74,6 +74,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         return CustomSliceExecutionUtils.getSlice(query.fetch(), limit);
     }
+
+
 
     private static BooleanExpression findRecentUserCommentIdsInFeed(Long lastCommentId, Long userId) {
         return comment.id.in(JPAExpressions

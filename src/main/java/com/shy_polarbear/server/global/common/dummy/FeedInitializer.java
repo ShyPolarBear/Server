@@ -1,11 +1,11 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.model.FeedImage;
-import com.shy_polarbear.server.domain.feed.model.FeedLike;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
+import com.shy_polarbear.server.domain.feed.entity.FeedImage;
+import com.shy_polarbear.server.domain.feed.entity.FeedLike;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
 import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;

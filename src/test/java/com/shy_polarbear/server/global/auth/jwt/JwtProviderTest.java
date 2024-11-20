@@ -1,11 +1,9 @@
 package com.shy_polarbear.server.global.auth.jwt;
 
 
-import com.shy_polarbear.server.domain.user.model.ProviderType;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
-import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.entity.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

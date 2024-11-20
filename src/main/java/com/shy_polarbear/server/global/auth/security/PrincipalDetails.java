@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.global.auth.security;
 
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

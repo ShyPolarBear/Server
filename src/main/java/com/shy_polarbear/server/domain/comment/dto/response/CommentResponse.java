@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.comment.dto.response;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
 import lombok.Builder;
 
 import java.util.List;

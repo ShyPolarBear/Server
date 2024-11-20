@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.global.auth.jwt;
 
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

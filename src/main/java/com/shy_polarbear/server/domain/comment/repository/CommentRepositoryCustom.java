@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.comment.repository;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import org.springframework.data.domain.Slice;
 
 import java.util.Optional;

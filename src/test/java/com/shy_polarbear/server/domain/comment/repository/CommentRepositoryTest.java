@@ -1,11 +1,11 @@
 package com.shy_polarbear.server.domain.comment.repository;
 
 import com.shy_polarbear.server.config.TestJpaConfig;
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.model.FeedImage;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
+import com.shy_polarbear.server.domain.feed.entity.FeedImage;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
 import org.hibernate.exception.DataException;

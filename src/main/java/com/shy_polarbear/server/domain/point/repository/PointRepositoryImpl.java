@@ -5,9 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-import static com.shy_polarbear.server.domain.point.model.QPoint.point;
+import static com.shy_polarbear.server.domain.point.entity.QPoint.point;
 
 @Repository
 @RequiredArgsConstructor

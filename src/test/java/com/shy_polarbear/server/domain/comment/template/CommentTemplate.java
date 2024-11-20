@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.comment.template;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
 import com.shy_polarbear.server.domain.feed.template.FeedTemplate;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
 

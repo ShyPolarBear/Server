@@ -2,8 +2,8 @@ package com.shy_polarbear.server.global.auth.jwt;
 
 
 import com.shy_polarbear.server.global.auth.security.PrincipalDetailService;
-import com.shy_polarbear.server.domain.user.exception.AuthException;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.auth.exception.AuthException;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

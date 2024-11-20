@@ -5,7 +5,6 @@ import com.querydsl.core.types.dsl.StringExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
-import com.shy_polarbear.server.domain.user.model.QUser;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.shy_polarbear.server.domain.ranking.entity.QRanking.ranking;
-import static com.shy_polarbear.server.domain.user.model.QUser.*;
+import static com.shy_polarbear.server.domain.user.entity.QUser.*;
 import static com.shy_polarbear.server.global.common.constants.BusinessLogicConstants.WINNABLE_RANKING_LIMIT;
 
 @Repository

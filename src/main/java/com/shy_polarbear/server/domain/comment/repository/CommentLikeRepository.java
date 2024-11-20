@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.comment.repository;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.comment.model.CommentLike;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
+import com.shy_polarbear.server.domain.comment.entity.CommentLike;
+import com.shy_polarbear.server.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

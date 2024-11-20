@@ -1,6 +1,5 @@
 package com.shy_polarbear.server.domain.feed.service;
 
-import com.shy_polarbear.server.domain.quiz.model.OXChoice;
 import com.shy_polarbear.server.global.common.util.EnumModel;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.AllArgsConstructor;

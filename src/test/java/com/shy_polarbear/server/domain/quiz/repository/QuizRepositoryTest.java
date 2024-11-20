@@ -2,8 +2,8 @@ package com.shy_polarbear.server.domain.quiz.repository;
 
 import com.shy_polarbear.server.config.TestJpaConfig;
 import com.shy_polarbear.server.domain.quiz.exception.QuizException;
-import com.shy_polarbear.server.domain.quiz.model.*;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.quiz.entity.*;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
