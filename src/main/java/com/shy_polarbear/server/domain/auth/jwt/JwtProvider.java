@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.auth.jwt;
 
 
-import com.shy_polarbear.server.domain.auth.repository.mysql.RefreshToken;
-import com.shy_polarbear.server.domain.auth.repository.mysql.RefreshTokenRepository;
+import com.shy_polarbear.server.domain.auth.repository.rdb.RefreshToken;
+import com.shy_polarbear.server.domain.auth.repository.rdb.RefreshTokenRepository;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetailService;
 import com.shy_polarbear.server.domain.auth.exception.AuthException;
 import com.shy_polarbear.server.domain.user.entity.User;

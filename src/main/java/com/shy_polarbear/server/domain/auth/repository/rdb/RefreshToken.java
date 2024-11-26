@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.repository.mysql;
+package com.shy_polarbear.server.domain.auth.repository.rdb;
 
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;

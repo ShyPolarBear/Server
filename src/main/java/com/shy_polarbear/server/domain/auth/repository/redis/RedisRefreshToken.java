@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @AllArgsConstructor
 @RedisHash(value = "refreshToken", timeToLive = 1209600000)
-public class RefreshToken {
+public class RedisRefreshToken {
     @Id
     @NotNull
     private Long userId;
@@ -20,8 +20,8 @@ public class RefreshToken {
     @NotNull
     private String refreshToken;
 
-    public static RefreshToken of(Long userId, String refreshToken) {
-        return RefreshToken
+    public static RedisRefreshToken of(Long userId, String refreshToken) {
+        return RedisRefreshToken
                 .builder()
                 .refreshToken(refreshToken)
                 .userId(userId)

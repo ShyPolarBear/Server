@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.repository.mysql;
+package com.shy_polarbear.server.domain.auth.repository.rdb;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
