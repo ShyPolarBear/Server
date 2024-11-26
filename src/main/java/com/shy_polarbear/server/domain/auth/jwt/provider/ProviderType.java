@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.entity;
+package com.shy_polarbear.server.domain.auth.jwt.provider;
 
 
 import com.shy_polarbear.server.global.common.util.EnumModel;

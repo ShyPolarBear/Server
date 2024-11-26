@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.auth.jwt;
+package com.shy_polarbear.server.domain.auth.repository.mysql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -5,7 +5,7 @@ import com.shy_polarbear.server.domain.auth.dto.request.ReissueRequest;
 import com.shy_polarbear.server.domain.auth.service.AuthService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
-import com.shy_polarbear.server.global.auth.jwt.JwtDto;
+import com.shy_polarbear.server.domain.auth.jwt.JwtDto;
 import com.shy_polarbear.server.domain.auth.dto.request.JoinRequest;
 import com.shy_polarbear.server.domain.auth.dto.request.SocialLoginRequest;
 import lombok.RequiredArgsConstructor;

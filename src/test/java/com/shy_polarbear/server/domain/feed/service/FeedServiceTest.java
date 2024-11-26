@@ -9,7 +9,7 @@ import com.shy_polarbear.server.domain.feed.exception.FeedException;
 import com.shy_polarbear.server.domain.feed.entity.Feed;
 import com.shy_polarbear.server.domain.feed.entity.FeedImage;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
-import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.entity.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;

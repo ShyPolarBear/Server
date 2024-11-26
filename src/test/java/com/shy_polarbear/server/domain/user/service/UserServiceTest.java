@@ -4,7 +4,7 @@ import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameR
 import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.entity.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;

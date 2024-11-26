@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.infra;
+package com.shy_polarbear.server.domain.auth.jwt.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

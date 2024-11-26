@@ -1,7 +1,8 @@
 package com.shy_polarbear.server.global.auth.jwt;
 
 
-import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.entity.UserRole;
 import org.assertj.core.api.Assertions;

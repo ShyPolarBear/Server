@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.user.entity;
 
 
-import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
 import com.shy_polarbear.server.domain.quiz.entity.UserQuiz;
 import com.shy_polarbear.server.domain.point.entity.Point;
 import com.shy_polarbear.server.global.common.model.BaseEntity;

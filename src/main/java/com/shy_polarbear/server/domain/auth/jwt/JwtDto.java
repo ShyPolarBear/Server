@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.auth.jwt;
+package com.shy_polarbear.server.domain.auth.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

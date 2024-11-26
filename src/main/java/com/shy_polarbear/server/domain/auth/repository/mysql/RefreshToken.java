@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.auth.jwt;
+package com.shy_polarbear.server.domain.auth.repository.mysql;
 
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;

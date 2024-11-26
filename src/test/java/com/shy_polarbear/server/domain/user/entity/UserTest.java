@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.user.entity;
 
 
-import com.shy_polarbear.server.domain.auth.entity.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

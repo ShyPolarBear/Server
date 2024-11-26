@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.global.auth.jwt;
+package com.shy_polarbear.server.domain.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shy_polarbear.server.global.common.dto.ApiResponse;
