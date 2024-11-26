@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Getter
 @AllArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 1209600000)
+@RedisHash(value = "refreshToken", timeToLive = 1209600)
 public class RedisRefreshToken {
     @Id
     @NotNull

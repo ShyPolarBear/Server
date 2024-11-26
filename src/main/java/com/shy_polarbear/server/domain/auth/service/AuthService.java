@@ -6,15 +6,16 @@ import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.auth.jwt.provider.KakaoProvider;
+import com.shy_polarbear.server.domain.user.exception.UserException;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import com.shy_polarbear.server.domain.auth.jwt.JwtDto;
-import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.domain.auth.dto.request.JoinRequest;
 import com.shy_polarbear.server.domain.auth.dto.request.SocialLoginRequest;
 import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.entity.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
+import com.shy_polarbear.server.global.auth.security.PrincipalDetails;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +88,12 @@ public class AuthService {
         Authentication authenticated  = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authenticated);
         PrincipalDetails principal = (PrincipalDetails) authenticated.getPrincipal();
-        return jwtProvider.issue(principal.getUser());
+        Long userId = principal.getUser().getId();
+        String accessToken = jwtProvider.createAccessToken(providerId);
+        String refreshToken = jwtProvider.createRefreshToken(providerId);
+        refreshTokenService.save(userId, refreshToken);
+        return JwtDto.from(accessToken, refreshToken);
+
     }
 
     // refresh token 삭제하는 방식 사용
@@ -97,6 +103,17 @@ public class AuthService {
     }
 
     public JwtDto reissue(String refreshToken) {
-        return jwtProvider.reissue(refreshToken);
+        if (!jwtProvider.isValidateRefreshToken(refreshToken)) {
+            throw new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN);
+        }
+        refreshTokenService.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
+
+        String providerId = jwtProvider.getTokenPayload(refreshToken);
+        User user = userRepository.findByProviderId(providerId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
+        String newAccessToken = jwtProvider.createAccessToken(providerId);
+        String newRefreshToken = jwtProvider.createRefreshToken(providerId);
+        refreshTokenService.save(user.getId(), refreshToken);
+        return JwtDto.from(newAccessToken, newRefreshToken);
     }
 }

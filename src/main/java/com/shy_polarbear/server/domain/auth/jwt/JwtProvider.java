@@ -1,12 +1,7 @@
 package com.shy_polarbear.server.domain.auth.jwt;
 
 
-import com.shy_polarbear.server.domain.auth.entity.RedisRefreshToken;
-import com.shy_polarbear.server.domain.auth.service.RefreshTokenService;
 import com.shy_polarbear.server.global.auth.security.PrincipalDetailService;
-import com.shy_polarbear.server.domain.auth.exception.AuthException;
-import com.shy_polarbear.server.domain.user.entity.User;
-import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +22,12 @@ import java.util.Date;
 @Slf4j
 public class JwtProvider {
 
-    private final RefreshTokenService refreshTokenService;
     private final PrincipalDetailService principalDetailService;
     private final Key privateKey;
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
-                       RefreshTokenService refreshTokenService,
                        PrincipalDetailService principalDetailService) {
         this.privateKey = Keys.hmacShaKeyFor(secretKey.getBytes());
-        this.refreshTokenService = refreshTokenService;
         this.principalDetailService = principalDetailService;
     }
     @Value("${jwt.access-token.expire-length}")
@@ -111,30 +103,6 @@ public class JwtProvider {
             log.warn("JWT 잘못 되었습니다.");
         }
         return false;
-    }
-
-    // accessToken, refreshToken 최초 발행
-    public JwtDto issue(User user) {
-        String accessToken = createAccessToken(user.getProviderId());
-        String refreshToken = createRefreshToken(user.getProviderId());
-        refreshTokenService.save(RedisRefreshToken.of(user.getId(), refreshToken));
-        return JwtDto.from(accessToken, refreshToken);
-    }
-
-    //access token 재발급할 때 refreah token도 함께 재발급
-    public JwtDto reissue(String refreshToken) {
-        if (!isValidateRefreshToken(refreshToken)) {
-            throw new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN);
-        }
-        String providerId = getTokenPayload(refreshToken);
-
-        RedisRefreshToken findRefreshToken = refreshTokenService.findByUserRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
-
-        String newAccessToken = createAccessToken(providerId);
-        String newRefreshToken = createRefreshToken(providerId);
-        refreshTokenService.save(RedisRefreshToken.of(findRefreshToken.getUserId(), newRefreshToken));
-        return JwtDto.from(newAccessToken, newRefreshToken);
     }
 
     public Authentication getAuthentication(String accessToken) {

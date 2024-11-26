@@ -64,8 +64,6 @@ public class LoginUserInitializer {
                 ));
             }
         }
-        JwtDto issue = jwtProvider.issue(user);
-        log.info("더미 유저 access token : {}", issue.getAccessToken());
     }
 }
 
