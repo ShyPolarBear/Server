@@ -3,8 +3,6 @@ package com.shy_polarbear.server.domain.auth.service;
 import com.shy_polarbear.server.domain.auth.exception.AuthException;
 import com.shy_polarbear.server.domain.auth.dto.response.LogoutResponse;
 import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
-import com.shy_polarbear.server.domain.auth.repository.rdb.RefreshToken;
-import com.shy_polarbear.server.domain.auth.repository.rdb.RefreshTokenRepository;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.auth.jwt.provider.KakaoProvider;
@@ -35,7 +33,7 @@ import java.util.Optional;
 @Slf4j
 public class AuthService {
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
     private final JwtProvider jwtProvider;
     private final KakaoProvider kakaoProvider;
     private final PasswordEncoder passwordEncoder;
@@ -94,10 +92,7 @@ public class AuthService {
 
     // refresh token 삭제하는 방식 사용
     public LogoutResponse logOut(Long userId) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
-                .orElseThrow(() -> new AuthException(ExceptionStatus.INVALID_REFRESH_TOKEN));
-        refreshTokenRepository.delete(refreshToken);
-        refreshTokenRepository.flush();
+        refreshTokenService.deleteTokenByUserId(userId);
         return new LogoutResponse();
     }
 

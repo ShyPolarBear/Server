@@ -1,4 +1,4 @@
-package com.shy_polarbear.server.domain.auth.repository.rdb;
+package com.shy_polarbear.server.domain.auth.entity;
 
 import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AccessLevel;
@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class RefreshToken {
+@Table(name = "refresh_token")
+public class RdbRefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class RefreshToken {
 
     private String refreshToken;
 
-    public RefreshToken(User user, String refreshToken) {
+    public RdbRefreshToken(User user, String refreshToken) {
         this.user = user;
         this.refreshToken = refreshToken;
     }

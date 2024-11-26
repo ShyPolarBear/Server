@@ -1,5 +1,6 @@
-package com.shy_polarbear.server.domain.auth.jwt;
+package com.shy_polarbear.server.global.auth.security;
 
+import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

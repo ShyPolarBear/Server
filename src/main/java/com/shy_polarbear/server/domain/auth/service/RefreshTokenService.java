@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.auth.service;
 
-import com.shy_polarbear.server.domain.auth.repository.redis.RedisRefreshToken;
-import com.shy_polarbear.server.domain.auth.repository.redis.RedisRefreshTokenRepository;
+import com.shy_polarbear.server.domain.auth.entity.RedisRefreshToken;
+import com.shy_polarbear.server.domain.auth.repository.RedisRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,18 @@ public class RefreshTokenService {
     }
 
     //토큰 id로 찾기
-    public Optional<RedisRefreshToken> findByUserId(String userId) {
-        return refreshTokenRepository.findById(userId);
+    public Optional<RedisRefreshToken> findByUserId(Long userId) {
+        return refreshTokenRepository.findById(String.valueOf(userId));
+    }
+
+    //토큰 값으로 찾기
+    public Optional<RedisRefreshToken> findByUserRefreshToken(String refreshToken) {
+        return refreshTokenRepository.findByRefreshToken(refreshToken);
     }
 
     //토큰 삭제
-    public void deleteTokenByUserId(String userId) {
-        refreshTokenRepository.deleteById(userId);;
+    public void deleteTokenByUserId(Long userId) {
+        refreshTokenRepository.deleteById(String.valueOf(userId));;
     }
 
 }

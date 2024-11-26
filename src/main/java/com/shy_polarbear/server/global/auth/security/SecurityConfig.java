@@ -2,8 +2,6 @@ package com.shy_polarbear.server.global.auth.security;
 
 
 
-import com.shy_polarbear.server.domain.auth.jwt.JwtAuthenticationEntryPoint;
-import com.shy_polarbear.server.domain.auth.jwt.JwtAuthenticationFilter;
 import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.global.common.constants.GlobalConstants;
 import lombok.RequiredArgsConstructor;

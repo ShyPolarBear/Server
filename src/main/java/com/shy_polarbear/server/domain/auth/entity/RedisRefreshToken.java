@@ -1,10 +1,11 @@
-package com.shy_polarbear.server.domain.auth.repository.redis;
+package com.shy_polarbear.server.domain.auth.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +18,7 @@ public class RedisRefreshToken {
     @NotNull
     private Long userId;
 
+    @Indexed
     @NotNull
     private String refreshToken;
 
