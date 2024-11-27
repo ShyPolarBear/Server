@@ -5,6 +5,7 @@ import com.shy_polarbear.server.domain.auth.repository.RdbRefreshTokenRepository
 import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;

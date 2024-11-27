@@ -41,40 +41,35 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
-    //DB에 유저가 있다면 로그인 처리, 없다면 회원가입 유도
     public JwtDto authLogin(SocialLoginRequest socialLoginRequest) {
-        KakaoProvider.KakaoUserInfo userInfoByAccessToken = kakaoProvider.getUserInfoByAccessToken(socialLoginRequest.getSocialAccessToken());
-        String providerId = userInfoByAccessToken.getId();
-
+        String providerId = getKakaoProviderId(socialLoginRequest.getSocialAccessToken());
         Optional<User> existUserAble = userRepository.findByProviderId(providerId);
         if (existUserAble.isPresent()) {
-            return authorizeUser(providerId);
+            Long userId = authorizeUser(providerId);
+            return issue(providerId, userId);
         } else {
             throw new AuthException(ExceptionStatus.NEED_TO_JOIN);
         }
     }
 
     public JwtDto join(JoinRequest joinRequest) {
-        //카카오 provider id 가져오기
-        String socialAccessToken = joinRequest.getSocialAccessToken();
-        KakaoProvider.KakaoUserInfo userInfo = kakaoProvider.getUserInfoByAccessToken(socialAccessToken);
-        String providerId = userInfo.getId();
-
-        //이미 가입된 유저인지 확인
+        String providerId = getKakaoProviderId(joinRequest.getSocialAccessToken());
         userService.checkDuplicateUser(providerId);
-
-        //닉네임 중복 검증
         checkDuplicateNickName(joinRequest.getNickName());
 
-        //유저 저장
         User joinUser = User.createUser(joinRequest.getNickName(), joinRequest.getEmail(),
                 joinRequest.getProfileImage(), joinRequest.getPhoneNumber(),
                 UserRole.ROLE_USR, providerId, ProviderType.KAKAO, passwordEncoder);
         userService.saveUser(joinUser);
 
-        //로그인 (유저 인증)
-        JwtDto issuedToken = authorizeUser(providerId);
-        return issuedToken;
+        Long userId = authorizeUser(providerId);
+        return issue(providerId, userId);
+    }
+
+    private String getKakaoProviderId(String socialAccessToken) {
+        KakaoProvider.KakaoUserInfo userInfo = kakaoProvider.getUserInfoByAccessToken(socialAccessToken);
+        String providerId = userInfo.getId();
+        return providerId;
     }
 
     private void checkDuplicateNickName(String nickName) {
@@ -83,16 +78,13 @@ public class AuthService {
         }
     }
 
-    private JwtDto authorizeUser(String providerId) {
+    private Long authorizeUser(String providerId) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(providerId, providerId +"@password");
         Authentication authenticated  = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authenticated);
         PrincipalDetails principal = (PrincipalDetails) authenticated.getPrincipal();
         Long userId = principal.getUser().getId();
-        String accessToken = jwtProvider.createAccessToken(providerId);
-        String refreshToken = jwtProvider.createRefreshToken(providerId);
-        refreshTokenService.save(userId, refreshToken);
-        return JwtDto.from(accessToken, refreshToken);
+        return userId;
 
     }
 
@@ -111,9 +103,13 @@ public class AuthService {
 
         String providerId = jwtProvider.getTokenPayload(refreshToken);
         User user = userRepository.findByProviderId(providerId).orElseThrow(() -> new UserException(ExceptionStatus.NOT_FOUND_USER));
-        String newAccessToken = jwtProvider.createAccessToken(providerId);
-        String newRefreshToken = jwtProvider.createRefreshToken(providerId);
-        refreshTokenService.save(user.getId(), refreshToken);
-        return JwtDto.from(newAccessToken, newRefreshToken);
+        return issue(providerId, user.getId());
+    }
+
+    private JwtDto issue(String providerId, Long userId) {
+        String accessToken = jwtProvider.createAccessToken(providerId);
+        String refreshToken = jwtProvider.createRefreshToken(providerId);
+        refreshTokenService.save(userId, refreshToken);
+        return JwtDto.from(accessToken, refreshToken);
     }
 }
