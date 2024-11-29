@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.shy_polarbear.server.domain.feed.model.QFeedLike.*;
+import static com.shy_polarbear.server.domain.feed.entity.QFeedLike.*;
 
 @Repository
 @RequiredArgsConstructor

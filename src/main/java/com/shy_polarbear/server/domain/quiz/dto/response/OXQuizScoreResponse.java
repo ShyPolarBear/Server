@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.quiz.dto.response;
 
-import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
+import com.shy_polarbear.server.domain.quiz.entity.OXQuiz;
 import lombok.Builder;
 
 @Builder

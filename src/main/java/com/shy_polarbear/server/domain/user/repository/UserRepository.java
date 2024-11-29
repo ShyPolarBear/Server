@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.user.repository;
 
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

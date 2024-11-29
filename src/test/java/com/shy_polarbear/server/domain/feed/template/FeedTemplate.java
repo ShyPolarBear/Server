@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.feed.template;
 
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.feed.model.FeedImage;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
+import com.shy_polarbear.server.domain.feed.entity.FeedImage;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.template.UserTemplate;
 
 import java.util.List;

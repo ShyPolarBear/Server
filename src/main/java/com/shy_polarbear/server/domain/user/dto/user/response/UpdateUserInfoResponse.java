@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.user.dto.user.response;
 
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

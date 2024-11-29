@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.quiz.dto.response;
 
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
+import com.shy_polarbear.server.domain.quiz.entity.MultipleChoice;
 import lombok.Builder;
 
 @Builder

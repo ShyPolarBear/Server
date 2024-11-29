@@ -1,9 +1,9 @@
 package com.shy_polarbear.server.domain.point.service;
 
-import com.shy_polarbear.server.domain.point.model.Point;
-import com.shy_polarbear.server.domain.point.model.PointType;
+import com.shy_polarbear.server.domain.point.entity.Point;
+import com.shy_polarbear.server.domain.point.entity.PointType;
 import com.shy_polarbear.server.domain.point.repository.PointRepository;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

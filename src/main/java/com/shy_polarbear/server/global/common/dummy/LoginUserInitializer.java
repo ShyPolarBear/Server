@@ -1,13 +1,11 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.ranking.dto.response.RankingResponse;
-import com.shy_polarbear.server.domain.user.model.ProviderType;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.entity.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.domain.user.service.UserService;
-import com.shy_polarbear.server.global.auth.jwt.JwtDto;
-import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.domain.auth.jwt.JwtDto;
+import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
 import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,8 +64,6 @@ public class LoginUserInitializer {
                 ));
             }
         }
-        JwtDto issue = jwtProvider.issue(user);
-        log.info("더미 유저 access token : {}", issue.getAccessToken());
     }
 }
 

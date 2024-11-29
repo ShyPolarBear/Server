@@ -2,7 +2,7 @@ package com.shy_polarbear.server.global.common.dummy;
 
 import com.shy_polarbear.server.domain.ranking.entity.Ranking;
 import com.shy_polarbear.server.domain.ranking.repository.RankingRepository;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;

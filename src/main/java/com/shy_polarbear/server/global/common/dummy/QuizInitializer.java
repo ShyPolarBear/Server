@@ -1,9 +1,9 @@
 package com.shy_polarbear.server.global.common.dummy;
 
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
-import com.shy_polarbear.server.domain.quiz.model.OXChoice;
-import com.shy_polarbear.server.domain.quiz.model.OXQuiz;
+import com.shy_polarbear.server.domain.quiz.entity.MultipleChoice;
+import com.shy_polarbear.server.domain.quiz.entity.MultipleChoiceQuiz;
+import com.shy_polarbear.server.domain.quiz.entity.OXChoice;
+import com.shy_polarbear.server.domain.quiz.entity.OXQuiz;
 import com.shy_polarbear.server.domain.quiz.repository.QuizRepository;
 import com.shy_polarbear.server.global.common.constants.ProfileConstants;
 import lombok.RequiredArgsConstructor;

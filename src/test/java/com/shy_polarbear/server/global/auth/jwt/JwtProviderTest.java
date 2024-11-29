@@ -1,11 +1,10 @@
 package com.shy_polarbear.server.global.auth.jwt;
 
 
-import com.shy_polarbear.server.domain.user.model.ProviderType;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
-import com.shy_polarbear.server.domain.user.repository.UserRepository;
-import com.shy_polarbear.server.global.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
+import com.shy_polarbear.server.domain.auth.jwt.JwtProvider;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.entity.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +41,7 @@ class JwtProviderTest  {
     @DisplayName("createAccessToken 메서드는 User가 주어지면, accessToken을 리턴한다.")
     @Test
     void createAccessToken() {
-        String accessToken = jwtProvider.createAccessToken(user);
+        String accessToken = jwtProvider.createAccessToken(user.getProviderId());
         String tokenPayload = jwtProvider.getTokenPayload(accessToken);
 
         Assertions.assertThat(accessToken).isNotEmpty();
@@ -53,7 +52,7 @@ class JwtProviderTest  {
     @DisplayName("createRefreshToken 메서드는 User가 주어지면, refreshToken을 리턴한다.")
     @Test
     void createRefreshToken() {
-        String refreshToken = jwtProvider.createRefreshToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user.getProviderId());
         String tokenPayload = jwtProvider.getTokenPayload(refreshToken);
 
         Assertions.assertThat(refreshToken).isNotEmpty();

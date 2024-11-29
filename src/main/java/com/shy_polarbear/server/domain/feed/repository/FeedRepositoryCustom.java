@@ -1,7 +1,6 @@
 package com.shy_polarbear.server.domain.feed.repository;
 
-import com.querydsl.core.Tuple;
-import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import org.springframework.data.domain.Slice;
 
 public interface FeedRepositoryCustom {

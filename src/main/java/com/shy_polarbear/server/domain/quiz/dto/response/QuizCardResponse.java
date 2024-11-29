@@ -1,7 +1,7 @@
 package com.shy_polarbear.server.domain.quiz.dto.response;
 
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoiceQuiz;
-import com.shy_polarbear.server.domain.quiz.model.Quiz;
+import com.shy_polarbear.server.domain.quiz.entity.MultipleChoiceQuiz;
+import com.shy_polarbear.server.domain.quiz.entity.Quiz;
 import java.util.List;
 import lombok.Builder;
 

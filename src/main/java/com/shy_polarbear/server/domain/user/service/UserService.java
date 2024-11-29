@@ -1,16 +1,15 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
 import com.shy_polarbear.server.domain.comment.repository.CommentRepository;
-import com.shy_polarbear.server.domain.feed.model.Feed;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
 import com.shy_polarbear.server.domain.feed.repository.FeedRepository;
-import com.shy_polarbear.server.domain.ranking.repository.RankingRepository;
 import com.shy_polarbear.server.domain.ranking.service.RankingService;
 import com.shy_polarbear.server.domain.user.dto.user.request.UpdateUserInfoRequest;
 import com.shy_polarbear.server.domain.user.dto.user.response.*;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.user.entity.User;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.common.dto.PageResponse;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;

@@ -4,7 +4,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shy_polarbear.server.domain.quiz.model.Quiz;
+import com.shy_polarbear.server.domain.quiz.entity.Quiz;
 import com.shy_polarbear.server.global.common.util.CustomSliceExecutionUtils;
 import com.shy_polarbear.server.global.common.util.query.CustomOrderSpecifierUtils;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.shy_polarbear.server.domain.quiz.model.QQuiz.quiz;
-import static com.shy_polarbear.server.domain.quiz.model.QUserQuiz.userQuiz;
+import static com.shy_polarbear.server.domain.quiz.entity.QQuiz.quiz;
+import static com.shy_polarbear.server.domain.quiz.entity.QUserQuiz.userQuiz;
 
 @Repository
 @RequiredArgsConstructor

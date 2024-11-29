@@ -1,6 +1,6 @@
 package com.shy_polarbear.server.domain.quiz.repository;
 
-import com.shy_polarbear.server.domain.quiz.model.MultipleChoice;
+import com.shy_polarbear.server.domain.quiz.entity.MultipleChoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

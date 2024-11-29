@@ -1,13 +1,12 @@
 package com.shy_polarbear.server.domain.user.service;
 
-import com.shy_polarbear.server.domain.feed.exception.FeedException;
 import com.shy_polarbear.server.domain.user.dto.user.response.DuplicateNicknameResponse;
 import com.shy_polarbear.server.domain.user.dto.user.response.UserInfoResponse;
 import com.shy_polarbear.server.domain.user.exception.DuplicateNicknameException;
 import com.shy_polarbear.server.domain.user.exception.UserException;
-import com.shy_polarbear.server.domain.user.model.ProviderType;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.entity.UserRole;
 import com.shy_polarbear.server.domain.user.repository.UserRepository;
 import com.shy_polarbear.server.global.exception.ExceptionStatus;
 import org.assertj.core.api.Assertions;
@@ -24,7 +23,6 @@ import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)

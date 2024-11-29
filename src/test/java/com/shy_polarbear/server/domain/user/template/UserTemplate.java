@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.user.template;
 
-import com.shy_polarbear.server.domain.user.model.ProviderType;
-import com.shy_polarbear.server.domain.user.model.User;
-import com.shy_polarbear.server.domain.user.model.UserRole;
+import com.shy_polarbear.server.domain.auth.jwt.provider.ProviderType;
+import com.shy_polarbear.server.domain.user.entity.User;
+import com.shy_polarbear.server.domain.user.entity.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserTemplate {

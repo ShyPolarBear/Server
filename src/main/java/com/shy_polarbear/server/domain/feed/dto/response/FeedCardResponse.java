@@ -1,8 +1,8 @@
 package com.shy_polarbear.server.domain.feed.dto.response;
 
-import com.shy_polarbear.server.domain.comment.model.Comment;
-import com.shy_polarbear.server.domain.feed.model.Feed;
-import com.shy_polarbear.server.domain.user.model.User;
+import com.shy_polarbear.server.domain.comment.entity.Comment;
+import com.shy_polarbear.server.domain.feed.entity.Feed;
+import com.shy_polarbear.server.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
