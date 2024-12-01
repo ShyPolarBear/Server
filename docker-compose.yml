@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  spring-app:
+    build:
+      context: ./
+    container_name: shypolarbear
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    networks:
+      - spring-network
+
+  redis:
+    image: redis:latest  # Redis 이미지 사용
+    container_name: redis
+    ports:
+      - "6379:6379"  # Redis 기본 포트
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge  # 기본 브리지 네트워크 사용
