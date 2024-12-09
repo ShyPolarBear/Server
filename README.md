@@ -1,5 +1,4 @@
 ## ✏️ Main Feature
-  > [API 명세서 보러가기](https://alike-pump-ae3.notion.site/API-13fc4f00325e4bf1a0a713d91ce13427?pvs=4)
 - jwt/OAuth을 이용한 로그인
 - 매월 랭킹 초기화, 매일 랭킹 업데이트
 - 환경 퀴즈(OX/객관식) 제공
@@ -14,9 +13,9 @@
 
 - **Language** : java17
 - **Library & Framework** : Spring boot, Spring Security, Spring Data jpa, Querydsl
-- **Database** : MySQL
+- **Database** : MySQL, Redis
 - **ORM** : Jpa
-- **Deploy** : AWS(EC2, S3, RDS), Docker
+- **Deploy** : AWS(EC2, S3, RDS), Docker, Docker Compose
 - **CI/CD** : Github Actions
 <br><br>
 ## 💎 Architecture
