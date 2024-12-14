@@ -13,9 +13,9 @@
 
 - **Language** : java17
 - **Library & Framework** : Spring boot, Spring Security, Spring Data jpa, Querydsl
-- **Database** : MySQL
+- **Database** : MySQL, Redis
 - **ORM** : Jpa
-- **Deploy** : AWS(EC2, S3, RDS), Redis, Docker
+- **Deploy** : AWS(EC2, S3, RDS), Docker
 
 <br><br>
 ## 💎 System Architecture
