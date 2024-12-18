@@ -25,6 +25,6 @@
 
 
 <br><br>
-## 🗓️ ERD
+## 🗓️ Entity ERD
 
-![erd](https://github.com/ShyPolarBear/Server/assets/81086966/aa119578-66b4-4a8f-8471-a6abcf700ff0)
+![image](https://github.com/user-attachments/assets/c7d39275-4a96-4da6-9e9c-c50a87a10368)
