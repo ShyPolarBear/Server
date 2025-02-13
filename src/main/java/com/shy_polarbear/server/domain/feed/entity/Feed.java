@@ -79,7 +79,7 @@ public class Feed extends BaseEntity {
         this.content = content;
         this.feedImages.clear();
         if (feedImages != null) {
-            this.feedImages.addAll(feedImages);
+            this.feedImages.addAll(new ArrayList<>(feedImages));
             assignFeedToFeedImages(this);
         }
     }
